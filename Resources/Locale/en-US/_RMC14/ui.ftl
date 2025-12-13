@@ -115,6 +115,11 @@ rmc-ui-options-alternate-sprites = Use non-trypophobia inducing sprites
 
 rmc-ui-options-chat-squad-color-mode = Colorize names of the speaker by squads
 
+rmc-ui-options-announcements-style = Announcement visuals
+rmc-ui-options-announcements-style-stylized = Stylized
+rmc-ui-options-announcements-style-simplified = Simplified
+rmc-ui-options-announcements-style-disabled = Disabled
+
 # Dialog input
 rmc-dialog-input-placeholder-default = Enter text
 rmc-dialog-input-placeholder-smart-check = More than 3 consecutive spaces will be trimmed
