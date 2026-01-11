@@ -9,6 +9,7 @@ using Content.Shared._RMC14.Marines.Skills;
 using Content.Shared._RMC14.Marines.Squads;
 using Content.Shared._RMC14.Overwatch;
 using Content.Shared._RMC14.TacticalMap;
+using Content.Shared._RMC14.AlertLevel;
 using Content.Shared._RMC14.Weapons.Ranged.IFF;
 using Content.Shared.Access.Systems;
 using Content.Shared.Administration.Logs;
@@ -24,6 +25,7 @@ using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
+using Robust.Shared.Maths;
 
 namespace Content.Shared._RMC14.Marines.Announce;
 
@@ -232,6 +234,20 @@ public abstract class SharedMarineAnnounceSystem : EntitySystem
     {
     }
 
+    public virtual void AnnounceOverwatchSquad(
+        EntityUid sender,
+        string message,
+        EntityUid squad,
+        Color squadColor,
+        string squadName,
+        SoundSpecifier? sound = null)
+    {
+    }
+
+    public virtual void AnnounceAlertLevel(RMCAlertLevels level, string message, Filter? filter = null)
+    {
+    }
+
     /// <summary>
     ///     Dispatches already wrapped announcement to Marines.
     /// </summary>
@@ -295,6 +311,7 @@ public abstract class SharedMarineAnnounceSystem : EntitySystem
         var wrappedMessage = Loc.GetString("rmc-announcement-message-signed", ("author", author), ("message", message), ("name", name));
 
         AnnounceToMarines(message, wrappedMessage, sound, filter); // Stories-Chat
+        AnnounceSignedUi(sender, message, author, name, sound, filter);
         _adminLog.Add(LogType.RMCMarineAnnounce, $"{ToPrettyString(sender):source} marine announced message: {message}");
 
         if (_idCard.TryFindIdCard(sender, out var idCard) && TryComp(idCard, out ItemIFFComponent? idCardIFF))
@@ -302,6 +319,16 @@ public abstract class SharedMarineAnnounceSystem : EntitySystem
             {
                 _core.CreateARESLog(faction, LogCat, (string)$"{Name(sender)} sent an announcement: {message}");
             }
+    }
+
+    protected virtual void AnnounceSignedUi(
+        EntityUid sender,
+        string message,
+        string author,
+        string name,
+        SoundSpecifier? sound,
+        Filter? filter)
+    {
     }
 
     public string FormatHighCommand(string? author, string message)

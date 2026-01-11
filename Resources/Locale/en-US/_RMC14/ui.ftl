@@ -117,7 +117,8 @@ rmc-ui-options-chat-squad-color-mode = Colorize names of the speaker by squads
 
 rmc-ui-options-announcements-style = Announcement visuals
 rmc-ui-options-announcements-style-stylized = Stylized
-rmc-ui-options-announcements-style-simplified = Simplified
+rmc-ui-options-announcements-style-default = Default
+rmc-ui-options-announcements-style-simplified = Simple
 rmc-ui-options-announcements-style-disabled = Disabled
 
 # Dialog input
