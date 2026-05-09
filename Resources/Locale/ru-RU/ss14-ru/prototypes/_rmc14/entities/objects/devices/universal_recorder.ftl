@@ -1,0 +1,12 @@
+ent-RMCUniversalRecorderEmpty = универсальный рекордер
+    .desc = Устройство, способное записывать разговоры на магнитную ленту и воспроизводить их. Полезно для заявлений или свидетельских показаний.
+    .suffix = Пустой
+ent-RMCUniversalRecorder = универсальный рекордер
+    .desc = Устройство, способное записывать разговоры на магнитную ленту и воспроизводить их. Полезно для заявлений или свидетельских показаний.
+ent-RMCUniversalRecorderTape = штатная кассета
+    .desc = Магнитная кассета, способная хранить до двадцати минут записи на каждой стороне.
+ent-RMCBoxRegulationTapesEmpty = коробка штатных кассет (x5)
+    .desc = Коробка штатных кассет для универсальных рекордеров.
+ent-RMCBoxRegulationTapes = { ent-RMCBoxRegulationTapesEmpty }
+    .desc = { ent-RMCBoxRegulationTapesEmpty.desc }
+    .suffix = Заполнено
