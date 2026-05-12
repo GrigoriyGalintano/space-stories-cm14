@@ -68,7 +68,7 @@
     eyes: RMCSunglasses
     head: RMCHardhatWhite
     ears: RMCHeadsetDistressICBLiaison
-    back: RMCSatchelICBLiaisonFill # TODO RMC14 secure leather satchel
+    back: RMCSatchelICBLiaisonSecureFill
     jumpsuit: CMJumpsuitLiaisonBlack
     outerClothing: RMCHazardVestYellow
     gloves: CMHandsInsulated

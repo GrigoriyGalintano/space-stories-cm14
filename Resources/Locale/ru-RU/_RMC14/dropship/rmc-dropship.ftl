@@ -17,6 +17,7 @@ rmc-dropship-weapons-weapon-selected-ammo = { $weapon }
 rmc-dropship-weapons-target-strike = Приобретение цели
 
   Ударный режим: { $mode }
+  Режим цели: { $targetMode }
 
   Конфигурация удара { $weapon }
 
@@ -55,6 +56,10 @@ rmc-dropship-weapons-offset-calibration-does-not-affect-direct-bombardment = Н�
 rmc-dropship-weapons-fire = ОГОНЬ
 rmc-dropship-weapons-strike = УДАР
 rmc-dropship-weapons-vector = ВЕКТОР
+rmc-dropship-weapons-quick = БЫСТР
+
+rmc-dropship-weapons-target-mode-quick = БЫСТР
+rmc-dropship-weapons-target-mode-standard = СТАНД
 
 rmc-dropship-weapons-night-vision-on = НВ-ВКЛ
 rmc-dropship-weapons-night-vision-off = НВ-ВЫКЛ
