@@ -4,6 +4,7 @@ using Content.Shared._RMC14.Doors;
 using Content.Shared._RMC14.Dropship;
 using Content.Shared._RMC14.Marines;
 using Content.Shared._RMC14.Marines.Announce;
+using Content.Shared._RMC14.Announce;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
 using Content.Shared.Doors.Components;
@@ -83,6 +84,12 @@ public sealed class RMCAlertLevelSystem : EntitySystem
         return Get() == RMCAlertLevels.Red || Get() ==  RMCAlertLevels.Delta;
     }
 
+    public ProtoId<AnnouncementPresetPrototype> EnsureAlertAnnouncementPreset(RMCAlertLevels level)
+    {
+        var alert = EnsureAlertLevel();
+        return alert.Comp.GetAnnouncementPreset(level);
+    }
+
     public void Set(RMCAlertLevels level, EntityUid? user, bool playSound = true, bool sendAnnouncement = true)
     {
         var ent = EnsureAlertLevel();
@@ -142,18 +149,19 @@ public sealed class RMCAlertLevelSystem : EntitySystem
         // Send announcement if sendAnnouncement == true
         if (sendAnnouncement)
         {
+            var preset = ent.Comp.GetAnnouncementPreset(level);
             if (announcement != null)
             {
                 var text = Loc.GetString(announcement);
                 _marineAnnounce.AnnounceToMarines(text);
-                _marineAnnounce.AnnounceAlertLevel(level, text, filter);
+                _marineAnnounce.AnnounceAlertLevel(preset, text, filter);
             }
             else if (message != null)
             {
                 var ares = _aresCore.EnsureMarineARES();
                 var text = Loc.GetString(message.Value);
                 _marineAnnounce.AnnounceRadio(ares, text, ent.Comp.RadioChannel);
-                _marineAnnounce.AnnounceAlertLevel(level, text, filter);
+                _marineAnnounce.AnnounceAlertLevel(preset, text, filter);
             }
         }
 

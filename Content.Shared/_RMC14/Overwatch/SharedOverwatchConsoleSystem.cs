@@ -678,8 +678,7 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
         _core.CreateARESLog(ent, LogCat, (string)$"{Name(args.Actor)} sent a squad announcement: {args.Message}");
         if (TryComp(squad.Value, out SquadTeamComponent? squadComp))
         {
-            var squadColor = squadComp.AccessibleColor ?? squadComp.Color;
-            _marineAnnounce.AnnounceOverwatchSquad(args.Actor, message, squad.Value, squadColor, squadProto.Name);
+            _marineAnnounce.AnnounceOverwatchSquad(args.Actor, message, squad.Value);
         }
         else
         {
