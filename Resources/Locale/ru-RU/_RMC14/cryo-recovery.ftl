@@ -1,0 +1,11 @@
+rmc-cryo-recovery-window-title = Консоль восстановления из гиперсна
+rmc-cryo-recovery-header = Сохранённое снаряжение
+rmc-cryo-recovery-summary = {$players} персонала / {$items} предметов
+rmc-cryo-recovery-search-placeholder = Поиск по имени, роли или предмету...
+rmc-cryo-recovery-no-items = Не найдено снаряжение из гиперсна, доступное для восстановления.
+rmc-cryo-recovery-recover = Вернуть
+rmc-cryo-recovery-recover-all = Вернуть всё
+rmc-cryo-recovery-item-count = {$count} предметов
+rmc-cryo-recovery-unknown-assignment = Неизвестная должность
+rmc-cryo-recovery-location-slot = {$slot}
+rmc-cryo-recovery-location-hand = Рука: {$hand}
