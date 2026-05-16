@@ -9,3 +9,4 @@ rmc-cryo-recovery-item-count = {$count} предметов
 rmc-cryo-recovery-unknown-assignment = Неизвестная должность
 rmc-cryo-recovery-location-slot = {$slot}
 rmc-cryo-recovery-location-hand = Рука: {$hand}
+rmc-cryo-recovery-location-attached-webbing = Прикреплённая разгрузка: {$location}
