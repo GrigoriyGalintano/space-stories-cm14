@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared._RMC14.Barricade.Components;
+using Content.Shared._RMC14.Weather;
 using Content.Shared._RMC14.CombatMode;
 using Content.Shared._RMC14.Ghost;
 using Content.Shared._RMC14.Movement;
@@ -79,6 +80,7 @@ namespace Content.Shared.Interaction
         [Dependency] private readonly SharedPlayerRateLimitManager _rateLimit = default!;
         [Dependency] private readonly TagSystem _tagSystem = default!;
         [Dependency] private readonly UseDelaySystem _useDelay = default!;
+        [Dependency] private readonly RMCWeatherVisionSystem _rmcWeatherVision = default!;
 
         private EntityQuery<IgnoreUIRangeComponent> _ignoreUiRangeQuery;
         private EntityQuery<FixturesComponent> _fixtureQuery;
@@ -454,6 +456,23 @@ namespace Content.Shared.Interaction
             var inRangeUnobstructed = target == null
                 ? !checkAccess || InRangeUnobstructed(user, coordinates)
                 : !checkAccess || ignoreGhostInteractionLimits || InRangeUnobstructed(user, target.Value); // permits interactions with wall mounted entities
+
+            if (inRangeUnobstructed)
+            {
+                if (target != null)
+                {
+                    if (_rmcWeatherVision.IsWeatherVisionBlocked(user, target.Value))
+                    {
+                        _rmcWeatherVision.PopupBlocked(user);
+                        return;
+                    }
+                }
+                else if (_rmcWeatherVision.IsWeatherVisionBlocked(user, coordinates))
+                {
+                    _rmcWeatherVision.PopupBlocked(user);
+                    return;
+                }
+            }
 
             // empty-hand interactions
             // combat mode hand interactions will always be true here -- since
