@@ -187,13 +187,18 @@ entities:
       data: {}
     - type: RMCWeatherCycle
       minTimeBetweenEvents: 1200
+      minTimeBetweenChecks: 900
+      minCheckVariance: 600
+      startChance: 0.3
       weatherEvents:
       - lightningSound: !type:SoundCollectionSpecifier
           collection: RMCThunder
         lightningEffects:
         - RMCColorSequenceLightningSharpPeak
         - RMCColorSequenceLightningFlicker
+        fireSmotheringStrength: 1
         weatherType: RMCStrataStormVeryLight
+        screenOverlay: Low
         duration: 480
         name: Light Rain
       - lightningSound: !type:SoundCollectionSpecifier
@@ -202,7 +207,9 @@ entities:
         - RMCColorSequenceLightningSharpPeak
         - RMCColorSequenceLightningFlicker
         lightningChance: 0.02
+        fireSmotheringStrength: 4
         weatherType: RMCStrataStormLight
+        screenOverlay: Medium
         duration: 720
         name: Heavy Rain
     - type: RMCAmbientLightEffects
