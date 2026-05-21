@@ -1,6 +1,7 @@
 using System.Numerics;
 using Content.Server.Atmos.EntitySystems;
 using Content.Shared._RMC14.Explosion;
+using Content.Shared._RMC14.Terrain;
 using Content.Shared.CCVar;
 using Content.Shared.Damage;
 using Content.Shared.Database;
@@ -28,6 +29,7 @@ namespace Content.Server.Explosion.EntitySystems;
 public sealed partial class ExplosionSystem
 {
     [Dependency] private readonly FlammableSystem _flammableSystem = default!;
+    [Dependency] private readonly RMCTerrainSystem _rmcTerrain = default!;
 
     /// <summary>
     ///     Used to limit explosion processing time. See <see cref="MaxProcessingTime"/>.
@@ -526,7 +528,17 @@ public sealed partial class ExplosionSystem
     {
         if (_tileDefinitionManager[tileRef.Tile.TypeId] is not ContentTileDefinition tileDef
             || tileDef.Indestructible)
+        {
+            _rmcTerrain.TryDamageLayer(tileRef, maxTileBreak);
             return;
+        }
+
+        if (tileDef.RmcTerrainLayerSet != null &&
+            tileDef.RmcTerrainLayer > 0)
+        {
+            _rmcTerrain.TryDamageLayer(tileRef, maxTileBreak);
+            return;
+        }
 
         if (!CanCreateVacuum)
             canCreateVacuum = false;
