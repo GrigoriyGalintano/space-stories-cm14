@@ -305,6 +305,7 @@ entities:
         screenOverlay: Low
         duration: 600
         name: Duststorm
+        displayName: rmc-weather-name-duststorm
       - lightningSound: !type:SoundCollectionSpecifier
           collection: RMCThunder
         lightningEffects:
@@ -317,6 +318,7 @@ entities:
         screenOverlay: Medium
         duration: 360
         name: Sandstorm
+        displayName: rmc-weather-name-sandstorm
     - type: RMCAmbientLightEffects
     - type: MapGrid
       chunks:

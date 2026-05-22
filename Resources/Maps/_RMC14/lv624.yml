@@ -201,6 +201,7 @@ entities:
         screenOverlay: Low
         duration: 480
         name: Light Rain
+        displayName: rmc-weather-name-light-rain
       - lightningSound: !type:SoundCollectionSpecifier
           collection: RMCThunder
         lightningEffects:
@@ -212,6 +213,7 @@ entities:
         screenOverlay: Medium
         duration: 720
         name: Heavy Rain
+        displayName: rmc-weather-name-heavy-rain
     - type: RMCAmbientLightEffects
     - type: MapGrid
       chunks:
