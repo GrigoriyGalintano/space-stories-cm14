@@ -169,6 +169,7 @@ entities:
         screenOverlay: Low
         duration: 240
         name: Tropical Storm
+        displayName: rmc-weather-name-tropical-storm
       - lightningSound: !type:SoundCollectionSpecifier
           collection: RMCThunder
         lightningEffects:

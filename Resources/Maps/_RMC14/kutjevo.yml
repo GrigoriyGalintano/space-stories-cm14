@@ -186,6 +186,7 @@ entities:
         screenOverlay: Medium
         duration: 360
         name: Sandstorm
+        displayName: rmc-weather-name-sandstorm
       - lightningSound: !type:SoundCollectionSpecifier
           collection: RMCThunder
         lightningEffects:
@@ -197,6 +198,7 @@ entities:
         screenOverlay: Medium
         duration: 240
         name: Rainstorm
+        displayName: rmc-weather-name-rainstorm
     - type: RMCAmbientLightEffects
     - type: Broadphase
     - type: OccluderTree

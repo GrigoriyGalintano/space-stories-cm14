@@ -481,6 +481,7 @@ entities:
         screenOverlay: Low
         duration: 360
         name: Duststorm
+        displayName: rmc-weather-name-duststorm
       - lightningSound: !type:SoundCollectionSpecifier
           collection: RMCThunder
         lightningEffects:
@@ -492,6 +493,7 @@ entities:
         screenOverlay: Medium
         duration: 360
         name: Rainstorm
+        displayName: rmc-weather-name-rainstorm
     - type: RMCAmbientLightEffects
     - type: BecomesStation
       id: Trijent

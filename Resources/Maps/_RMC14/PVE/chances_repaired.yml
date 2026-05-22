@@ -162,6 +162,7 @@ entities:
         screenOverlay: Low
         duration: 180
         name: Light Rain
+        displayName: rmc-weather-name-light-rain
     - type: RMCAmbientLightEffects
       sunset: RMCColorSequenceSunsetCold
     - type: Broadphase
