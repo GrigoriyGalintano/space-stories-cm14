@@ -2,6 +2,13 @@ rmc-weather-effect-dust = Пыль забивается в каждую щель
 rmc-weather-effect-sand = Песок сдирает верхние слои вашей оболочки!
 
 rmc-weather-name-light-rain = лёгкий дождь
+rmc-weather-name-heavy-rain = сильный дождь
+rmc-weather-name-snow = снег
+rmc-weather-name-snowstorm = снежная буря
+rmc-weather-name-duststorm = пыльная буря
+rmc-weather-name-sandstorm = песчаная буря
+rmc-weather-name-rainstorm = ливень
+rmc-weather-name-tropical-storm = тропический шторм
 rmc-weather-name-monsoon-warning = муссонная тревога
 rmc-weather-name-very-light-rain = очень лёгкий дождь
 
