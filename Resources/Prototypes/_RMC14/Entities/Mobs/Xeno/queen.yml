@@ -62,8 +62,9 @@
     - ActionXenoAcidNormal
     - ActionXenoPheromones
     - ActionXenoWordQueen
-#    - ActionXenoPsychicWhisper
-#    - ActionXenoPsychicRadiance
+    - ActionXenoPsychicWhisper
+    - ActionXenoPsychicRadiance
+    - ActionXenoGiveOrder
     - ActionXenoGut
     - ActionXenoPlantWeeds
     - ActionXenoChooseStructure
@@ -110,6 +111,7 @@
   - type: XenoWordQueen
   - type: VehicleDamageMultiplier
     multiplier: 2
+  - type: XenoPsychicCommunication
   - type: InnateCommandSpeech
   - type: RMCInnateRadioTextIncrease
     radioTextIncrease: 3
