@@ -6,6 +6,27 @@ rmc-ob-warning-above-two = Небо над вами ревет еще громч
 rmc-ob-warning-three = БОЖЕ, НЕБО ВЗОРВЕТСЯ!!!
 rmc-ob-warning-above-three = ТЫ НЕ ДОЛЖЕН БЫТЬ ЗДЕСЬ!
 
+### Orbital Cannon Popups
+rmc-ob-tray-already-loaded = Лоток уже загружен в пушку!
+rmc-ob-warhead-already-loaded = Боеголовка уже загружена!
+rmc-ob-cant-insert = Вы не можете поместить { $used } в { $target }!
+rmc-ob-load-into-tray = Вы загружаете { $used } в { $target }!
+rmc-ob-warhead-needed-before-fuel = Сначала в { $target } нужно поместить боеголовку.
+rmc-ob-too-much-fuel = В { $target } больше не помещается твёрдое топливо!
+rmc-ob-no-linked-tray = У орбитальной пушки нет связанного лотка.
+rmc-ob-no-ammo-chambered = В орбитальной пушке нет заряженного боеприпаса.
+rmc-ob-target-out-of-bounds = Зона цели вне допустимых границ. Проверьте координаты.
+rmc-ob-target-protected = Зона цели защищена мощной биологической защитой. Орбитальный удар не может туда достать.
+rmc-ob-target-underground = Зона цели глубоко под землёй. Орбитальный удар не может туда достать.
+rmc-ob-request-accepted = Запрос орбитальной бомбардировки принят. Орбитальные пушки калибруются.
+rmc-ob-launched = Орбитальная бомбардировка запущена!
+
+### Orbital Cannon Announcements
+rmc-ob-launch-detected = [font size=16][color=red]Обнаружена команда запуска орбитальной бомбардировки![/color][/font]
+rmc-ob-launch-area = [color=red]Команда запуска сообщает: { $warhead }. Предполагаемая зона попадания: { $area }[/color]
+rmc-ob-ship-shudder = [color=red]Палуба USS Almayer содрогается, когда орбитальные пушки открывают огонь по колонии.[/color]
+rmc-ob-squad-warning = ВНИМАНИЕ! Обнаружен баллистический трансатмосферный запуск! Покиньте зону!
+
 ### Orbital Cannon Console
 rmc-ui-ob-console-name = Консоль орбитальной пушки
 rmc-ui-ob-console-title = УПРАВЛЕНИЕ ОРБИТАЛЬНОЙ ПУШКОЙ
