@@ -23,6 +23,7 @@ rmc-ob-launched = Orbital bombardment launched!
 
 ### Orbital Cannon Announcements
 rmc-ob-launch-detected = [font size=16][color=red]Orbital bombardment launch command detected![/color][/font]
+rmc-ob-launch-detected-hallucination = [bold][font size=24][color=red]\nOrbital bombardment launch command detected!\n[/color][/font][/bold]
 rmc-ob-launch-area = [color=red]Launch command informs {$warhead}. Estimated impact area: {$area}[/color]
 rmc-ob-ship-shudder = [color=red]The deck of the UNS Almayer shudders as the orbital cannons open fire on the colony.[/color]
 rmc-ob-squad-warning = WARNING! Ballistic trans-atmospheric launch detected! Get outside of Danger Close!

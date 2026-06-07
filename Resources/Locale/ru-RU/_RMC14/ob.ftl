@@ -23,8 +23,9 @@ rmc-ob-launched = Орбитальная бомбардировка запуще
 
 ### Orbital Cannon Announcements
 rmc-ob-launch-detected = [font size=16][color=red]Обнаружена команда запуска орбитальной бомбардировки![/color][/font]
+rmc-ob-launch-detected-hallucination = [bold][font size=24][color=red]\nОбнаружена команда запуска орбитальной бомбардировки!\n[/color][/font][/bold]
 rmc-ob-launch-area = [color=red]Команда запуска сообщает: { $warhead }. Предполагаемая зона попадания: { $area }[/color]
-rmc-ob-ship-shudder = [color=red]Палуба USS Almayer содрогается, когда орбитальные пушки открывают огонь по колонии.[/color]
+rmc-ob-ship-shudder = [color=red]Палуба «Алмайера» содрогается, когда орбитальные пушки открывают огонь по колонии.[/color]
 rmc-ob-squad-warning = ВНИМАНИЕ! Обнаружен баллистический трансатмосферный запуск! Покиньте зону!
 
 ### Orbital Cannon Console
