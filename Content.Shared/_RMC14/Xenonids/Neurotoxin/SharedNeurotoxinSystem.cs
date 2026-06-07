@@ -392,7 +392,8 @@ public abstract class SharedNeurotoxinSystem : EntitySystem
                 //Little extra to confuse the player
                 if (_player.TryGetSessionByEntity(victim, out var session))
                 {
-                    var msg = Loc.GetString("rmc-ob-launch-detected-hallucination");
+                    var msg = Loc.GetString("rmc-ob-launch-detected");
+                    msg = $"[bold][font size=24][color=red]\n{msg}\n[/color][/font][/bold]";
                     _rmcChat.ChatMessageToOne(ChatChannel.Radio, msg, msg, default, false, session.Channel, recordReplay: true);
 
                     if (_area.TryGetArea(victim.ToCoordinates(), out _, out var areaProto))

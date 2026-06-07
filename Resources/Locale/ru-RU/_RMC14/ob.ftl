@@ -9,24 +9,23 @@ rmc-ob-warning-above-three = ТЫ НЕ ДОЛЖЕН БЫТЬ ЗДЕСЬ!
 ### Orbital Cannon Popups
 rmc-ob-tray-already-loaded = Лоток уже загружен в пушку!
 rmc-ob-warhead-already-loaded = Боеголовка уже загружена!
-rmc-ob-cant-insert = Вы не можете поместить { $used } в { $target }!
+rmc-ob-cant-insert = Вы не можете вставить { $used } в { $target }!
 rmc-ob-load-into-tray = Вы загружаете { $used } в { $target }!
-rmc-ob-warhead-needed-before-fuel = Сначала в { $target } нужно поместить боеголовку.
-rmc-ob-too-much-fuel = В { $target } больше не помещается твёрдое топливо!
-rmc-ob-no-linked-tray = У орбитальной пушки нет связанного лотка.
-rmc-ob-no-ammo-chambered = В орбитальной пушке нет заряженного боеприпаса.
-rmc-ob-target-out-of-bounds = Зона цели вне допустимых границ. Проверьте координаты.
-rmc-ob-target-protected = Зона цели защищена мощной биологической защитой. Орбитальный удар не может туда достать.
-rmc-ob-target-underground = Зона цели глубоко под землёй. Орбитальный удар не может туда достать.
-rmc-ob-request-accepted = Запрос орбитальной бомбардировки принят. Орбитальные пушки калибруются.
+rmc-ob-warhead-needed-before-fuel = Сначала необходимо поместить боеголовку в { $target }.
+rmc-ob-too-much-fuel = { $target } не может принять больше твердого топлива!
+rmc-ob-no-linked-tray = К орбитальной пушке не привязан лоток.
+rmc-ob-no-ammo-chambered = В орбитальную пушку не заряжен снаряд.
+rmc-ob-target-out-of-bounds = Похоже, целевая зона находится за пределами досягаемости. Пожалуйста, проверьте координаты.
+rmc-ob-target-protected = Целевая зона имеет сильную биологическую защиту. Орбитальный удар не может достичь этого места.
+rmc-ob-target-underground = Целевая зона находится глубоко под землей. Орбитальный удар не может достичь этого места.
+rmc-ob-request-accepted = Запрос на орбитальную бомбардировку принят. Производится калибровка орбитальных пушек.
 rmc-ob-launched = Орбитальная бомбардировка запущена!
 
 ### Orbital Cannon Announcements
 rmc-ob-launch-detected = [font size=16][color=red]Обнаружена команда запуска орбитальной бомбардировки![/color][/font]
-rmc-ob-launch-detected-hallucination = [bold][font size=24][color=red]\nОбнаружена команда запуска орбитальной бомбардировки!\n[/color][/font][/bold]
-rmc-ob-launch-area = [color=red]Команда запуска сообщает: { $warhead }. Предполагаемая зона попадания: { $area }[/color]
-rmc-ob-ship-shudder = [color=red]Палуба «Алмайера» содрогается, когда орбитальные пушки открывают огонь по колонии.[/color]
-rmc-ob-squad-warning = ВНИМАНИЕ! Обнаружен баллистический трансатмосферный запуск! Покиньте зону!
+rmc-ob-launch-area = [color=red]Команда запуска сообщает: тип боеголовки — { $warhead }. Расчетная зона поражения: { $area }[/color]
+rmc-ob-ship-shudder = [color=red]Палуба корабля «Альмайер» содрогается, когда орбитальные пушки открывают огонь по колонии.[/color]
+rmc-ob-squad-warning = ВНИМАНИЕ! Обнаружен баллистический трансатмосферный пуск! Покиньте опасную зону!
 
 ### Orbital Cannon Console
 rmc-ui-ob-console-name = Консоль орбитальной пушки

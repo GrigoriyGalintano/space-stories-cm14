@@ -1,7 +1,9 @@
+ent-CMXenoBoiler = Boiler
+    .desc = A huge, grotesque xenonid covered in glowing, oozing acid slime.
+ent-RMCXenoBoiler = { ent-CMXenoBoiler }
+    .desc = { ent-CMXenoBoiler.desc }
+ent-RMCXenoBoilerSapper = { ent-CMXenoBoiler }
+    .desc = { ent-CMXenoBoiler.desc }
+    .suffix = Sapper
 ent-RMCXenoBoilerBase = Бойлер
     .desc = Огромный, гротескный ксеноморф, покрытый светящейся, сочащейся кислотой слизью.
-ent-CMXenoBoiler = { ent-RMCXenoBoilerBase }
-    .desc = { ent-RMCXenoBoilerBase.desc }
-ent-RMCXenoBoilerTrapper = { ent-RMCXenoBoilerBase }
-    .desc = { ent-RMCXenoBoilerBase.desc }
-    .suffix = Силкер

@@ -1,4 +1,4 @@
-﻿using Content.Server._RMC14.Dropship;
+using Content.Server._RMC14.Dropship;
 using Content.Server._RMC14.MapInsert;
 using Content.Server._RMC14.Marines;
 using Content.Server._RMC14.Nuke;
@@ -34,6 +34,7 @@ using Content.Shared._RMC14.CCVar;
 using Content.Shared._RMC14.Dropship;
 using Content.Shared._RMC14.Evacuation;
 using Content.Shared._RMC14.Intel;
+using Content.Shared._RMC14.Intel.Tech;
 using Content.Shared._RMC14.Item;
 using Content.Shared._RMC14.Light;
 using Content.Shared._RMC14.Map;
@@ -122,7 +123,7 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
     [Dependency] private readonly XenoSystem _xeno = default!;
     [Dependency] private readonly IAdminLogManager _adminLog = default!;
     [Dependency] private readonly RoundEndSystem _roundEnd = default!;
-    [Dependency] private readonly ARESSystem _ares = default!;
+    [Dependency] private readonly ARESCoreSystem _aresCore = default!;
     [Dependency] private readonly MarineAnnounceSystem _marineAnnounce = default!;
     [Dependency] private readonly RMCAlertLevelSystem _alertLevelSystem = default!;
     [Dependency] private readonly RMCNukeSystem _rmcNuke = default!;
@@ -136,6 +137,7 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
     [Dependency] private readonly RMCGameRuleExtrasSystem _gameRulesExtras = default!;
     [Dependency] private readonly IServerPreferencesManager _prefsManager = default!;
     [Dependency] private readonly IntelSystem _intel = default!;
+    [Dependency] private readonly TechSystem _tech = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
     [Dependency] private readonly IBanManager _bans = default!;
     [Dependency] private readonly PlayTimeTrackingSystem _playTime = default!;
@@ -250,6 +252,7 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
              before: [typeof(ArrivalsSystem), typeof(SpawnPointSystem)]);
         SubscribeLocalEvent<RoundEndMessageEvent>(OnRoundEndMessage);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
+        SubscribeLocalEvent<DropshipLandedOnPlanetEvent>(OnDropshipLandedOnPlanet);
         SubscribeLocalEvent<DropshipHijackStartEvent>(OnDropshipHijackStart);
         SubscribeLocalEvent<DropshipHijackLandedEvent>(OnDropshipHijackLanded);
         SubscribeLocalEvent<RMCFusionReactorComponent, RMCFusionReactorCanOverloadEvent>(OnFusionReactorCanOverload);

@@ -10,18 +10,18 @@ cm-distress-signal-minorxenovictory = [color=purple]The xenonids hijacked the me
 rmc-distress-signal-minorxenovictory-timeout = [color=purple]The xenonids hijacked the metal bird and entered the metal hive, igniting a brutal battle in the sky.[/color] [color=yellow]In the chaos, the vessel lost control and crashed into the surface before everyone could evacuate. All hands were lost.[/color] [color=purple]Yet, the surface remains overrun, and the xenonids endure.[/color]
 
 cm-distress-signal-alldied = [color=yellow]Neither marines nor xenonids survived the carnage. The battlefield lies silent, a graveyard for both.[/color]
-cm-distress-signal-selfdestruct = [color=yellow]The UNS Almayer was scuttled by emergency reactor overload. Marines and xenonids alike were consumed in the blast. No side can claim the vessel.[/color]
+cm-distress-signal-selfdestruct = [color=yellow]The ship was scuttled by emergency reactor overload. Marines and xenonids alike were consumed in the blast. No side can claim the vessel.[/color]
 cm-distress-signal-none = [color=yellow]ARES 3.2 Log Error: Operation records are missing or corrupted. Please contact support with error code 404 for further assistance.[/color]
 
 cm-distress-signal-marine = {$player}
 
 rmc-distress-signal-next-map-title = Next Planet Map
 rmc-distress-signal-next-map-tie = Tie for map vote! Picking... {$picked}
-rmc-distress-signal-next-map-win = {$winner} won the map vote!
-rmc-distress-signal-next-map-header = Map Vote Results
-rmc-distress-signal-next-map-votes = {$map}: {$votes} votes
-rmc-distress-signal-next-map-votes-new = {$map}: {$votes} votes ({$newVotes} new)
-rmc-distress-signal-next-map-tiebreaker = Vote tied between:
+rmc-distress-signal-next-map-win = [font size=14][bold][color=green]{$winner}[/color][/bold] won the map vote![/font]
+rmc-distress-signal-next-map-header = [font size=14][bold]Map Vote Results[/bold][/font]
+rmc-distress-signal-next-map-votes = [bold]{$map}:[/bold] [color=white]{$votes}[/color] votes
+rmc-distress-signal-next-map-votes-new = [bold]{$map}:[/bold] [color=white]{$votes}[/color] votes ({$newVotes} new)
+rmc-distress-signal-next-map-tiebreaker = [bold]Vote tied between:[/bold]
 
 rmc-distress-signal-fallen = In memoriam of our fallen soldiers:
  {$fallen}
