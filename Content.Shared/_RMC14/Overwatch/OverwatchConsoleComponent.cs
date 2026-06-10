@@ -1,4 +1,5 @@
 ﻿using Robust.Shared.GameStates;
+using Content.Shared._RMC14.AntiAir;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 using Robust.Shared.Utility;
 
@@ -33,6 +34,18 @@ public sealed partial class OverwatchConsoleComponent : Component
 
     [DataField, AutoNetworkedField]
     public OverwatchSavedLocation?[] SavedOrbitalLocations = new OverwatchSavedLocation?[MaxSavedLocationCount];
+
+    [DataField, AutoNetworkedField]
+    public List<OverwatchSquad> Squads = new();
+
+    [DataField, AutoNetworkedField]
+    public Dictionary<NetEntity, List<OverwatchMarine>> Marines = new();
+
+    [DataField, AutoNetworkedField]
+    public RMCShipAntiAirStatus AntiAir;
+
+    [DataField, AutoNetworkedField]
+    public Dictionary<NetEntity, List<OverwatchTripodCamera>> Cameras = new();
 
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoNetworkedField, AutoPausedField]
     public TimeSpan LastMessage;

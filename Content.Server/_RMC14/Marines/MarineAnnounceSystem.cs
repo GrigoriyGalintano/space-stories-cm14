@@ -34,13 +34,14 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
     [Dependency] private readonly SharedDropshipSystem _dropship = default!;
     [Dependency] private readonly RadioSystem _radio = default!;
     [Dependency] private readonly SquadSystem _squad = default!;
-    [Dependency] private readonly SharedUserInterfaceSystem _ui = default!;
     // Stories-TTS-Start
     [Dependency] private readonly TTSSystem _tts = default!;
     [Dependency] private readonly IConfigurationManager _configManager = default!;
     // Stories-TTS-End
 
     private static readonly EntProtoId<ARESLogTypeComponent> LogCat = "ARESTabAnnouncementLogs";
+    private static readonly ProtoId<AnnouncementPresetPrototype> PresetMarineCommand = "MarineCommand";
+    private static readonly ProtoId<AnnouncementPresetPrototype> PresetMarineOverwatch = "MarineOverwatch";
 
     public override void Initialize()
     {
@@ -94,19 +95,17 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
 
     private void UpdatePlanetMap(Entity<MarineCommunicationsComputerComponent> computer)
     {
-        var planet = _distressSignal.SelectedPlanetMapName ?? string.Empty;
-        var operation = _distressSignal.OperationName ?? string.Empty;
-        var landingZones = new List<LandingZone>();
+        computer.Comp.Planet = _distressSignal.SelectedPlanetMapName ?? string.Empty;
+        computer.Comp.Operation = _distressSignal.OperationName ?? string.Empty;
+        computer.Comp.LandingZones.Clear();
 
         foreach (var (id, metaData) in _dropship.GetPrimaryLZCandidates())
         {
-            landingZones.Add(new LandingZone(GetNetEntity(id), metaData.EntityName));
+            computer.Comp.LandingZones.Add(new LandingZone(GetNetEntity(id), metaData.EntityName));
         }
 
-        landingZones.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
-
-        var state = new MarineCommunicationsComputerBuiState(planet, operation, landingZones);
-        _ui.SetUiState(computer.Owner, MarineCommunicationsComputerUI.Key, state);
+        computer.Comp.LandingZones.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+        Dirty(computer);
     }
 
     public override void AnnounceToMarines(
@@ -133,11 +132,7 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
                 WrappedMessage = wrappedMessage,
                 Channel = ChatChannel.Radio,
             },
-            Sound = new AnnouncementSoundOptions
-            {
-                Sound = sound ?? DefaultAnnouncementSound,
-                Volume = -2f,
-            },
+            Sound = CreateSoundOptions(sound ?? DefaultAnnouncementSound),
         }, filter);
     }
 
@@ -304,7 +299,7 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
         _announcementRouter.Announce(new AnnouncementRequest
         {
             Message = message,
-            Preset = "MarineCommand",
+            Preset = PresetMarineCommand,
             Route = new AnnouncementRoute
             {
                 Target = AnnouncementTarget.Marines,
@@ -318,11 +313,7 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
                 WrappedMessage = wrappedMessage,
                 Channel = ChatChannel.Radio,
             },
-            Sound = new AnnouncementSoundOptions
-            {
-                Sound = sound ?? DefaultAnnouncementSound,
-                Volume = -2f,
-            },
+            Sound = CreateSoundOptions(sound),
         }, dispatchFilter);
     }
 
@@ -333,7 +324,7 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
         SoundSpecifier? sound = null)
     {
         var color = Color.White;
-        ProtoId<AnnouncementPresetPrototype> preset = "MarineOverwatch";
+        ProtoId<AnnouncementPresetPrototype> preset = PresetMarineOverwatch;
 
         if (TryComp(squad, out SquadTeamComponent? squadComp))
         {
@@ -361,11 +352,7 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
                 WrappedMessage = chatMessage,
                 Channel = ChatChannel.Radio,
             },
-            Sound = new AnnouncementSoundOptions
-            {
-                Sound = sound ?? DefaultSquadSound,
-                Volume = -2f,
-            },
+            Sound = CreateSoundOptions(sound),
         }, filter);
     }
 
@@ -409,11 +396,18 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
                 WrappedMessage = message,
                 Channel = ChatChannel.Radio,
             },
-            Sound = new AnnouncementSoundOptions
-            {
-                Sound = sound,
-                Volume = -2f,
-            },
+            Sound = CreateSoundOptions(sound),
         }, filter);
+    }
+
+    private static AnnouncementSoundOptions? CreateSoundOptions(SoundSpecifier? sound)
+    {
+        if (sound == null)
+            return null;
+
+        return new AnnouncementSoundOptions
+        {
+            Sound = sound,
+        };
     }
 }

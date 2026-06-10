@@ -178,7 +178,7 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
             if (!_ui.IsUiOpen(uid, OverwatchConsoleUI.Key))
                 continue;
 
-            _ui.SetUiState(uid, OverwatchConsoleUI.Key, GetOverwatchBuiState((uid, console)));
+            RefreshConsoleState((uid, console));
         }
     }
 
@@ -187,8 +187,7 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
         if (_net.IsClient)
             return;
 
-        var state = GetOverwatchBuiState(ent);
-        _ui.SetUiState(ent.Owner, OverwatchConsoleUI.Key, state);
+        RefreshConsoleState(ent);
     }
 
     private void OnBUIClosed(Entity<OverwatchConsoleComponent> ent, ref BoundUIClosedEvent args)
@@ -219,9 +218,8 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
             currentSquad = marineSquad;
         }
 
-        var state = GetOverwatchBuiState(ent);
         var options = new List<DialogOption>();
-        foreach (var squad in state.Squads)
+        foreach (var squad in GetOverwatchData(ent.Comp).Squads)
         {
             if (currentSquad == GetEntity(squad.Id))
                 continue;
@@ -241,8 +239,7 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
             return;
 
         var squadId = args.Squad;
-        var state = GetOverwatchBuiState(ent);
-        if (!state.Squads.TryFirstOrNull(s => s.Id == squadId, out var squad))
+        if (!GetOverwatchData(ent.Comp).Squads.TryFirstOrNull(s => s.Id == squadId, out var squad))
         {
             _popup.PopupCursor(Loc.GetString("rmc-overwatch-console-cant-transfer-squad"), actor, PopupType.LargeCaution);
             return;
@@ -401,9 +398,8 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
         if (ent.Comp.Squad is not { } selectedSquad)
             return;
 
-        var state = GetOverwatchBuiState(ent);
         var options = new List<DialogOption>();
-        if (state.Marines.TryGetValue(selectedSquad, out var marines))
+        if (GetOverwatchData(ent.Comp).Marines.TryGetValue(selectedSquad, out var marines))
         {
             foreach (var marine in marines)
             {
@@ -430,7 +426,7 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
 
         var selectedSquadNet = selectedSquad;
         var targetNet = args.Target;
-        var state = GetOverwatchBuiState(ent);
+        var state = GetOverwatchData(ent.Comp);
         var validMarineCamera = state.Marines.TryGetValue(selectedSquadNet, out var selectedMarines) &&
                                 selectedMarines.Any(marine => marine.Id == targetNet && marine.Camera != default);
         var validTripodCamera = state.Cameras.TryGetValue(selectedSquadNet, out var selectedCameras) &&
@@ -499,10 +495,7 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
         else
             ent.Comp.Hidden.Remove(args.Target);
 
-        Dirty(ent);
-
-        var state = GetOverwatchBuiState(ent);
-        _ui.SetUiState(ent.Owner, OverwatchConsoleUI.Key, state);
+        RefreshConsoleState(ent);
     }
 
     private void OnOverwatchPromoteLeaderBui(Entity<OverwatchConsoleComponent> ent, ref OverwatchConsolePromoteLeaderBuiMsg args)
@@ -517,8 +510,7 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
         }
 
         _squad.PromoteSquadLeader((target.Value, member), args.Actor, args.Icon);
-        var state = GetOverwatchBuiState(ent);
-        _ui.SetUiState(ent.Owner, OverwatchConsoleUI.Key, state);
+        RefreshConsoleState(ent);
     }
 
     private void OnOverwatchSupplyDropLongitudeBui(Entity<OverwatchConsoleComponent> ent, ref OverwatchConsoleSupplyDropLongitudeBuiMsg args)
@@ -540,10 +532,7 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
             return;
 
         _supplyDrop.TryLaunchSupplyDropPopup((ent, computer), args.Actor);
-
-        var state = GetOverwatchBuiState(ent);
-        _ui.SetUiState(ent.Owner, OverwatchConsoleUI.Key, state);
-        Dirty(ent);
+        RefreshConsoleState(ent);
     }
 
     private void OnOverwatchSupplyDropSaveBui(Entity<OverwatchConsoleComponent> ent, ref OverwatchConsoleSupplyDropSaveBuiMsg args)
@@ -817,12 +806,11 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
         _eye.SetTarget(watcher, null);
     }
 
-    public OverwatchConsoleBuiState GetOverwatchBuiState(Entity<OverwatchConsoleComponent> console)
-    {
-        return GetOverwatchBuiState(console.Owner, console.Comp);
-    }
-
-    private OverwatchConsoleBuiState GetOverwatchBuiState(EntityUid owner, OverwatchConsoleComponent console)
+    private (
+        List<OverwatchSquad> Squads,
+        Dictionary<NetEntity, List<OverwatchMarine>> Marines,
+        Dictionary<NetEntity, List<OverwatchTripodCamera>> Cameras)
+        GetOverwatchData(OverwatchConsoleComponent console)
     {
         var squads = new List<OverwatchSquad>();
         var marines = new Dictionary<NetEntity, List<OverwatchMarine>>();
@@ -880,11 +868,16 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
                     location));
         }
 
-        var antiAir = console.ShowAntiAirStatus
-            ? _antiAir.GetStatus(owner)
-            : default;
+        return (squads, marines, cameras);
+    }
 
-        return new OverwatchConsoleBuiState(squads, marines, antiAir, cameras);
+    private void RefreshConsoleState(Entity<OverwatchConsoleComponent> console)
+    {
+        (console.Comp.Squads, console.Comp.Marines, console.Comp.Cameras) = GetOverwatchData(console.Comp);
+        console.Comp.AntiAir = console.Comp.ShowAntiAirStatus
+            ? _antiAir.GetStatus(console.Owner)
+            : default;
+        Dirty(console);
     }
 
     public bool IsHidden(Entity<OverwatchConsoleComponent> console, NetEntity marine)
@@ -1026,7 +1019,7 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
             if (!_ui.IsUiOpen(uid, OverwatchConsoleUI.Key))
                 continue;
 
-            _ui.SetUiState(uid, OverwatchConsoleUI.Key, GetOverwatchBuiState((uid, console)));
+            RefreshConsoleState((uid, console));
         }
     }
 
