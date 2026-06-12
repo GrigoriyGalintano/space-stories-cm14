@@ -28,8 +28,9 @@ public sealed class MarineCommunicationsComputerBui(EntityUid owner, Enum uiKey)
 
         _window = this.CreateWindow<MarineCommunicationsComputerWindow>();
 
-        if (EntMan.TryGetComponent(Owner, out MarineCommunicationsComputerComponent? communications) &&
-            communications.CanGiveMedals)
+        EntMan.TryGetComponent(Owner, out MarineCommunicationsComputerComponent? comp);
+
+        if (comp is { CanGiveMedals: true })
         {
             _window.MedalButton.OnPressed += _ => SendPredictedMessage(new MarineControlComputerOpenMedalsPanelMsg());
             _window.MedalButton.Visible = true;
@@ -44,14 +45,10 @@ public sealed class MarineCommunicationsComputerBui(EntityUid owner, Enum uiKey)
         else
             _window.TacticalMapButton.Visible = false;
 
-        if (EntMan.TryGetComponent<MarineCommunicationsComputerComponent>(Owner, out var computer) &&
-            computer.CanCreateEcho)
-        {
+        if (comp is { CanCreateEcho: true })
             _window.EchoButton.OnPressed += _ => SendPredictedMessage(new MarineCommunicationsEchoSquadMsg());
-        }
 
-        if (EntMan.TryGetComponent(Owner, out MarineCommunicationsComputerComponent? communicationsEvac) &&
-            communicationsEvac.CanInitiateEvac)
+        if (comp is { CanInitiateEvac: true })
         {
             _window.EvacuationButton.OnPressed += _ =>
             {

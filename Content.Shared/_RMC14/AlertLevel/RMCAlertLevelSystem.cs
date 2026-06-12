@@ -37,6 +37,8 @@ public sealed class RMCAlertLevelSystem : EntitySystem
     private static readonly EntProtoId<ARESLogTypeComponent> LogCat = "ARESTabAnnouncementLogs";
     public override void Initialize()
     {
+        base.Initialize();
+
         SubscribeLocalEvent<DropshipHijackLandedEvent>(OnDropshipHijackLanded);
 
         _ghostQuery = GetEntityQuery<GhostComponent>();
@@ -123,7 +125,7 @@ public sealed class RMCAlertLevelSystem : EntitySystem
         {
             foreach (var almayer in almayers)
             {
-                _aresCore.CreateARESLog(almayer, LogCat, (string)$"{Name(user.Value)} set the alert level to: {level}");
+                _aresCore.CreateARESLog(almayer, LogCat, $"{Name(user.Value)} set the alert level to: {level}");
             }
         }
 
