@@ -143,7 +143,7 @@ public abstract class SharedMarineAnnounceSystem : EntitySystem
         text = _rmcChat.SanitizeMessageReplaceWords(args.Actor, text);
         // Stories-Chat-Start
 
-        AnnounceSigned(args.Actor, text, name: ent.Comp.AnnounceName);
+        AnnounceSigned(args.Actor, text, name: ent.Comp.AnnounceName, options: new SignedAnnouncementOptions { SendOverlay = ent.Comp.SendAnnouncementOverlay });
 
         ent.Comp.LastAnnouncement = time;
         Dirty(ent);
@@ -307,17 +307,17 @@ public abstract class SharedMarineAnnounceSystem : EntitySystem
         string message,
         string? author = null,
         string? name = null,
-        SoundSpecifier? sound = null,
-        Filter? filter = null)
+        SignedAnnouncementOptions? options = null)
     {
         if (_net.IsClient)
             return;
 
-        author ??= Loc.GetString("rmc-announcement-author"); // Get "Command" fluent string if author==null
+        options ??= new SignedAnnouncementOptions();
+        author ??= Loc.GetString("rmc-announcement-author");
         name ??= _rankSystem.GetSpeakerFullRankName(sender) ?? Name(sender);
         var wrappedMessage = Loc.GetString("rmc-announcement-message-signed", ("author", author), ("message", message), ("name", name));
 
-        DispatchSignedAnnouncement(sender, message, wrappedMessage, author, name, sound, filter);
+        DispatchSignedAnnouncement(sender, message, wrappedMessage, author, name, options);
         _adminLog.Add(LogType.RMCMarineAnnounce, $"{ToPrettyString(sender):source} marine announced message: {message}");
 
         if (_idCard.TryFindIdCard(sender, out var idCard) && TryComp(idCard, out ItemIFFComponent? idCardIFF))
@@ -333,8 +333,7 @@ public abstract class SharedMarineAnnounceSystem : EntitySystem
         string wrappedMessage,
         string author,
         string name,
-        SoundSpecifier? sound,
-        Filter? filter)
+        SignedAnnouncementOptions options)
     {
     }
 

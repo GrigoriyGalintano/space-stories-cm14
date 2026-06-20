@@ -10,6 +10,7 @@ using Content.Shared._RMC14.Dropship;
 using Content.Shared._RMC14.Marines.Announce;
 using Content.Shared._RMC14.Marines.Squads;
 using Content.Shared._RMC14.Rules;
+using Content.Shared._RMC14.Survivor;
 using Content.Shared._Stories.SCCVars;
 using Content.Shared._Stories.TTS;
 using Content.Shared.Chat;
@@ -137,9 +138,15 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
     }
 
     // Stories-TTS-Start
-    public override void AnnounceSigned(EntityUid sender, string message, string? author = null, string? name = null, SoundSpecifier? sound = null, Filter? filter = null)
+    public override void AnnounceSigned(
+        EntityUid sender,
+        string message,
+        string? author = null,
+        string? name = null,
+        SignedAnnouncementOptions? options = null)
     {
-        base.AnnounceSigned(sender, message, author, name, sound, filter);
+        options ??= new SignedAnnouncementOptions();
+        base.AnnounceSigned(sender, message, author, name, options);
 
         var aresVoice = _configManager.GetCVar(SCCVars.TTSAresVoice);
         var authorVoice = _configManager.GetCVar(SCCVars.TTSCommandVoice);
@@ -152,7 +159,11 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
         var cleanHeader = FormattedMessage.RemoveMarkupPermissive(headerMsg).Trim();
         var wordCount = cleanHeader.Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length;
         var delay = TimeSpan.FromSeconds(Math.Max(3.0, wordCount * 0.65));
-        var recipientsFilter = filter ?? GetMarineFilter();
+        var recipientsFilter = options.Filter == null
+            ? GetMarineFilter()
+            : Filter.Empty().AddPlayers(options.Filter.Recipients);
+        if (options.ExcludeSurvivors)
+            recipientsFilter.RemoveWhereAttachedEntity(HasComp<RMCSurvivorComponent>);
 
         if (!string.IsNullOrEmpty(aresVoice))
             _tts.PlayGlobalTTS(cleanHeader, aresVoice, recipientsFilter, TTSAudioEffect.Ares, isAnnounce: true);
@@ -289,13 +300,18 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
         string wrappedMessage,
         string author,
         string name,
-        SoundSpecifier? sound,
-        Filter? filter)
+        SignedAnnouncementOptions options)
     {
-        var dispatchFilter = filter == null
+        var dispatchFilter = options.Filter == null
             ? GetMarineFilter()
-            : Filter.Empty().AddPlayers(filter.Recipients);
+            : Filter.Empty().AddPlayers(options.Filter.Recipients);
 
+        if (options.ExcludeSurvivors)
+            dispatchFilter.RemoveWhereAttachedEntity(HasComp<RMCSurvivorComponent>);
+
+        var channels = AnnouncementChannels.Chat | AnnouncementChannels.Sound;
+        if (options.SendOverlay)
+            channels |= AnnouncementChannels.Overlay;
         _announcementRouter.Announce(new AnnouncementRequest
         {
             Message = message,
@@ -305,7 +321,7 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
                 Target = AnnouncementTarget.Marines,
                 Speaker = sender,
                 Source = sender,
-                Channels = AnnouncementChannels.Chat | AnnouncementChannels.Overlay | AnnouncementChannels.Sound,
+                Channels = channels,
             },
             Chat = new AnnouncementChatOptions
             {
@@ -313,7 +329,7 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
                 WrappedMessage = wrappedMessage,
                 Channel = ChatChannel.Radio,
             },
-            Sound = CreateSoundOptions(sound),
+            Sound = CreateSoundOptions(options.Sound),
         }, dispatchFilter);
     }
 
