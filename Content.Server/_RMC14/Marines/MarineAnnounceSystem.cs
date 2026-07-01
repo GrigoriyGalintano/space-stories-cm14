@@ -7,6 +7,7 @@ using Content.Shared._RMC14.ARES;
 using Content.Shared._RMC14.ARES.Logs;
 using Content.Shared._RMC14.Announce;
 using Content.Shared._RMC14.Dropship;
+using Content.Shared._RMC14.Intel;
 using Content.Shared._RMC14.Marines.Announce;
 using Content.Shared._RMC14.Marines.Squads;
 using Content.Shared._RMC14.Rules;

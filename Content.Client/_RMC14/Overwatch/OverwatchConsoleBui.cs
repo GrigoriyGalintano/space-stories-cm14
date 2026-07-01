@@ -111,10 +111,12 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
         var margin = new Thickness(2);
         foreach (var squad in squads)
         {
-            console.Marines.TryGetValue(squad.Id, out var squadMarines);
+            var marineEntry = console.Marines.FirstOrDefault(entry => entry.Key == squad.Id);
+            var squadMarines = marineEntry.Value;
             var marines = squadMarines?.ToList() ?? new List<OverwatchMarine>();
             var entries = marines.Select(static marine => new OverwatchListEntry(marine)).ToList();
-            if (console.Cameras.TryGetValue(squad.Id, out var cameras))
+            var cameraEntry = console.Cameras.FirstOrDefault(entry => entry.Key == squad.Id);
+            if (cameraEntry.Value is { } cameras)
             {
                 foreach (var camera in cameras)
                     entries.Add(new OverwatchListEntry(camera));
