@@ -885,6 +885,7 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
             );
 
             squad.HasOrbital = console.HasOrbital;
+            squad.OrbitalSafetyEngaged = console.OrbitalSafetyEngaged;
             squad.NextOrbitalAt = console.NextOrbitalLaunch;
         }
     }
