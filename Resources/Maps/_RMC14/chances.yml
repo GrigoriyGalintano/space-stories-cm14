@@ -144,16 +144,23 @@ entities:
       data: {}
     - type: RMCWeatherCycle
       minTimeBetweenEvents: 1800
+      warnTime: 60
+      minTimeBetweenChecks: 0
+      minCheckVariance: 0
+      startChance: 1
       weatherEvents:
-      - duration: 180
-        weatherType: RMCStrataStormLight
-        lightningChance: 0.04
+      - lightningSound: !type:SoundCollectionSpecifier
+          collection: RMCThunder
         lightningEffects:
         - RMCColorSequenceLightningSharpPeak
         - RMCColorSequenceLightningFlicker
-        lightningSound: !type:SoundCollectionSpecifier
-          collection: RMCThunder
-        name: Heavy Rain
+        lightningChance: 0.04
+        fireSmotheringStrength: 2
+        weatherType: RMCStrataStormVeryLight
+        screenOverlay: Low
+        duration: 180
+        name: Light Rain
+        displayName: rmc-weather-name-light-rain
     - type: RMCAmbientLightEffects
       sunset: RMCColorSequenceSunsetCold
     - type: Broadphase
