@@ -1,7 +1,6 @@
 using Content.Server._RMC14.Rules.DistressSignal;
 using Content.Server._Stories.TTS;
 using Content.Server.Administration.Logs;
-using Content.Server._RMC14.Marines.GroundsideOperations;
 using Content.Server.Chat.Managers;
 using Content.Server.Radio.EntitySystems;
 using Content.Shared._RMC14.ARES;
@@ -34,7 +33,6 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
     [Dependency] private readonly ARESCoreSystem _core = default!;
     [Dependency] private readonly CMDistressSignalRuleSystem _distressSignal = default!;
     [Dependency] private readonly SharedDropshipSystem _dropship = default!;
-    [Dependency] private readonly GroundsideOperationsConsoleSystem _groundsideOperations = default!;
     [Dependency] private readonly RadioSystem _radio = default!;
     [Dependency] private readonly SquadSystem _squad = default!;
     [Dependency] private readonly SharedUserInterfaceSystem _ui = default!;
@@ -99,7 +97,6 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
         if (!_dropship.TryDesignatePrimaryLZ(user, lz.Value))
             return;
 
-        _groundsideOperations.RefreshAllLandingZones();
         _core.CreateARESLog(computer, LogCat, (string)$"{Name(args.Actor)} designated Primary LZ as: {Name(lz.Value)}");
     }
 
