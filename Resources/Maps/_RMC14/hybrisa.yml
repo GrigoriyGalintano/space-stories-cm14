@@ -19040,26 +19040,36 @@ entities:
             10991: -202.89621,-44.960754
     - type: RadiationGridResistance
     - type: RMCWeatherCycle
-      minTimeBetweenEvents: 900
+      minTimeBetweenEvents: 720
+      warnTime: 60
+      minTimeBetweenChecks: 0
+      minCheckVariance: 0
+      startChance: 1
       weatherEvents:
-      - duration: 900
-        weatherType: RMCHybrisaRainLight
+      - lightningSound: !type:SoundCollectionSpecifier
+          collection: RMCThunder
+        lightningEffects:
+        - RMCColorSequenceLightningSharpPeak
+        - RMCColorSequenceLightningFlicker
         lightningChance: 0.04
-        lightningEffects:
-        - RMCColorSequenceLightningSharpPeak
-        - RMCColorSequenceLightningFlicker
-        lightningSound: !type:SoundCollectionSpecifier
-          collection: RMCThunder
+        fireSmotheringStrength: 1
+        weatherType: RMCHybrisaRainLight
+        screenOverlay: Low
+        duration: 900
         name: Hybrisa Light Rain
-      - duration: 900
-        weatherType: RMCHybrisaRainVeryLight
-        lightningChance: 0.02
+        displayName: rmc-weather-name-light-rain
+      - lightningSound: !type:SoundCollectionSpecifier
+          collection: RMCThunder
         lightningEffects:
         - RMCColorSequenceLightningSharpPeak
         - RMCColorSequenceLightningFlicker
-        lightningSound: !type:SoundCollectionSpecifier
-          collection: RMCThunder
+        lightningChance: 0.02
+        fireSmotheringStrength: 0
+        weatherType: RMCHybrisaRainVeryLight
+        screenOverlay: Low
+        duration: 900
         name: Hybrisa Very Light Rain
+        displayName: rmc-weather-name-very-light-rain
     - type: AreaGrid
       labels: {}
       areaEntities: {}

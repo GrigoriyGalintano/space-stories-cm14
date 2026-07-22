@@ -150,25 +150,42 @@ entities:
       data: {}
     - type: RMCWeatherCycle
       minTimeBetweenEvents: 900
+      minTimeBetweenChecks: 900
+      minCheckVariance: 600
+      startChance: 1
       weatherEvents:
-      - duration: 240
-        weatherType: RMCStrataStormVeryLight
+      - lightningSound: !type:SoundCollectionSpecifier
+          collection: RMCThunder
+        lightningEffects:
+        - RMCColorSequenceLightningSharpPeak
+        - RMCColorSequenceLightningFlicker
         lightningChance: 0.01
-        lightningEffects:
-        - RMCColorSequenceLightningSharpPeak
-        - RMCColorSequenceLightningFlicker
-        lightningSound: !type:SoundCollectionSpecifier
-          collection: RMCThunder
+        fireSmotheringStrength: 1
+        warningMode: SirenOnly
+        warningSirenKind: Storm
+        warningSound: !type:SoundPathSpecifier
+          path: /Audio/_RMC14/Effects/weather_warning_varadero.wav
+        weatherType: RMCStrataStormTropical
+        screenOverlay: Low
+        duration: 240
         name: Tropical Storm
-      - duration: 360
-        weatherType: RMCStrataStormLight
-        lightningChance: 0.06
+        displayName: rmc-weather-name-tropical-storm
+      - lightningSound: !type:SoundCollectionSpecifier
+          collection: RMCThunder
         lightningEffects:
         - RMCColorSequenceLightningSharpPeak
         - RMCColorSequenceLightningFlicker
-        lightningSound: !type:SoundCollectionSpecifier
-          collection: RMCThunder
+        lightningChance: 0.06
+        fireSmotheringStrength: 4
+        warningMode: SirenOnly
+        warningSirenKind: Storm
+        warningSound: !type:SoundPathSpecifier
+          path: /Audio/_RMC14/Effects/weather_warning_varadero.wav
+        weatherType: RMCStrataStormVaradero
+        screenOverlay: High
+        duration: 360
         name: Monsoon
+        displayName: rmc-weather-name-monsoon-warning
     - type: RMCAmbientLightEffects
     - type: MapGrid
       chunks:
