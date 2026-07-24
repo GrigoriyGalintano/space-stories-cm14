@@ -37,6 +37,21 @@ rmc-overwatch-console-hide-marine = Скрыть морпехов
 rmc-overwatch-console-show-marine = Отобразить морпехов
 rmc-overwatch-console-promote-squad-leader = Назначить командиром отряда
 rmc-overwatch-console-no-camera = (БЕЗ КАМЕРЫ)
+rmc-overwatch-tripod-camera-role = Камера на треноге
+rmc-overwatch-tripod-camera-active = Активна
+rmc-overwatch-tripod-camera-rename = Переименовать
+rmc-overwatch-tripod-camera-deploy = Установить
+rmc-overwatch-tripod-camera-pick-up = Сложить
+rmc-overwatch-tripod-camera-rename-prompt = Введите новое название полевой камеры.
+rmc-overwatch-tripod-camera-renamed = Камера переименована в «{ $name }».
+rmc-overwatch-tripod-camera-deployed = Вы устанавливаете треногу с полевой камерой.
+rmc-overwatch-tripod-camera-picked-up = Вы складываете треногу с полевой камерой.
+rmc-overwatch-tripod-camera-invalid-location = Для установки треноги с полевой камерой нужна свободная клетка пола.
+rmc-overwatch-tripod-camera-active-hand = Треногу с полевой камерой необходимо держать в активной руке.
+rmc-overwatch-tripod-camera-collapsed = Тренога с полевой камерой складывается.
+rmc-overwatch-tripod-camera-destroyed = Тренога с полевой камерой уничтожена.
+rmc-overwatch-tripod-camera-examine-label = На табличке написано: [color=cyan]{ $label }[/color].
+rmc-overwatch-tripod-camera-examine-squad = Сейчас камера закреплена за отрядом: [color=cyan]{ $squad }[/color].
 rmc-overwatch-console-state-unconscious = Без сознания
 rmc-overwatch-console-state-dead = Мёртв
 rmc-overwatch-console-state-conscious = В сознании
@@ -104,3 +119,6 @@ rmc-overwatch-console-objective-updated = [bold][color=#7FFFD4]'{ $squadName }' 
 rmc-overwatch-console-objective-cancelled = [bold][color=#7FFFD4]'{ $squadName }' { $objectiveType } '{ $objective }' отменена.[/color][/bold]
 rmc-overwatch-console-objectives = Задачи вашего отряда:
     { $objectives }
+
+ent-RMCOverwatchCameraTripod = Полевая камера на треноге
+    .desc = Развёртываемая полевая камера Motoca-430-T на треноге, подключающаяся к сети наблюдения. Её можно переименовать и установить.
