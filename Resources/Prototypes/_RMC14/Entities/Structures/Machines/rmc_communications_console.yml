@@ -75,7 +75,6 @@
   - type: MarineControlComputer
   - type: OverwatchConsole
     canMessageSquad: true
-    showAntiAirStatus: true
   - type: SupplyDropComputer
   - type: TacticalMapComputer
   - type: GuideHelp

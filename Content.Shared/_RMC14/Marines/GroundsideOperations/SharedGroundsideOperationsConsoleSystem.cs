@@ -1,3 +1,4 @@
+using Content.Shared._RMC14.AntiAir;
 using Content.Shared._RMC14.Dropship;
 using Content.Shared._RMC14.Marines.Announce;
 using Content.Shared._RMC14.OrbitalCannon;
@@ -14,6 +15,7 @@ namespace Content.Shared._RMC14.Marines.GroundsideOperations;
 public abstract class SharedGroundsideOperationsConsoleSystem : EntitySystem
 {
     [Dependency] private readonly AccessReaderSystem _access = default!;
+    [Dependency] private readonly RMCShipAntiAirSystem _antiAir = default!;
     [Dependency] private readonly SharedDropshipSystem _dropship = default!;
     [Dependency] private readonly SharedInteractionSystem _interaction = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
@@ -29,6 +31,7 @@ public abstract class SharedGroundsideOperationsConsoleSystem : EntitySystem
         SubscribeLocalEvent<GroundsideOperationsConsoleComponent, BoundUIOpenedEvent>(OnBoundUiOpened);
         SubscribeLocalEvent<GroundsideOperationsConsoleComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<PrimaryLandingZoneChangedEvent>(OnPrimaryLandingZoneChanged);
+        SubscribeLocalEvent<RMCShipAntiAirChangedEvent>(OnAntiAirChanged);
         SubscribeLocalEvent<OrbitalCannonChangedEvent>(OnOrbitalCannonChanged);
         SubscribeLocalEvent<OrbitalCannonLaunchEvent>(OnOrbitalCannonLaunch);
         SubscribeLocalEvent<OrbitalCannonSafetyChangedEvent>(OnOrbitalCannonSafetyChanged);
@@ -78,6 +81,7 @@ public abstract class SharedGroundsideOperationsConsoleSystem : EntitySystem
     {
         RefreshLandingZones(ent);
         RefreshOrdnance(ent);
+        RefreshAntiAir(ent);
     }
 
     protected virtual void OnBoundUiOpened(Entity<GroundsideOperationsConsoleComponent> ent, ref BoundUIOpenedEvent args)
@@ -87,6 +91,7 @@ public abstract class SharedGroundsideOperationsConsoleSystem : EntitySystem
 
         RefreshLandingZones(ent);
         RefreshOrdnance(ent);
+        RefreshAntiAir(ent);
     }
 
     private void OnPrimaryLandingZoneChanged(ref PrimaryLandingZoneChangedEvent args)
@@ -170,6 +175,28 @@ public abstract class SharedGroundsideOperationsConsoleSystem : EntitySystem
             RefreshOrdnance((uid, groundside));
     }
 
+    private void RefreshAllAntiAir()
+    {
+        if (!_net.IsServer)
+            return;
+
+        var query = EntityQueryEnumerator<GroundsideOperationsConsoleComponent>();
+        while (query.MoveNext(out var uid, out var groundside))
+            RefreshAntiAir((uid, groundside));
+    }
+
+    private void RefreshAntiAir(Entity<GroundsideOperationsConsoleComponent> ent)
+    {
+        if (!_net.IsServer)
+            return;
+
+        var status = _antiAir.GetStatus(ent.Owner);
+        ent.Comp.HasAntiAirConsole = status.HasConsole;
+        ent.Comp.AntiAirDisabled = status.Disabled;
+        ent.Comp.AntiAirProtectedZone = status.ProtectedZone;
+        Dirty(ent);
+    }
+
     private void RefreshOrdnance(Entity<GroundsideOperationsConsoleComponent> ent)
     {
         if (!_net.IsServer)
@@ -201,6 +228,11 @@ public abstract class SharedGroundsideOperationsConsoleSystem : EntitySystem
     private void OnOrbitalCannonChanged(ref OrbitalCannonChangedEvent ev)
     {
         RefreshAllOrdnance();
+    }
+
+    private void OnAntiAirChanged(ref RMCShipAntiAirChangedEvent ev)
+    {
+        RefreshAllAntiAir();
     }
 
     private void OnOrbitalCannonLaunch(ref OrbitalCannonLaunchEvent ev)

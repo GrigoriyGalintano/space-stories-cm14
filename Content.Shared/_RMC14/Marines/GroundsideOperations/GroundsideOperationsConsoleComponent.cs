@@ -51,4 +51,13 @@ public sealed partial class GroundsideOperationsConsoleComponent : Component
 
     [DataField, AutoNetworkedField]
     public bool OrbitalSafetyEngaged;
+
+    [DataField, AutoNetworkedField]
+    public bool HasAntiAirConsole;
+
+    [DataField, AutoNetworkedField]
+    public bool AntiAirDisabled;
+
+    [DataField, AutoNetworkedField]
+    public string? AntiAirProtectedZone;
 }

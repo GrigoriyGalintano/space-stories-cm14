@@ -111,6 +111,39 @@
                                     </crt:RMCCrtPanel>
                                 </BoxContainer>
                             </crt:RMCCrtPanel>
+                            <crt:RMCCrtPanel Variant="Inset">
+                                <BoxContainer Orientation="Vertical" Margin="12" SeparationOverride="8">
+                                    <crt:RMCCrtLabel Text="{Loc rmc-goc-anti-air-subsystem}"
+                                                     Heading="True" HorizontalAlignment="Center" />
+                                    <crt:RMCCrtSeparator MinHeight="2" />
+                                    <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                                        <crt:RMCCrtPanel Variant="Inset" HorizontalExpand="True">
+                                            <BoxContainer Orientation="Vertical" Margin="8 6" SeparationOverride="4">
+                                                <crt:RMCCrtLabel Text="{Loc rmc-goc-anti-air-system-status}"
+                                                                 Tone="Muted" HorizontalAlignment="Center" />
+                                                <RichTextLabel Name="AntiAirSystemStatus" Access="Public"
+                                                               HorizontalAlignment="Center" />
+                                            </BoxContainer>
+                                        </crt:RMCCrtPanel>
+                                        <crt:RMCCrtPanel Variant="Inset" HorizontalExpand="True">
+                                            <BoxContainer Orientation="Vertical" Margin="8 6" SeparationOverride="4">
+                                                <crt:RMCCrtLabel Text="{Loc rmc-goc-anti-air-targeting}"
+                                                                 Tone="Muted" HorizontalAlignment="Center" />
+                                                <RichTextLabel Name="AntiAirTargetingStatus" Access="Public"
+                                                               HorizontalAlignment="Center" />
+                                            </BoxContainer>
+                                        </crt:RMCCrtPanel>
+                                        <crt:RMCCrtPanel Variant="Inset" HorizontalExpand="True">
+                                            <BoxContainer Orientation="Vertical" Margin="8 6" SeparationOverride="4">
+                                                <crt:RMCCrtLabel Text="{Loc rmc-goc-anti-air-cannon-status}"
+                                                                 Tone="Muted" HorizontalAlignment="Center" />
+                                                <RichTextLabel Name="AntiAirCannonStatus" Access="Public"
+                                                               HorizontalAlignment="Center" />
+                                            </BoxContainer>
+                                        </crt:RMCCrtPanel>
+                                    </BoxContainer>
+                                </BoxContainer>
+                            </crt:RMCCrtPanel>
                             <Control VerticalExpand="True" />
                         </BoxContainer>
                     </BoxContainer>

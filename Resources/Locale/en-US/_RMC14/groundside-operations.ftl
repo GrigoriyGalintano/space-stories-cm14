@@ -57,6 +57,18 @@ rmc-goc-ob-safety-engaged = [color=green][bold]\[ ENGAGED \][/bold][/color]
 rmc-goc-ob-safety-disengaged = [color=red][bold]\[ DISENGAGED \][/bold][/color]
 rmc-goc-keycard-required = Keycard Override Required
 
+rmc-goc-anti-air-subsystem = IX-50 MGAD CANNON SUBSYSTEM
+rmc-goc-anti-air-system-status = SYSTEM STATUS
+rmc-goc-anti-air-operational = [color=green][bold]\[ FULLY OPERATIONAL \][/bold][/color]
+rmc-goc-anti-air-disabled = [color=red][bold]\[ DISABLED \][/bold][/color]
+rmc-goc-anti-air-unavailable = [color=red][bold]\[ UNAVAILABLE \][/bold][/color]
+rmc-goc-anti-air-targeting = CURRENTLY TARGETING
+rmc-goc-anti-air-target-selected = [color=green][bold]\[ { $zone } \][/bold][/color]
+rmc-goc-anti-air-target-none = [color=red][bold]\[ ZONE NOT SELECTED \][/bold][/color]
+rmc-goc-anti-air-cannon-status = CANNON STATUS
+rmc-goc-anti-air-engaged = [color=green][bold]\[ ENGAGED \][/bold][/color]
+rmc-goc-anti-air-disengaged = [color=red][bold]\[ DISENGAGED \][/bold][/color]
+
 rmc-goc-button-cooldown = { $action } ({ $seconds }s)
 rmc-goc-alert-unknown = CURRENT ALERT LEVEL: UNKNOWN
 rmc-goc-alert-status-green = CURRENT ALERT LEVEL: GREEN

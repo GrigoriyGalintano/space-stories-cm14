@@ -143,6 +143,26 @@ public sealed class GroundsideOperationsConsoleBui(EntityUid owner, Enum uiKey) 
         _window.OrbitalSafetyStatus.SetMarkupPermissive(Loc.GetString(groundside.OrbitalSafetyEngaged
             ? "rmc-goc-ob-safety-engaged"
             : "rmc-goc-ob-safety-disengaged"));
+
+        _window.AntiAirSystemStatus.SetMarkupPermissive(Loc.GetString(
+            !groundside.HasAntiAirConsole
+                ? "rmc-goc-anti-air-unavailable"
+                : groundside.AntiAirDisabled
+                    ? "rmc-goc-anti-air-disabled"
+                    : "rmc-goc-anti-air-operational"));
+
+        var hasAntiAirTarget = groundside.HasAntiAirConsole &&
+                               !string.IsNullOrWhiteSpace(groundside.AntiAirProtectedZone);
+        _window.AntiAirTargetingStatus.SetMarkupPermissive(hasAntiAirTarget
+            ? Loc.GetString(
+                "rmc-goc-anti-air-target-selected",
+                ("zone", FormattedMessage.EscapeText(groundside.AntiAirProtectedZone!)))
+            : Loc.GetString("rmc-goc-anti-air-target-none"));
+
+        var antiAirEngaged = hasAntiAirTarget && !groundside.AntiAirDisabled;
+        _window.AntiAirCannonStatus.SetMarkupPermissive(Loc.GetString(antiAirEngaged
+            ? "rmc-goc-anti-air-engaged"
+            : "rmc-goc-anti-air-disengaged"));
     }
 
     private void RefreshTimeSensitive()
