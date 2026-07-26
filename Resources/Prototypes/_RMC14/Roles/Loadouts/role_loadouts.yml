@@ -146,6 +146,8 @@
   id: JobCMCommandingOfficer
   points: 7
   groups:
+  - CommandingOfficerCareerRMC
+  - CommandingOfficerAffiliationRMC
   - MarineLeatherBackpack
   - CommandingOfficerIDRMC
   - CommandingOfficerWeaponRMC
