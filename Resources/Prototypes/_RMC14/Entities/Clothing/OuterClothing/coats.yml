@@ -535,6 +535,8 @@
 - type: entity
   parent: CMCoatCO
   id: RMCCoatCOPatchless
+  name: commanding officer's jacket
+  description: A patchless version of the officer jacket; its presence is still domineering.
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite

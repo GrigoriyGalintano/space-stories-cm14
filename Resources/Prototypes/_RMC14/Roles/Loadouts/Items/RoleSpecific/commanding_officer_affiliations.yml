@@ -32,21 +32,29 @@
 - type: entity
   parent: CMPaper
   id: RMCCOAffiliationUnalignedPreview
+  name: Unaligned
+  description: A balanced command philosophy without a fixed political bloc. Briefings emphasize standard mission priorities.
   categories: [ HideSpawnMenu ]
 
 - type: entity
   parent: CMPaper
   id: RMCCOAffiliationHawksPreview
+  name: Hawks
+  description: An aggressive command philosophy focused on hostile containment, decisive action, and force protection.
   categories: [ HideSpawnMenu ]
 
 - type: entity
   parent: CMPaper
   id: RMCCOAffiliationDovesPreview
+  name: Doves
+  description: A humanitarian command philosophy focused on rescue, restraint, and minimizing collateral damage.
   categories: [ HideSpawnMenu ]
 
 - type: entity
   parent: CMPaper
   id: RMCCOAffiliationMagpiesPreview
+  name: Magpies
+  description: A technical command philosophy focused on recovering research, data, samples, and strategic equipment.
   categories: [ HideSpawnMenu ]
 
 # Affiliation loadouts
