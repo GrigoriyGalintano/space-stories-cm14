@@ -33,6 +33,7 @@
     - type: NpcFactionMember
       factions:
       - Provost
+    - type: MutinyForcedLoyalist
     - type: Skills
       skills:
         RMCSkillCqc: 3
