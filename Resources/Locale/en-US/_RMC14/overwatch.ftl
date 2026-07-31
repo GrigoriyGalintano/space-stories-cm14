@@ -27,7 +27,7 @@ rmc-overwatch-console-status = STATUS
 rmc-overwatch-console-launch-supply-drop = Launch Supply Drop
 rmc-overwatch-console-confirm-supply-drop = Confirm Supply Drop?
 rmc-overwatch-console-save = Save
-rmc-overwatch-console-max-coordinates = Max 3 stored coordinates. Will overwrite oldest first.
+rmc-overwatch-console-max-coordinates = Max 5 stored coordinates. Will overwrite oldest first.
 rmc-overwatch-console-fire = Fire
 rmc-overwatch-console-confirm-fire = Confirm Fire Mission?
 rmc-overwatch-console-disabled-select-squad = OVERWATCH DISABLED - SELECT SQUAD
@@ -71,7 +71,10 @@ rmc-overwatch-console-hide-dead = Hide dead
 rmc-overwatch-console-longitude-short = LONG.
 rmc-overwatch-console-latitude-short = LAT.
 rmc-overwatch-console-comment = COMMENT
-rmc-overwatch-console-save-comment = Save Comment
+rmc-overwatch-console-comment-placeholder = Optional comment
+rmc-overwatch-console-comment-autosave = Saves when you press Enter or leave the field.
+rmc-overwatch-console-load = Load
+rmc-overwatch-console-load-coordinates = Load these coordinates
 rmc-overwatch-console-no-crate-loaded = [color=red][bold][ NO CRATE LOADED ][/bold][/color]
 rmc-overwatch-console-crate-loaded = [color=green][bold][ CRATE LOADED ][/bold][/color]
 rmc-overwatch-console-ready = [color=green][bold][ READY ][/bold][/color]
@@ -119,6 +122,5 @@ rmc-overwatch-console-objective-updated = [bold][color=#7FFFD4]'{ $squadName }' 
 rmc-overwatch-console-objective-cancelled = [bold][color=#7FFFD4]'{ $squadName }' { $objectiveType } '{ $objective }' cancelled.[/color][/bold]
 rmc-overwatch-console-objectives = Your squad objectives:
     { $objectives }
-
 ent-RMCOverwatchCameraTripod = Field Camera Tripod
     .desc = A Motoca-430-T deployable tripod camera that connects to the Overwatch network. It can be renamed and deployed.
