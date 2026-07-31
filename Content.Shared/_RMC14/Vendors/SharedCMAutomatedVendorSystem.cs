@@ -741,6 +741,7 @@ public abstract class SharedCMAutomatedVendorSystem : EntitySystem
             Dirty(actor, overrideComp);
 
             _squads.UpdateSquadTitle(actor);
+            _squads.NotifyMemberUpdated(actor);
         }
 
         if (entry.GiveMapBlip != null)
