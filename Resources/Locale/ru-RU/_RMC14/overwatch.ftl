@@ -27,7 +27,7 @@ rmc-overwatch-console-status = Статус платформы
 rmc-overwatch-console-launch-supply-drop = Отправить ящик со снабжением
 rmc-overwatch-console-confirm-supply-drop = Вы уверены?
 rmc-overwatch-console-save = Сохранить
-rmc-overwatch-console-max-coordinates = Сохраняется максимум 3 координаты. Старейшая будет перезаписана первой.
+rmc-overwatch-console-max-coordinates = Сохраняется максимум 5 координат. Старейшая будет перезаписана первой.
 rmc-overwatch-console-fire = Огонь
 rmc-overwatch-console-confirm-fire = Подтвердить отправку ОБ?
 rmc-overwatch-console-disabled-select-squad = НАБЛЮДЕНИЕ ОТКЛЮЧЕНО — ВЫБЕРИТЕ ОТРЯД
@@ -56,7 +56,10 @@ rmc-overwatch-console-hide-dead = Скрыть мёртвых
 rmc-overwatch-console-longitude-short = ДОЛГ.
 rmc-overwatch-console-latitude-short = ШИР.
 rmc-overwatch-console-comment = Комментарий
-rmc-overwatch-console-save-comment = Сохранить комментарий
+rmc-overwatch-console-comment-placeholder = Необязательный комментарий
+rmc-overwatch-console-comment-autosave = Сохраняется при нажатии Enter или выходе из поля.
+rmc-overwatch-console-load = Загрузить
+rmc-overwatch-console-load-coordinates = Загрузить эти координаты
 rmc-overwatch-console-no-crate-loaded = [color=red][bold] \[ ЯЩИК НЕ ЗАГРУЖЕН \][/bold][/color]
 rmc-overwatch-console-crate-loaded = [color=green][bold] \[ ЯЩИК ЗАГРУЖЕН \][/bold][/color]
 rmc-overwatch-console-ready = [color=green][bold] \[ ГОТОВО \][/bold][/color]
