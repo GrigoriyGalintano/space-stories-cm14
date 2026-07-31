@@ -22,6 +22,9 @@
   special:
   - !type:AddComponentSpecial
     components:
+    - type: NpcFactionMember
+      factions:
+      - Provost
     - type: MutinyForcedLoyalist
     - type: Skills
       skills:
