@@ -29,7 +29,7 @@ rmc-overwatch-console-status = STATUS
 rmc-overwatch-console-launch-supply-drop = Launch Supply Drop
 rmc-overwatch-console-confirm-supply-drop = Confirm Supply Drop?
 rmc-overwatch-console-save = Save
-rmc-overwatch-console-max-coordinates = Max 3 stored coordinates. Will overwrite oldest first.
+rmc-overwatch-console-max-coordinates = Max 5 stored coordinates. Will overwrite oldest first.
 rmc-overwatch-console-fire = Fire
 rmc-overwatch-console-confirm-fire = Confirm Fire Mission?
 rmc-overwatch-console-disabled-select-squad = OVERWATCH DISABLED - SELECT SQUAD
@@ -39,6 +39,21 @@ rmc-overwatch-console-hide-marine = Hide marine
 rmc-overwatch-console-show-marine = Show marine
 rmc-overwatch-console-promote-squad-leader = Promote marine to Squad Leader
 rmc-overwatch-console-no-camera = (NO CAMERA)
+rmc-overwatch-tripod-camera-role = Tripod Camera
+rmc-overwatch-tripod-camera-active = Active
+rmc-overwatch-tripod-camera-rename = Rename
+rmc-overwatch-tripod-camera-deploy = Deploy
+rmc-overwatch-tripod-camera-pick-up = Pick up
+rmc-overwatch-tripod-camera-rename-prompt = Enter a new name for the field camera.
+rmc-overwatch-tripod-camera-renamed = Camera renamed to { $name }.
+rmc-overwatch-tripod-camera-deployed = You deploy the field camera tripod.
+rmc-overwatch-tripod-camera-picked-up = You pick up the field camera tripod.
+rmc-overwatch-tripod-camera-invalid-location = You need an open floor tile to deploy the field camera tripod.
+rmc-overwatch-tripod-camera-active-hand = You must hold the field camera tripod in your active hand.
+rmc-overwatch-tripod-camera-collapsed = The field camera tripod collapses.
+rmc-overwatch-tripod-camera-destroyed = The field camera tripod is destroyed.
+rmc-overwatch-tripod-camera-examine-label = The label reads: [color=cyan]{ $label }[/color].
+rmc-overwatch-tripod-camera-examine-squad = It is currently assigned to squad: [color=cyan]{ $squad }[/color].
 rmc-overwatch-console-state-unconscious = Unconscious
 rmc-overwatch-console-state-dead = Dead
 rmc-overwatch-console-state-conscious = Conscious
@@ -58,7 +73,10 @@ rmc-overwatch-console-hide-dead = Hide dead
 rmc-overwatch-console-longitude-short = LONG.
 rmc-overwatch-console-latitude-short = LAT.
 rmc-overwatch-console-comment = COMMENT
-rmc-overwatch-console-save-comment = Save Comment
+rmc-overwatch-console-comment-placeholder = Optional comment
+rmc-overwatch-console-comment-autosave = Saves when you press Enter or leave the field.
+rmc-overwatch-console-load = Load
+rmc-overwatch-console-load-coordinates = Load these coordinates
 rmc-overwatch-console-no-crate-loaded = [color=red][bold][ NO CRATE LOADED ][/bold][/color]
 rmc-overwatch-console-crate-loaded = [color=green][bold][ CRATE LOADED ][/bold][/color]
 rmc-overwatch-console-ready = [color=green][bold][ READY ][/bold][/color]
@@ -119,3 +137,6 @@ rmc-overwatch-role-hospital-corpsmen = Hospital Corpsmen
 rmc-overwatch-role-fireteam-leaders = Fire Team Leaders
 rmc-overwatch-role-combat-technicians = Combat Technicians
 rmc-overwatch-console-scoped = You're too busy peering through optics.
+
+ent-RMCOverwatchCameraTripod = Field Camera Tripod
+    .desc = A Motoca-430-T deployable tripod camera that connects to the Overwatch network. It can be renamed and deployed.

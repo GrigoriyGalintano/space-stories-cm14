@@ -158,7 +158,7 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
         var recipientsFilter = filter ?? GetMarineFilter();
 
         if (!string.IsNullOrEmpty(aresVoice))
-            _tts.PlayGlobalTTS(cleanHeader, aresVoice, recipientsFilter, isAnnounce: true, isAres: true);
+            _tts.PlayGlobalTTS(cleanHeader, aresVoice, recipientsFilter, TTSAudioEffect.Ares, isAnnounce: true);
 
         if (!string.IsNullOrEmpty(authorVoice))
         {
@@ -193,7 +193,7 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
         var recipientsFilter = GetMarineFilter();
 
         if (!string.IsNullOrEmpty(aresVoice))
-            _tts.PlayGlobalTTS(cleanHeader, aresVoice, recipientsFilter, isAnnounce: true, isAres: true);
+            _tts.PlayGlobalTTS(cleanHeader, aresVoice, recipientsFilter, TTSAudioEffect.Ares, isAnnounce: true);
 
         if (!string.IsNullOrEmpty(authorVoice))
         {
@@ -256,7 +256,7 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
         var ttsMessage = $"{cleanHeader} {message}";
 
         if (playTTS && !string.IsNullOrEmpty(voice))
-            _tts.PlayGlobalTTS(ttsMessage, voice, GetMarineFilter(), isAnnounce: true, isAres: true);
+            _tts.PlayGlobalTTS(ttsMessage, voice, GetMarineFilter(), TTSAudioEffect.Ares, isAnnounce: true);
     }
 
     public override void AnnounceSquad(string message, EntProtoId<SquadTeamComponent> squad, SoundSpecifier? sound = null)

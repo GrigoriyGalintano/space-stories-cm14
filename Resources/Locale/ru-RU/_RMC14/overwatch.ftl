@@ -29,7 +29,7 @@ rmc-overwatch-console-status = Статус платформы
 rmc-overwatch-console-launch-supply-drop = Отправить ящик со снабжением
 rmc-overwatch-console-confirm-supply-drop = Вы уверены?
 rmc-overwatch-console-save = Сохранить
-rmc-overwatch-console-max-coordinates = Сохраняется максимум 3 координаты. Старейшая будет перезаписана первой.
+rmc-overwatch-console-max-coordinates = Сохраняется максимум 5 координат. Старейшая будет перезаписана первой.
 rmc-overwatch-console-fire = Огонь
 rmc-overwatch-console-confirm-fire = Подтвердить отправку ОБ?
 rmc-overwatch-console-disabled-select-squad = НАБЛЮДЕНИЕ ОТКЛЮЧЕНО — ВЫБЕРИТЕ ОТРЯД
@@ -39,6 +39,21 @@ rmc-overwatch-console-hide-marine = Скрыть морпехов
 rmc-overwatch-console-show-marine = Отобразить морпехов
 rmc-overwatch-console-promote-squad-leader = Назначить командиром отряда
 rmc-overwatch-console-no-camera = (БЕЗ КАМЕРЫ)
+rmc-overwatch-tripod-camera-role = Камера на треноге
+rmc-overwatch-tripod-camera-active = Активна
+rmc-overwatch-tripod-camera-rename = Переименовать
+rmc-overwatch-tripod-camera-deploy = Установить
+rmc-overwatch-tripod-camera-pick-up = Сложить
+rmc-overwatch-tripod-camera-rename-prompt = Введите новое название полевой камеры.
+rmc-overwatch-tripod-camera-renamed = Камера переименована в «{ $name }».
+rmc-overwatch-tripod-camera-deployed = Вы устанавливаете треногу с полевой камерой.
+rmc-overwatch-tripod-camera-picked-up = Вы складываете треногу с полевой камерой.
+rmc-overwatch-tripod-camera-invalid-location = Для установки треноги с полевой камерой нужна свободная клетка пола.
+rmc-overwatch-tripod-camera-active-hand = Треногу с полевой камерой необходимо держать в активной руке.
+rmc-overwatch-tripod-camera-collapsed = Тренога с полевой камерой складывается.
+rmc-overwatch-tripod-camera-destroyed = Тренога с полевой камерой уничтожена.
+rmc-overwatch-tripod-camera-examine-label = На табличке написано: [color=cyan]{ $label }[/color].
+rmc-overwatch-tripod-camera-examine-squad = Сейчас камера закреплена за отрядом: [color=cyan]{ $squad }[/color].
 rmc-overwatch-console-state-unconscious = Без сознания
 rmc-overwatch-console-state-dead = Мёртв
 rmc-overwatch-console-state-conscious = В сознании
@@ -58,7 +73,10 @@ rmc-overwatch-console-hide-dead = Скрыть мёртвых
 rmc-overwatch-console-longitude-short = ДОЛГ.
 rmc-overwatch-console-latitude-short = ШИР.
 rmc-overwatch-console-comment = Комментарий
-rmc-overwatch-console-save-comment = Сохранить комментарий
+rmc-overwatch-console-comment-placeholder = Необязательный комментарий
+rmc-overwatch-console-comment-autosave = Сохраняется при нажатии Enter или выходе из поля.
+rmc-overwatch-console-load = Загрузить
+rmc-overwatch-console-load-coordinates = Загрузить эти координаты
 rmc-overwatch-console-no-crate-loaded = [color=red][bold] \[ ЯЩИК НЕ ЗАГРУЖЕН \][/bold][/color]
 rmc-overwatch-console-crate-loaded = [color=green][bold] \[ ЯЩИК ЗАГРУЖЕН \][/bold][/color]
 rmc-overwatch-console-ready = [color=green][bold] \[ ГОТОВО \][/bold][/color]
@@ -119,3 +137,6 @@ rmc-overwatch-role-hospital-corpsmen = Санитары госпиталя
 rmc-overwatch-role-fireteam-leaders = Командиры огневых групп
 rmc-overwatch-role-combat-technicians = Боевые техники
 rmc-overwatch-console-scoped = Вы слишком заняты наблюдением через оптику.
+
+ent-RMCOverwatchCameraTripod = Полевая камера на треноге
+    .desc = Развёртываемая полевая камера Motoca-430-T на треноге, подключающаяся к сети наблюдения. Её можно переименовать и установить.
