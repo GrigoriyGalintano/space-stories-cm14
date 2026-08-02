@@ -52,6 +52,13 @@ rmc-overwatch-tripod-camera-collapsed = Тренога с полевой кам�
 rmc-overwatch-tripod-camera-destroyed = Тренога с полевой камерой уничтожена.
 rmc-overwatch-tripod-camera-examine-label = На табличке написано: [color=cyan]{ $label }[/color].
 rmc-overwatch-tripod-camera-examine-squad = Сейчас камера закреплена за отрядом: [color=cyan]{ $squad }[/color].
+rmc-overwatch-tripod-camera-change-squad = Сменить отряд
+rmc-overwatch-tripod-camera-squad-selection-title = Назначение камеры отряду
+rmc-overwatch-tripod-camera-squad-selection-prompt = Выберите отряд, за которым будет закреплена эта камера.
+rmc-overwatch-tripod-camera-squad-changed = Камера закреплена за отрядом { $squad }.
+rmc-overwatch-tripod-camera-squad-change-iff-denied = Ваша система IFF не позволяет переназначить эту камеру.
+rmc-overwatch-tripod-camera-squad-change-no-options = Других активных отрядов группы { $group } нет.
+rmc-overwatch-tripod-camera-default-squad-unavailable = Для полевой камеры на треноге нет доступного отряда по умолчанию.
 rmc-overwatch-console-state-unconscious = Без сознания
 rmc-overwatch-console-state-dead = Мёртв
 rmc-overwatch-console-state-conscious = В сознании
