@@ -26,6 +26,8 @@ public sealed partial class RMCGhostTargetWindow : DefaultWindow
     private readonly List<NetEntity> _targetDisplayOrder = new();
     private string _searchText = string.Empty;
     private StyleBoxTexture _ghostnadoButtonStyle = default!;
+    private bool _ghostnadoHovered;
+    private bool _ghostnadoPressed;
 
     private static readonly Color TguiGoodButtonColor = Color.FromHex("#4e9121");
     private static readonly Color TguiGoodButtonHoverColor = Color.FromHex("#9ade6d");
@@ -49,7 +51,6 @@ public sealed partial class RMCGhostTargetWindow : DefaultWindow
         RefreshButton.ModulateSelfOverride = Color.White;
         GhostnadoButton.OnPressed += _ => WarpToMostFollowed();
         RefreshButton.OnPressed += _ => OnRefreshClicked?.Invoke();
-        OnOpen += SearchBar.GrabKeyboardFocus;
         OnClose += ClearContent;
         SetupGhostnadoButtonColors();
         SetupRefreshButtonHover();
@@ -75,6 +76,8 @@ public sealed partial class RMCGhostTargetWindow : DefaultWindow
 
     public void ClearContent()
     {
+        _ghostnadoHovered = false;
+        _ghostnadoPressed = false;
         _targets.Clear();
         _sections.Clear();
         _sectionControls.Clear();
@@ -251,6 +254,7 @@ public sealed partial class RMCGhostTargetWindow : DefaultWindow
         {
             RMCGhostTargetSectionKind.Others or
             RMCGhostTargetSectionKind.Dead or
+            RMCGhostTargetSectionKind.Cryo or
             RMCGhostTargetSectionKind.WarpPoints or
             RMCGhostTargetSectionKind.Ghosts => false,
             _ => true,
@@ -397,10 +401,27 @@ public sealed partial class RMCGhostTargetWindow : DefaultWindow
         _ghostnadoButtonStyle = RMCGhostTargetStyles.CreateRoundedBox(_resourceCache, TguiGoodButtonDisabledColor);
         _ghostnadoButtonStyle.SetContentMarginOverride(StyleBox.Margin.Horizontal, 6);
         GhostnadoButton.StyleBoxOverride = _ghostnadoButtonStyle;
-        GhostnadoButton.OnMouseEntered += _ => UpdateGhostnadoButtonColor();
-        GhostnadoButton.OnMouseExited += _ => UpdateGhostnadoButtonColor();
-        GhostnadoButton.OnButtonDown += _ => UpdateGhostnadoButtonColor(pressed: true);
-        GhostnadoButton.OnButtonUp += _ => UpdateGhostnadoButtonColor();
+        GhostnadoButton.OnMouseEntered += _ =>
+        {
+            _ghostnadoHovered = true;
+            UpdateGhostnadoButtonColor();
+        };
+        GhostnadoButton.OnMouseExited += _ =>
+        {
+            _ghostnadoHovered = false;
+            _ghostnadoPressed = false;
+            UpdateGhostnadoButtonColor();
+        };
+        GhostnadoButton.OnButtonDown += _ =>
+        {
+            _ghostnadoPressed = true;
+            UpdateGhostnadoButtonColor();
+        };
+        GhostnadoButton.OnButtonUp += _ =>
+        {
+            _ghostnadoPressed = false;
+            UpdateGhostnadoButtonColor();
+        };
     }
 
     private void SetupRefreshButtonHover()
@@ -427,11 +448,11 @@ public sealed partial class RMCGhostTargetWindow : DefaultWindow
         SearchBar.StyleBoxOverride = background;
     }
 
-    private void UpdateGhostnadoButtonColor(bool pressed = false)
+    private void UpdateGhostnadoButtonColor()
     {
         _ghostnadoButtonStyle.Modulate = GhostnadoButton.Disabled
             ? TguiGoodButtonDisabledColor
-            : pressed || GhostnadoButton.IsHovered
+            : _ghostnadoPressed || _ghostnadoHovered
                 ? TguiGoodButtonHoverColor
                 : TguiGoodButtonColor;
     }
