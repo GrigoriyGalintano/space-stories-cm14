@@ -14,5 +14,6 @@ rmc-ghost-target-window-group-survivors = Выжившие
 rmc-ghost-target-window-group-escaped = Эвакуировавшиеся
 rmc-ghost-target-window-group-others = Прочие
 rmc-ghost-target-window-group-deads = Мёртвые
+rmc-ghost-target-window-group-cryo = Криосон
 rmc-ghost-target-window-group-warp-points = Точки телепортации
 rmc-ghost-target-window-group-ghosts = Призраки
