@@ -127,33 +127,33 @@
                                 </BoxContainer>
                             </crt:RMCCrtPanel>
                             <crt:RMCCrtPanel Variant="Inset">
-                                <BoxContainer Orientation="Vertical" Margin="12" SeparationOverride="8">
+                                <BoxContainer Orientation="Vertical" Margin="10" SeparationOverride="6">
                                     <crt:RMCCrtLabel Text="{Loc rmc-goc-anti-air-subsystem}"
-                                                     Heading="True" HorizontalAlignment="Center" />
+                                                     Heading="True" TextFontSize="11" HorizontalAlignment="Center" />
                                     <crt:RMCCrtSeparator MinHeight="2" />
-                                    <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                                    <BoxContainer Orientation="Horizontal" SeparationOverride="6">
                                         <crt:RMCCrtPanel Variant="Inset" HorizontalExpand="True">
-                                            <BoxContainer Orientation="Vertical" Margin="8 6" SeparationOverride="4">
+                                            <BoxContainer Orientation="Vertical" Margin="6 5" SeparationOverride="3">
                                                 <crt:RMCCrtLabel Text="{Loc rmc-goc-anti-air-system-status}"
-                                                                 Tone="Muted" HorizontalAlignment="Center" />
+                                                                 Tone="Muted" TextFontSize="10" HorizontalAlignment="Center" />
                                                 <RichTextLabel Name="AntiAirSystemStatus" Access="Public"
-                                                               HorizontalAlignment="Center" />
+                                                               StyleClasses="RMCCrtCompactText" HorizontalAlignment="Center" />
                                             </BoxContainer>
                                         </crt:RMCCrtPanel>
                                         <crt:RMCCrtPanel Variant="Inset" HorizontalExpand="True">
-                                            <BoxContainer Orientation="Vertical" Margin="8 6" SeparationOverride="4">
+                                            <BoxContainer Orientation="Vertical" Margin="6 5" SeparationOverride="3">
                                                 <crt:RMCCrtLabel Text="{Loc rmc-goc-anti-air-targeting}"
-                                                                 Tone="Muted" HorizontalAlignment="Center" />
+                                                                 Tone="Muted" TextFontSize="10" HorizontalAlignment="Center" />
                                                 <RichTextLabel Name="AntiAirTargetingStatus" Access="Public"
-                                                               HorizontalAlignment="Center" />
+                                                               StyleClasses="RMCCrtCompactText" HorizontalAlignment="Center" />
                                             </BoxContainer>
                                         </crt:RMCCrtPanel>
                                         <crt:RMCCrtPanel Variant="Inset" HorizontalExpand="True">
-                                            <BoxContainer Orientation="Vertical" Margin="8 6" SeparationOverride="4">
+                                            <BoxContainer Orientation="Vertical" Margin="6 5" SeparationOverride="3">
                                                 <crt:RMCCrtLabel Text="{Loc rmc-goc-anti-air-cannon-status}"
-                                                                 Tone="Muted" HorizontalAlignment="Center" />
+                                                                 Tone="Muted" TextFontSize="10" HorizontalAlignment="Center" />
                                                 <RichTextLabel Name="AntiAirCannonStatus" Access="Public"
-                                                               HorizontalAlignment="Center" />
+                                                               StyleClasses="RMCCrtCompactText" HorizontalAlignment="Center" />
                                             </BoxContainer>
                                         </crt:RMCCrtPanel>
                                     </BoxContainer>
