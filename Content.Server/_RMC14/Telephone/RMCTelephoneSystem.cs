@@ -23,8 +23,8 @@ namespace Content.Server._RMC14.Telephone;
 
 public sealed class RMCTelephoneSystem : SharedRMCTelephoneSystem
 {
-    [Dependency] private readonly IAdminManager _adminManager = default!;
-    // [Dependency] private readonly AudioSystem _audio = default!; // Stories-TTS: Phone chatter disabled in favor of relayed TTS.
+    [Dependency] private readonly IAdminManager _adminManager = default!;// Stories
+    // [Dependency] private readonly AudioSystem _audio = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
     [Dependency] private readonly CommunicationsTowerSystem _communicationsTower = default!;
     [Dependency] private readonly HandsSystem _hands = default!;
