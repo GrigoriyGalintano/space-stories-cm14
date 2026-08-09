@@ -63,10 +63,11 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
 
     protected override void UpdateState(BoundUserInterfaceState state)
     {
-        Refresh();
+        if (state is OverwatchConsoleBuiState s)
+            RefreshState(s);
     }
 
-    private void RefreshState()
+    private void RefreshState(OverwatchConsoleBuiState s)
     {
         if (Window == null ||
             !EntMan.TryGetComponent(Owner, out OverwatchConsoleComponent? console))
@@ -74,9 +75,9 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
             return;
         }
 
-        RefreshAntiAirHeader(console);
+        RefreshAntiAirHeader(s);
 
-        var squads = console.Squads.ToList();
+        var squads = s.Squads.ToList();
         squads.Sort((a, b) => string.CompareOrdinal(a.Name, b.Name));
 
         foreach (var (id, panel) in _squads)
@@ -111,12 +112,10 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
         var margin = new Thickness(2);
         foreach (var squad in squads)
         {
-            var marineEntry = console.Marines.FirstOrDefault(entry => entry.Key == squad.Id);
-            var squadMarines = marineEntry.Value;
+            s.Marines.TryGetValue(squad.Id, out var squadMarines);
             var marines = squadMarines?.ToList() ?? new List<OverwatchMarine>();
             var entries = marines.Select(static marine => new OverwatchListEntry(marine)).ToList();
-            var cameraEntry = console.Cameras.FirstOrDefault(entry => entry.Key == squad.Id);
-            if (cameraEntry.Value is { } cameras)
+            if (s.Cameras.TryGetValue(squad.Id, out var cameras))
             {
                 foreach (var camera in cameras)
                     entries.Add(new OverwatchListEntry(camera));
@@ -782,24 +781,24 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
         UpdateObjectivesWindow();
     }
 
-    private void RefreshAntiAirHeader(OverwatchConsoleComponent console)
+    private void RefreshAntiAirHeader(OverwatchConsoleBuiState state)
     {
         if (Window == null)
             return;
 
         var selectSquad = Loc.GetString("rmc-overwatch-console-disabled-select-squad");
-        if (!console.AntiAir.HasConsole)
+        if (!state.AntiAir.HasConsole)
         {
             Window.OverwatchHeader.SetMarkupPermissive($"[color=#88C7FA]{selectSquad}[/color]");
             return;
         }
 
-        var status = console.AntiAir.Disabled
+        var status = state.AntiAir.Disabled
             ? Loc.GetString("rmc-anti-air-status-disabled")
             : Loc.GetString("rmc-anti-air-status-operational");
 
-        var zone = console.AntiAir.ProtectedZone ?? Loc.GetString("rmc-anti-air-zone-none");
-        var engagement = !console.AntiAir.Disabled && console.AntiAir.ProtectedZone != null
+        var zone = state.AntiAir.ProtectedZone ?? Loc.GetString("rmc-anti-air-zone-none");
+        var engagement = !state.AntiAir.Disabled && state.AntiAir.ProtectedZone != null
             ? Loc.GetString("rmc-anti-air-status-engaged")
             : Loc.GetString("rmc-anti-air-status-disengaged");
 
@@ -1167,15 +1166,16 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
 
     public void Refresh()
     {
-        RefreshState();
+        if (State is OverwatchConsoleBuiState s)
+            RefreshState(s);
     }
 
     private Dictionary<SquadObjectiveType, string> GetObjectives(NetEntity squad)
     {
-        if (!EntMan.TryGetComponent(Owner, out OverwatchConsoleComponent? console))
+        if (State is not OverwatchConsoleBuiState s)
             return new Dictionary<SquadObjectiveType, string>();
 
-        var squadData = console.Squads.FirstOrDefault(data => data.Id == squad);
+        var squadData = s.Squads.FirstOrDefault(data => data.Id == squad);
         return squadData.Id == default
             ? new Dictionary<SquadObjectiveType, string>()
             : new Dictionary<SquadObjectiveType, string>(squadData.Objectives);
@@ -1183,11 +1183,10 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
 
     private List<OverwatchMarine> GetMarines(NetEntity squad)
     {
-        if (EntMan.TryGetComponent(Owner, out OverwatchConsoleComponent? console))
+        if (State is OverwatchConsoleBuiState s &&
+            s.Marines.TryGetValue(squad, out var marines))
         {
-            var marineEntry = console.Marines.FirstOrDefault(entry => entry.Key == squad);
-            if (marineEntry.Value != null)
-                return marineEntry.Value;
+            return marines;
         }
 
         return new List<OverwatchMarine>();

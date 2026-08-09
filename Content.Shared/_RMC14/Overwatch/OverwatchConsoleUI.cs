@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared._RMC14.AntiAir;
 using Content.Shared._RMC14.Marines.Roles.Ranks;
 using Content.Shared._RMC14.Marines.Squads;
 using Content.Shared.Mobs;
@@ -22,6 +23,19 @@ public enum OverwatchLocation
 public enum OverwatchConsoleUI
 {
     Key,
+}
+
+[Serializable, NetSerializable]
+public sealed class OverwatchConsoleBuiState(
+    List<OverwatchSquad> squads,
+    Dictionary<NetEntity, List<OverwatchMarine>> marines,
+    RMCShipAntiAirStatus antiAir,
+    Dictionary<NetEntity, List<OverwatchTripodCamera>> cameras) : BoundUserInterfaceState
+{
+    public readonly List<OverwatchSquad> Squads = squads;
+    public readonly Dictionary<NetEntity, List<OverwatchMarine>> Marines = marines;
+    public readonly RMCShipAntiAirStatus AntiAir = antiAir;
+    public readonly Dictionary<NetEntity, List<OverwatchTripodCamera>> Cameras = cameras;
 }
 
 [Serializable, NetSerializable]

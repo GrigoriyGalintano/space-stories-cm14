@@ -497,6 +497,7 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
         else
             ent.Comp.Hidden.Remove(args.Target);
 
+        Dirty(ent);
         RefreshConsoleState(ent);
     }
 
@@ -875,11 +876,16 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
 
     private void RefreshConsoleState(Entity<OverwatchConsoleComponent> console)
     {
-        (console.Comp.Squads, console.Comp.Marines, console.Comp.Cameras) = GetOverwatchData(console.Comp);
-        console.Comp.AntiAir = console.Comp.ShowAntiAirStatus
+        if (_net.IsClient)
+            return;
+
+        var (squads, marines, cameras) = GetOverwatchData(console.Comp);
+        var antiAir = console.Comp.ShowAntiAirStatus
             ? _antiAir.GetStatus(console.Owner)
             : default;
-        Dirty(console);
+        _ui.SetUiState(console.Owner,
+            OverwatchConsoleUI.Key,
+            new OverwatchConsoleBuiState(squads, marines, antiAir, cameras));
     }
 
     public bool IsHidden(Entity<OverwatchConsoleComponent> console, NetEntity marine)
