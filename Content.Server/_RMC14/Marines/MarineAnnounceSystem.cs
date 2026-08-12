@@ -7,11 +7,9 @@ using Content.Shared._RMC14.ARES;
 using Content.Shared._RMC14.ARES.Logs;
 using Content.Shared._RMC14.Announce;
 using Content.Shared._RMC14.Dropship;
-using Content.Shared._RMC14.Intel;
 using Content.Shared._RMC14.Marines.Announce;
 using Content.Shared._RMC14.Marines.Squads;
 using Content.Shared._RMC14.Rules;
-using Content.Shared._RMC14.Survivor;
 using Content.Shared._Stories.SCCVars;
 using Content.Shared._Stories.TTS;
 using Content.Shared.Chat;
@@ -113,9 +111,10 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
         string message,
         string wrappedMessage,
         SoundSpecifier? sound = null,
-        Filter? filter = null)
+        Filter? filter = null,
+        bool excludeSurvivors = true)
     {
-        filter ??= GetMarineFilter();
+        filter = GetMarineFilter(filter, excludeSurvivors);
 
         var plainMessage = FormattedMessage.RemoveMarkupPermissive(message);
 
@@ -159,11 +158,7 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
         var cleanHeader = FormattedMessage.RemoveMarkupPermissive(headerMsg).Trim();
         var wordCount = cleanHeader.Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length;
         var delay = TimeSpan.FromSeconds(Math.Max(3.0, wordCount * 0.65));
-        var recipientsFilter = options.Filter == null
-            ? GetMarineFilter()
-            : Filter.Empty().AddPlayers(options.Filter.Recipients);
-        if (options.ExcludeSurvivors)
-            recipientsFilter.RemoveWhereAttachedEntity(HasComp<RMCSurvivorComponent>);
+        var recipientsFilter = GetMarineFilter(options.Filter, options.ExcludeSurvivors);
 
         if (!string.IsNullOrEmpty(aresVoice))
             _tts.PlayGlobalTTS(cleanHeader, aresVoice, recipientsFilter, TTSAudioEffect.Ares, isAnnounce: true);
@@ -302,14 +297,7 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
         string name,
         SignedAnnouncementOptions options)
     {
-        var dispatchFilter = options.Filter == null
-            ? GetMarineFilter()
-            : Filter.Empty().AddPlayers(options.Filter.Recipients);
-
-        if (options.ExcludeSurvivors)
-            dispatchFilter.RemoveWhereAttachedEntity(HasComp<RMCSurvivorComponent>);
-
-        dispatchFilter.RemoveWhereAttachedEntity(HasComp<IntelRescueSurvivorObjectiveComponent>);
+        var dispatchFilter = GetMarineFilter(options.Filter, options.ExcludeSurvivors);
 
         var channels = AnnouncementChannels.Chat | AnnouncementChannels.Sound;
         if (options.SendOverlay)

@@ -3,12 +3,14 @@ using Content.Shared._RMC14.ARES;
 using Content.Shared._RMC14.ARES.Logs;
 using Content.Shared._RMC14.Chat;
 using Content.Shared._RMC14.Dialog;
+using Content.Shared._RMC14.Intel;
 using Content.Shared._RMC14.Marines.ControlComputer;
 using Content.Shared._RMC14.Marines.Roles.Ranks;
 using Content.Shared._RMC14.Marines.Skills;
 using Content.Shared._RMC14.Marines.Squads;
 using Content.Shared._RMC14.Announce;
 using Content.Shared._RMC14.Overwatch;
+using Content.Shared._RMC14.Survivor;
 using Content.Shared._RMC14.TacticalMap;
 using Content.Shared._RMC14.AlertLevel;
 using Content.Shared._RMC14.Weapons.Ranged.IFF;
@@ -186,13 +188,20 @@ public abstract class SharedMarineAnnounceSystem : EntitySystem
     }
 
     // Stories-Chat-Start
-    public Filter GetMarineFilter()
+    public Filter GetMarineFilter(Filter? filter = null, bool excludeSurvivors = true)
     {
-        return Filter.Empty()
-            .AddWhereAttachedEntity(e =>
+        var recipients = filter == null
+            ? Filter.Empty().AddWhereAttachedEntity(e =>
                 HasComp<MarineComponent>(e) ||
-                HasComp<GhostComponent>(e)
-            );
+                HasComp<GhostComponent>(e))
+            : Filter.Empty().AddPlayers(filter.Recipients);
+
+        if (excludeSurvivors)
+            recipients.RemoveWhereAttachedEntity(HasComp<RMCSurvivorComponent>);
+
+        // Non-rescued survivors must never receive marine announcements.
+        recipients.RemoveWhereAttachedEntity(HasComp<IntelRescueSurvivorObjectiveComponent>);
+        return recipients;
     }
     // Stories-Chat-End
 
@@ -266,16 +275,18 @@ public abstract class SharedMarineAnnounceSystem : EntitySystem
         string message,
         string wrappedMessage,
         SoundSpecifier? sound = null,
-        Filter? filter = null)
+        Filter? filter = null,
+        bool excludeSurvivors = true)
     {
     }
 
     public void AnnounceToMarines(
         string message,
         SoundSpecifier? sound = null,
-        Filter? filter = null)
+        Filter? filter = null,
+        bool excludeSurvivors = true)
     {
-        AnnounceToMarines(message, message, sound, filter);
+        AnnounceToMarines(message, message, sound, filter, excludeSurvivors);
     }
     // Stories-Chat-Start
 
