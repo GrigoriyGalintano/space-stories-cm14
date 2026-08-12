@@ -29,10 +29,10 @@
 
     <Box HorizontalAlignment="Left"> <GuideEntityEmbed Entity="RMCMortarShellFrag"/> </Box>
 
-    - Detonates on impact, combining an explosion with a dense, 360-degree burst of [color=#FFD700]high-velocity shrapnel[/color].
-    - The shrapnel travels up to [bold]8 tiles[/bold] and is especially effective against personnel and fortifications, including walls, doors, barricades, and Xenonid structures.
-    - [color=#FFD700]No IFF protection[/color]: friendlies within the shrapnel radius can be hit.
-    - Primary use: [italic]Damaging dispersed enemies and destroying fortifications.[/italic]
+    - При ударе детонирует, сочетая взрыв с плотным круговым разлётом [color=#FFD700]высокоскоростной шрапнели[/color].
+    - Шрапнель разлетается на расстояние до [bold]8 тайлов[/bold] и особенно эффективна против живой силы и укреплений, включая стены, двери, баррикады и постройки ксенонидов.
+    - [color=#FFD700]Защита IFF отсутствует[/color]: союзники в радиусе разлёта шрапнели также могут пострадать.
+    - Основное применение: [italic]Поражение рассредоточенных противников и разрушение укреплений.[/italic]
 
     <Box HorizontalAlignment="Left"> <GuideEntityEmbed Entity="RMCMortarShellIncendiary"/> </Box>
 
