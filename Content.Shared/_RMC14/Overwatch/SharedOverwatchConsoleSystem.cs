@@ -674,7 +674,12 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
         }
         else
         {
-            _marineAnnounce.AnnounceSquad(Loc.GetString("rmc-overwatch-console-announce-message", ("operatorName", Name(args.Actor)), ("message", message)), squadProto.ID);
+            _marineAnnounce.AnnounceSquad(
+                Loc.GetString("rmc-overwatch-console-announce-message",
+                    ("color", "#3C70FF"),
+                    ("operatorName", Name(args.Actor)),
+                    ("message", message)),
+                squadProto.ID);
         }
 
         var coordinates = TransformSystem.GetMapCoordinates(ent);
