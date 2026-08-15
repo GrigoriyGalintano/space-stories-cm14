@@ -40,6 +40,8 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
     private readonly Dictionary<NetEntity, Dictionary<NetEntity, OverwatchRow>> _rows = new();
     private readonly Dictionary<NetEntity, List<OverwatchListEntry>> _entries = new();
     private readonly Dictionary<BoxContainer, SavedLocationTableState> _savedLocationTables = new();
+    private OverwatchTextInputWindow? _messageWindow;
+    private bool _messagePending;
     private SquadObjectivesWindow? _objectivesWindow;
 
     public OverwatchConsoleBui(EntityUid owner, Enum uiKey) : base(owner, uiKey)
@@ -65,6 +67,23 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
     {
         if (state is OverwatchConsoleBuiState s)
             RefreshState(s);
+    }
+
+    protected override void ReceiveMessage(BoundUserInterfaceMessage message)
+    {
+        base.ReceiveMessage(message);
+
+        if (message is not OverwatchConsoleSendMessageResultBuiMsg result)
+            return;
+
+        _messagePending = false;
+        if (_messageWindow is not { Disposed: false } window)
+            return;
+
+        window.OkButton.Disabled = false;
+        window.CancelButton.Disabled = false;
+        if (result.Sent)
+            window.Close();
     }
 
     private void RefreshState(OverwatchConsoleBuiState s)
@@ -238,24 +257,38 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
 
                 monitor.MessageSquadButton.OnPressed += _ =>
                 {
+                    if (_messagePending || _messageWindow is { Disposed: false, IsOpen: true })
+                        return;
+
                     var window = new OverwatchTextInputWindow();
+                    _messageWindow = window;
 
                     void SendSquadMessage()
                     {
+                        if (_messagePending)
+                            return;
+
                         // Stories-TTS-Start
                         var text = window.MessageBox.Text;
                         var filter = EntMan.System<ChatFilterSystem>();
                         if (filter != null)
                             text = filter.ApplyClientReplacements(text);
-
-                        SendPredictedMessage(new OverwatchConsoleSendMessageBuiMsg(text));
-                        window.Close();
                         // Stories-TTS-End
+
+                        _messagePending = true;
+                        window.OkButton.Disabled = true;
+                        window.CancelButton.Disabled = true;
+                        SendPredictedMessage(new OverwatchConsoleSendMessageBuiMsg(text));
                     }
 
                     window.MessageBox.OnTextEntered += _ => SendSquadMessage();
                     window.OkButton.OnPressed += _ => SendSquadMessage();
                     window.CancelButton.OnPressed += _ => window.Close();
+                    window.OnClose += () =>
+                    {
+                        if (_messageWindow == window)
+                            _messageWindow = null;
+                    };
                     window.OpenCentered();
                 };
 
@@ -1168,6 +1201,18 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
     {
         if (State is OverwatchConsoleBuiState s)
             RefreshState(s);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _messageWindow?.Close();
+            _messageWindow = null;
+            _messagePending = false;
+        }
+
+        base.Dispose(disposing);
     }
 
     private Dictionary<SquadObjectiveType, string> GetObjectives(NetEntity squad)

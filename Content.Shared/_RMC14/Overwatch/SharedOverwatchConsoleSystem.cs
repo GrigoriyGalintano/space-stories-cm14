@@ -665,29 +665,40 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
 
     private void OnOverwatchSendMessageBui(Entity<OverwatchConsoleComponent> ent, ref OverwatchConsoleSendMessageBuiMsg args)
     {
-        if (_net.IsClient || !ent.Comp.CanMessageSquad)
+        if (_net.IsClient)
             return;
+
+        if (!ent.Comp.CanMessageSquad)
+        {
+            SendOverwatchMessageResult(ent, args.Actor, false);
+            return;
+        }
 
         var message = args.Message;
         if (message.Length > 200)
             message = message[..200];
 
         if (string.IsNullOrWhiteSpace(message))
+        {
+            SendOverwatchMessageResult(ent, args.Actor, false);
             return;
+        }
 
         if (!TryGetEntity(ent.Comp.Squad, out var squad) ||
             Prototype(squad.Value) is not { } squadProto)
         {
+            SendOverwatchMessageResult(ent, args.Actor, false);
             return;
         }
 
         var time = _timing.CurTime;
         if (!TryStartSquadAnnouncementCooldown(squad.Value, time, out var remaining))
         {
-            _popup.PopupClient(
+            _popup.PopupCursor(
                 Loc.GetString("rmc-overwatch-console-announcement-cooldown", ("seconds", remaining)),
                 args.Actor,
                 PopupType.SmallCaution);
+            SendOverwatchMessageResult(ent, args.Actor, false);
             return;
         }
 
@@ -720,6 +731,17 @@ public abstract class SharedOverwatchConsoleSystem : EntitySystem
         var ttsMsg = Loc.GetString("stories-overwatch-tts-message", ("squadName", Name(squad.Value)), ("message", message));
         RaiseLocalEvent(new OverwatchConsoleMessageSentEvent(ttsMsg, args.Actor, squadFilter, players));
         // Stories-TTS-End
+
+        SendOverwatchMessageResult(ent, args.Actor, true);
+    }
+
+    private void SendOverwatchMessageResult(EntityUid console, EntityUid actor, bool sent)
+    {
+        _ui.ServerSendUiMessage(
+            console,
+            OverwatchConsoleUI.Key,
+            new OverwatchConsoleSendMessageResultBuiMsg(sent),
+            actor);
     }
 
     private void OnOverwatchSetSquadObjectiveBui(Entity<OverwatchConsoleComponent> ent, ref OverwatchConsoleSetSquadObjectiveBuiMsg args)
