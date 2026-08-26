@@ -13,6 +13,7 @@ rmc-announcement-preset-name-delta-overwatch = Наблюдение «Дельт
 rmc-announcement-preset-name-echo-overwatch = Наблюдение «Эхо»
 rmc-announcement-preset-name-foxtrot-overwatch = Наблюдение «Фокстрот»
 rmc-announcement-preset-name-intel-overwatch = Наблюдение разведки
+rmc-announcement-preset-name-first-deployment = Первая высадка
 rmc-announcement-preset-name-xeno-queen = Королева ксеноморфов
 rmc-announcement-preset-name-ares = A.R.E.S.
 rmc-announcement-preset-name-critical = Критическое объявление
@@ -42,6 +43,21 @@ rmc-announcement-title-alert-level-blue = УРОВЕНЬ ТРЕВОГИ: СИН�
 rmc-announcement-title-alert-level-red = УРОВЕНЬ ТРЕВОГИ: КРАСНЫЙ
 rmc-announcement-title-alert-level-delta = УРОВЕНЬ ТРЕВОГИ: ДЕЛЬТА
 rmc-announcement-title-red-alert = КРАСНАЯ ТРЕВОГА
+
+rmc-announcement-first-deployment-message = [font="CozetteBold"]{ $operation }[/font]
+    { $time }
+    { $planet }
+    { $assignment }
+rmc-announcement-first-deployment-operation = ОПЕРАЦИЯ { $name }
+rmc-announcement-first-deployment-time = { $time } Ч, { $numericDate }
+rmc-announcement-first-deployment-assignment-combat = 2-я рота «Падающие соколы»
+rmc-announcement-first-deployment-assignment-flight-crew = Лётный состав, { $warship }
+rmc-announcement-first-deployment-assignment-security = Военная полиция, { $warship }
+rmc-announcement-first-deployment-assignment-engineering = Инженерный отдел, { $warship }
+rmc-announcement-first-deployment-assignment-medical = Медицинский отдел, { $warship }
+rmc-announcement-first-deployment-assignment-logistics = Отдел снабжения, { $warship }
+rmc-announcement-first-deployment-assignment-liaison = Корпоративное представительство, { $warship }
+rmc-announcement-first-deployment-assignment-crew = Экипаж, { $warship }
 
 rmc-announcement-message = [font size=14][bold][color=#CECECE]Объявление { $author }[/color][/bold][/font][font size=14][color=red]
 
