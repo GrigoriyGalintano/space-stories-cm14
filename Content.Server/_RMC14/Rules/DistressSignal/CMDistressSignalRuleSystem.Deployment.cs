@@ -237,7 +237,6 @@ public sealed partial class CMDistressSignalRuleSystem
                group.Jobs.Contains(job);
     }
 
-    // Stories-Localization-Start
     internal string FormatFirstDeploymentTime(DateTime worldDate)
     {
         return Loc.GetString("rmc-announcement-first-deployment-time",
@@ -255,8 +254,6 @@ public sealed partial class CMDistressSignalRuleSystem
 
         return Loc.GetString("rmc-announcement-first-deployment-operation", ("name", name)).ToUpperInvariant();
     }
-    // Stories-Localization-End
-
     private string? GetWarshipName(EntityUid warship)
     {
         var station = _station.GetOwningStation(warship) ?? _station.GetStationInMap(Transform(warship).MapID);
