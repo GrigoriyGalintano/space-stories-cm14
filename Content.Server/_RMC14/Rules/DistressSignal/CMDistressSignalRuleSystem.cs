@@ -44,6 +44,7 @@ using Content.Shared._RMC14.Marines.Command;
 using Content.Shared._RMC14.Marines.HyperSleep;
 using Content.Shared._RMC14.Marines.Squads;
 using Content.Shared._RMC14.Power;
+using Content.Shared._RMC14.RMCClock;
 using Content.Shared._RMC14.Rules;
 using Content.Shared._RMC14.Scaling;
 using Content.Shared._RMC14.Weapons.Ranged.IFF;
@@ -162,6 +163,7 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
     [Dependency] private readonly SharedRoleSystem _roles = default!;
     [Dependency] private readonly LarvaQueueSystem _larvaQueue = default!;
     [Dependency] private readonly SharedJobSystem _jobs = default!;
+    [Dependency] private readonly RMCClockSystem _rmcClock = default!;
 
     private readonly HashSet<string> _operationNames = new();
     private readonly HashSet<string> _operationPrefixes = new();
