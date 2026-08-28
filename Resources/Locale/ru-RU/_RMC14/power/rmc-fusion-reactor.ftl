@@ -36,7 +36,9 @@ rmc-fusion-reactor-examine-needs-cell = Нужен [color=cyan]топливны�
 rmc-fusion-reactor-examine-fuel = В топливном элементе [color=cyan]{ $fuel }/{ $maxFuel }[/color] единиц топлива.
 rmc-fusion-reactor-examine-enabled = Реактор работает на [color=cyan]{ $percent }%[/color] и выдаёт [color=cyan]{ $output } Вт[/color].
 rmc-fusion-reactor-examine-disabled = Реактор [color=red]выключен[/color].
+rmc-fusion-reactor-starting = Вы начинаете запускать { $reactor }.
 rmc-fusion-reactor-started = Вы запускаете { $reactor }.
+rmc-fusion-reactor-shutting-down = Вы начинаете выключать { $reactor }.
 rmc-fusion-reactor-shut-down = Вы выключаете { $reactor }.
 rmc-fusion-reactor-overload-shutdown-blocked = Перегруженный { $reactor } не реагирует на команды выключения.
 rmc-fusion-reactor-emergency-start = Вы начинаете процедуру аварийного запуска { $reactor }.
