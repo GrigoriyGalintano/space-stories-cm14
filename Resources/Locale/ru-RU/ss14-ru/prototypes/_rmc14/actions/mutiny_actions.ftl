@@ -1,4 +1,4 @@
-ent-ActionMutineerRecruit = Вербовать мятежника
-    .desc = Предложить подходящему морпеху присоединиться к мятежу, когда тот начнётся.
-ent-ActionMutineerBegin = Начать мятеж
-    .desc = Начать мятеж со всеми завербованными сторонниками.
+ent-ActionMutineerRecruit = { ent-ActionMarineBase }
+    .desc = { ent-ActionMarineBase.desc }
+ent-ActionMutineerBegin = { ent-ActionMarineBase }
+    .desc = { ent-ActionMarineBase.desc }

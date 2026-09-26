@@ -17,6 +17,7 @@ chat-radio-marine-echo = Эхо
 chat-radio-marine-foxtrot = Фокстрот
 
 chat-radio-marine-sof = ССО
+chat-radio-marine-survivor = UNMC
 
 chat-radio-colony = Колония
 chat-radio-WY = Вестон-Ямада
