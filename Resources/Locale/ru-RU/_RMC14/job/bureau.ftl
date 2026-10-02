@@ -18,6 +18,12 @@ rmc-job-prefix-bureau-deputy = Зам БКМ
 rmc-job-name-bureau-riot-control-team-leader = Руководитель группы по борьбе с беспорядками БКМ
 rmc-job-prefix-bureau-riot-control-team-leader = РГББ БКМ
 
+rmc-job-name-bureau-riot-control-medical-technician = CMB Medical Technician
+rmc-job-prefix-bureau-riot-control-medical-technician = CMB MT
+
+rmc-job-name-bureau-riot-control-breaching-technician = CMB Breaching Technician
+rmc-job-prefix-bureau-riot-control-breaching-technician = CMB BT
+
 rmc-ghost-name-bureau-observer = Наблюдатель за правами разумных существ (Дружелюбный)
 rmc-job-name-bureau-observer = Наблюдатель за правами разумных существ
 rmc-job-prefix-bureau-observer = НПРС
