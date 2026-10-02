@@ -1,7 +1,7 @@
 - type: entity
   parent: ColMarTechBase
   id: ColMarTechIntelGear
-  name: ColMarTech intelligence officer gear rack
+  name: ASRS intelligence officer gear rack
   description: An automated gear rack for IOs.
   components:
   - type: AccessReader
@@ -42,7 +42,9 @@
       - id: RMCMagazinePistolM13Ext
         points: 10
       - id: RMCSpeedLoader44Marksman
-        points: 10 # TODO RMC14 heavy speed revolver
+        points: 10
+      - id: RMCSpeedLoader44Heavy
+        points: 10
       - id: RMCMagazinePistolM1984AP
         points: 5
       - id: RMCMagazinePistolM1984HP
@@ -114,7 +116,7 @@
 - type: entity
   parent: ColMarTechBase
   id: ColMarTechIntelEquipment
-  name: ColMarTech intelligence officer equipment rack
+  name: ASRS intelligence officer equipment rack
   description: An automated rack hooked up to a colossal storage of IO standard-issue equipment.
   components:
   - type: AccessReader
@@ -230,7 +232,7 @@
 - type: entity
   parent: ColMarTechBase
   id: ColMarTechIntelWeapons
-  name: ColMarTech intelligence officer weapons rack
+  name: ASRS intelligence officer weapons rack
   description: An automated weapon rack hooked up to a small storage of standard-issue weapons. Can be accessed only by the Intelligence Officers.
   components:
   - type: AccessReader
@@ -321,6 +323,7 @@
 - type: entity
   parent: CMVendorBundleRiflemanApparel
   id: RMCVendorBundleIntel
+  categories: [ HideSpawnMenu ]
   name: essential intel set
   description: Contains a crowbar, fultons, an intel detector, and binoculars.
   components:
