@@ -75,6 +75,7 @@ rmc-xeno-evolution-failed-early-weeds = Улей еще не настолько 
 rmc-xeno-evolution-failed-bad-location = Мы не можем развиваться здесь.
 rmc-xeno-evolution-failed-marines-dropped = Небесные верзилы уже высадились, мы больше не можем принять эту форму.
 rmc-xeno-evolution-failed-queen-exists = В улье уже есть Королева!
+rmc-xeno-evolution-failed-not-enough-points = We need more evolution material.
 rmc-xeno-evolution-start-self = Мы начинаем скручиваться и деформироваться.
 rmc-xeno-evolution-start-others = { $xeno } начинает крутиться и извиваться.
 

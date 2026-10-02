@@ -16,4 +16,7 @@ public sealed partial class GridSpawnerComponent : Component
 
     [DataField, AutoNetworkedField]
     public bool SpawnOnMapInit = true;
+
+    [DataField, AutoNetworkedField]
+    public bool IgnoreGridFill = false;
 }

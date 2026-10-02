@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Numerics;
 using System.Text;
 using Content.Shared._RMC14.Areas;
@@ -185,7 +185,7 @@ public abstract class SharedEvacuationSystem : EntitySystem
         if (_net.IsClient)
             return;
 
-        if (!_config.GetCVar(CCVars.GridFill))
+        if (!ent.Comp.IgnoreGridFill && !_config.GetCVar(CCVars.GridFill))
             return;
 
         if (_map == null)
@@ -217,6 +217,7 @@ public abstract class SharedEvacuationSystem : EntitySystem
             _physics.SetFixedRotation(grid, true, manager: fixtures, body: physics);
         }
 
+
         // Stories-GridSpawnerLink-Start
         if (TryComp(ent, out DropshipDestinationComponent? dropshipDestination))
         {
@@ -230,6 +231,9 @@ public abstract class SharedEvacuationSystem : EntitySystem
             }
         }
         // Stories-GridSpawnerLink-End
+
+        var ev = new SpawnedGridEvent(result.Value);
+        RaiseLocalEvent(ent, ref ev);
     }
 
     private void OnEvacuationDoorBeforeOpened(Entity<EvacuationDoorComponent> ent, ref BeforeDoorOpenedEvent args)

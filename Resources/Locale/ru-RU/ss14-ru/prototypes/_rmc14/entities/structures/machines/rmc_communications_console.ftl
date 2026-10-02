@@ -8,6 +8,7 @@ ent-RMCOverwatchConsoleBase = overwatch console
     .desc = State of the art machinery for giving orders to a squad.
 ent-RMCOverwatchConsole = { ent-RMCOverwatchConsoleBase }
     .desc = { ent-RMCOverwatchConsoleBase.desc }
+    .suffix = Locked Direction
 ent-RMCOverwatchConsoleRotating = { ent-RMCOverwatchConsole }
     .desc = { ent-RMCOverwatchConsole.desc }
     .suffix = Вращающаяся
