@@ -40,3 +40,5 @@ ent-SquadUnassigned = Не назначен
     .desc = { ent-SquadBase.desc }
 ent-SquadSunRiders = Солнечные наездники
     .desc = { ent-SquadBase.desc }
+ent-RMCSquadUNMC = UNMC
+    .desc = { ent-SquadBase.desc }

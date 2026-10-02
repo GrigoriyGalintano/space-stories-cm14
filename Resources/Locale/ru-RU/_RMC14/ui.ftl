@@ -94,6 +94,7 @@ rmc-other-credits-tab = Другое
 rmc-ui-auto-punctuate = Автоматически расставляйте знаки препинания в символьных сообщениях
 rmc-ui-auto-eject-magazines = Автоматическое извлечение магазинов из оружия
 rmc-ui-damage-yourself = Возможность наносить себе повреждения с помощью оружия ближнего боя
+rmc-ui-hive-leader-tackle-xenos = Tackle other xenos as hive leader.
 rmc-ui-show-new-player-icons = Отображайте значки новых игроков в качестве ролей наставника или руководителя отдела.
 rmc-ui-xeno-night-vision-default = Ночное видение ксеноморфов по умолчанию
 rmc-ui-xeno-night-vision-default-off = Выключено
