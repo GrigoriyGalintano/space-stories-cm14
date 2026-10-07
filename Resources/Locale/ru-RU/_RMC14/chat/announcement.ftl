@@ -33,6 +33,10 @@ rmc-announcement-ares-map = [color=#CECECE][font size=14][bold]Объявлен�
 
     { $message }[/bold][/font][/color]
 
+rmc-announcement-ares-varadero = [color=#CECECE][font size=16][bold]Нью-Варадеро, односторонний аварийный ретранслятор КМП США[/bold][/font][/color][color=red][font size=14][bold]
+
+    { $message }[/bold][/font][/color]
+
 rmc-announcement-cooldown = Пожалуйста, подождите не менее { $seconds } секунд между объявлениями
 
 rmc-announcement-dropship-message = [color=#CECECE][font size=14][bold]Оповещение десантного корабля[/bold][/font][/color][color=red][font size=14][bold]
