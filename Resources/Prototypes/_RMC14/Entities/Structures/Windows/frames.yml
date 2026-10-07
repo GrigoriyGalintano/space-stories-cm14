@@ -9,7 +9,6 @@
     snap:
     - Wall
   components:
-  - type: VehicleSmashable # Stories-Vehicle
   - type: Transform
     anchored: true
   - type: Sprite

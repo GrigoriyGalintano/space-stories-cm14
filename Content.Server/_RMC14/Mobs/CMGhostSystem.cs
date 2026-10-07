@@ -31,8 +31,8 @@ namespace Content.Server._RMC14.Mobs
             SubscribeLocalEvent<CMGhostComponent, ToggleMarineHudActionEvent>(OnMarineHudAction);
             SubscribeLocalEvent<CMGhostComponent, ToggleXenoHudActionEvent>(OnXenoHudAction);
 
-            SubscribeLocalEvent<MindContainerComponent, MindAddedMessage>(OnMindAdded);
-            SubscribeLocalEvent<MindContainerComponent, MobStateChangedEvent>(OnMobStateChanged);
+            SubscribeLocalEvent<MindAddedMessage>(OnMindAdded);
+            SubscribeLocalEvent<MobStateChangedEvent>(OnMobStateChanged);
 
             Subs.CVar(Config, RMCCVars.RMCGhostCanBoo, OnGhostBooChange, true);
         }
@@ -91,19 +91,19 @@ namespace Content.Server._RMC14.Mobs
             }
         }
 
-        private void OnMindAdded(Entity<MindContainerComponent> ent, ref MindAddedMessage args)
+        private void OnMindAdded(MindAddedMessage args)
         {
-            if (!HasComp<GhostComponent>(ent) &&
-                TryComp(ent, out MobStateComponent? mobState) &&
+            if (!HasComp<GhostComponent>(args.Container) &&
+                TryComp(args.Container, out MobStateComponent? mobState) &&
                 mobState.CurrentState != MobState.Dead)
             {
                 args.Mind.Comp.TimeOfDeath = null;
             }
         }
 
-        private void OnMobStateChanged(Entity<MindContainerComponent> ent, ref MobStateChangedEvent args)
+        private void OnMobStateChanged(MobStateChangedEvent args)
         {
-            if (!_mind.TryGetMind(ent, out _, out var mind))
+            if (!_mind.TryGetMind(args.Target, out _, out var mind))
                 return;
 
             if (args.NewMobState == MobState.Dead && args.OldMobState != MobState.Dead)
