@@ -1,4 +1,4 @@
-﻿- type: entity
+- type: entity
   abstract: true
   parent: CMBaseStructure
   id: RMCCommunicationsConsoleBase
@@ -7,6 +7,7 @@
     anchored: false
   - type: Physics
     bodyType: Static
+    canCollide: false
   - type: Sprite
     drawdepth: SmallObjects
     sprite: _RMC14/Structures/Machines/rmc_groundside_communications_console.rsi
@@ -52,25 +53,31 @@
   description: This can be used for various important functions.
   components:
   - type: ActivatableUI
-    key: enum.MarineCommunicationsComputerUI.Key
+    key: enum.GroundsideOperationsConsoleUi.Key
   - type: ActivatableUIRequiresAccess
   - type: AccessReader
     access: [ [ "RMCAccessSeniorCommand" ] ]
   - type: UserInterface
     interfaces:
-      enum.MarineCommunicationsComputerUI.Key:
-        type: MarineCommunicationsComputerBui
+      enum.GroundsideOperationsConsoleUi.Key:
+        type: GroundsideOperationsConsoleBui
       enum.OverwatchConsoleUI.Key:
         type: OverwatchConsoleBui
+      enum.MarineControlComputerUi.MedalsPanel:
+        type: MedalsPanelBui
       enum.TacticalMapComputerUi.Key:
         type: TacticalMapComputerBui
       enum.DialogUiKey.Key:
         type: DialogBui
+  - type: GroundsideOperationsConsole
   - type: MarineCommunicationsComputer
     sendAnnouncementOverlay: true # Stories-Announcements
+    canGiveMedals: true
+    canInitiateEvac: true
+  - type: MarineControlComputer
   - type: OverwatchConsole
-    canMessageSquad: false
-    showAntiAirStatus: true
+    canMessageSquad: true
+  - type: SupplyDropComputer
   - type: TacticalMapComputer
   - type: GuideHelp
     guides:
@@ -143,6 +150,7 @@
 - type: entity
   parent: RMCOverwatchConsoleBase
   id: RMCOverwatchConsole
+  suffix: Locked Direction
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Machines/computer.rsi
@@ -159,14 +167,14 @@
   id: RMCOverwatchConsoleRotating
   suffix: Rotating
   components:
-  - type: Sprite
-    overrideDir: South
-    enableOverrideDir: false
+   - type: Sprite
+     overrideDir: South
+     enableOverrideDir: false
 
 - type: entity
   parent: RMCOverwatchConsoleRotating
   id: RMCOverwatchConsoleRotatingPowered
-  suffix: Rotating, Powered
+  suffix: Rotating, Always Powered
   components:
   - type: ApcPowerReceiver
     powerLoad: 0

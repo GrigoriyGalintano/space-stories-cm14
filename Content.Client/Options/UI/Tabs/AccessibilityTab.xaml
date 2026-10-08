@@ -24,6 +24,10 @@
                     <Button Name="AnnouncementLayoutResetButton" Text="{Loc 'rmc-ui-options-announcements-layout-reset-all'}" />
                 </BoxContainer>
                 <RichTextLabel Name="AnnouncementLayoutSummaryLabel" />
+                <!-- RMC14 -->
+                <CheckBox Name="RMCCrtThemeEnabledCheckBox" Text="{Loc 'rmc-ui-options-crt-theme'}" />
+                <CheckBox Name="RMCCrtEffectsEnabledCheckBox" Text="{Loc 'rmc-ui-options-crt-effects'}" />
+                <!-- RMC14 -->
                 <Label Text="{Loc 'ui-options-accessability-header-visuals'}"
                        StyleClasses="LabelKeyText"/>
                 <CheckBox Name="ReducedMotionCheckBox" Text="{Loc 'ui-options-reduced-motion'}" />
@@ -42,6 +46,9 @@
                 <Label Text="{Loc 'ui-options-accessability-header-content'}"
                        StyleClasses="LabelKeyText"/>
                 <CheckBox Name="CensorNudityCheckBox" Text="{Loc 'ui-options-censor-nudity'}" />
+                <!-- RMC14 -->
+                <CheckBox Name="RMCPostDeathChatMuteCheckBox" Text="{Loc 'rmc-ui-options-post-death-chat-mute'}" />
+                <!-- RMC14 -->
             </BoxContainer>
         </ScrollContainer>
         <ui:OptionsTabControlRow Name="Control" Access="Public" />

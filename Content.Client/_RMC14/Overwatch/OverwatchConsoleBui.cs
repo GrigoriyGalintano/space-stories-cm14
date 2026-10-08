@@ -94,8 +94,6 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
             return;
         }
 
-        RefreshAntiAirHeader(s);
-
         var squads = s.Squads.ToList();
         squads.Sort((a, b) => string.CompareOrdinal(a.Name, b.Name));
 
@@ -292,6 +290,9 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
                     window.OpenCentered();
                 };
 
+                monitor.MessageLeaderButton.OnPressed += _ =>
+                    OpenMessageInput(message => new OverwatchConsoleSendLeaderMessageBuiMsg(message));
+
                 monitor.SquadObjectivesButton.OnPressed += _ =>
                 {
                     if (!EntMan.TryGetComponent(Owner, out OverwatchConsoleComponent? overwatch) ||
@@ -355,11 +356,13 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
                 {
                     TabContainer.SetTabVisible(monitor.OrbitalBombardment, overwatch.CanOrbitalBombardment);
                     monitor.MessageSquadButton.Visible = overwatch.CanMessageSquad;
+                    monitor.MessageLeaderButton.Visible = overwatch.CanMessageSquad;
                 }
                 else
                 {
                     TabContainer.SetTabVisible(monitor.OrbitalBombardment, false);
                     monitor.MessageSquadButton.Visible = false;
+                    monitor.MessageLeaderButton.Visible = false;
                 }
 
                 _squadViews[squad.Id] = monitor;
@@ -700,7 +703,14 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
                 {
                     Margin = new Thickness(0, 3, 0, 3)
                 };
-                roleNameLabel.SetMarkupPermissive($"[bold]{role.OverwatchRoleName}[/bold]");
+                var overwatchRoleName = role.LocalizedName;
+                if (role.OverwatchRoleName is { } roleName &&
+                    _localization.TryGetString(roleName, out var localizedRoleName))
+                {
+                    overwatchRoleName = localizedRoleName;
+                }
+
+                roleNameLabel.SetMarkupPermissive($"[bold]{overwatchRoleName}[/bold]");
 
                 roleNamePanel.AddChild(new BoxContainer
                 {
@@ -812,35 +822,6 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
 
         UpdateView();
         UpdateObjectivesWindow();
-    }
-
-    private void RefreshAntiAirHeader(OverwatchConsoleBuiState state)
-    {
-        if (Window == null)
-            return;
-
-        var selectSquad = Loc.GetString("rmc-overwatch-console-disabled-select-squad");
-        if (!state.AntiAir.HasConsole)
-        {
-            Window.OverwatchHeader.SetMarkupPermissive($"[color=#88C7FA]{selectSquad}[/color]");
-            return;
-        }
-
-        var status = state.AntiAir.Disabled
-            ? Loc.GetString("rmc-anti-air-status-disabled")
-            : Loc.GetString("rmc-anti-air-status-operational");
-
-        var zone = state.AntiAir.ProtectedZone ?? Loc.GetString("rmc-anti-air-zone-none");
-        var engagement = !state.AntiAir.Disabled && state.AntiAir.ProtectedZone != null
-            ? Loc.GetString("rmc-anti-air-status-engaged")
-            : Loc.GetString("rmc-anti-air-status-disengaged");
-
-        var antiAir = Loc.GetString("rmc-overwatch-anti-air-status",
-            ("status", status),
-            ("zone", zone),
-            ("engagement", engagement));
-
-        Window.OverwatchHeader.SetMarkupPermissive($"[color=#88C7FA]{selectSquad}[/color]\n[color=#CED22B]{antiAir}[/color]");
     }
 
     private void UpdateObjectivesWindow()
@@ -955,6 +936,7 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
             );
 
             squad.HasOrbital = console.HasOrbital;
+            squad.OrbitalSafetyEngaged = console.OrbitalSafetyEngaged;
             squad.NextOrbitalAt = console.NextOrbitalLaunch;
         }
     }
@@ -1195,6 +1177,29 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
 
         commentEdit.LastSubmitted = comment;
         onComment(index, comment);
+    }
+
+    private void OpenMessageInput(Func<string, BoundUserInterfaceMessage> messageFactory)
+    {
+        var window = new OverwatchTextInputWindow();
+
+        void SendMessage()
+        {
+            // Stories-TTS-Start
+            var text = window.MessageBox.Text;
+            var filter = EntMan.System<ChatFilterSystem>();
+            if (filter != null)
+                text = filter.ApplyClientReplacements(text);
+
+            SendPredictedMessage(messageFactory(text));
+            window.Close();
+            // Stories-TTS-End
+        }
+
+        window.MessageBox.OnTextEntered += _ => SendMessage();
+        window.OkButton.OnPressed += _ => SendMessage();
+        window.CancelButton.OnPressed += _ => window.Close();
+        window.OpenCentered();
     }
 
     public void Refresh()
