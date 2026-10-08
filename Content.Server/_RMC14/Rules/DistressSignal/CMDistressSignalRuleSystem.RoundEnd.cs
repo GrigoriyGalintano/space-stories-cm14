@@ -259,6 +259,7 @@ public sealed partial class CMDistressSignalRuleSystem
         if (distress == null)
             return;
 
+        // Stories-DistressPersistence-Start
         if (distress.Result is not { } result || result == DistressSignalRuleResult.None)
             return;
 
@@ -291,20 +292,22 @@ public sealed partial class CMDistressSignalRuleSystem
             value = Math.Clamp(value + adjust * _autoBalanceStep, _autoBalanceMin, _autoBalanceMax);
 
         FinishPersistentRound(ev.RoundId, result, value);
+        // Stories-DistressPersistence-End
     }
 
     private void OnRoundRestartCleanup(RoundRestartCleanupEvent ev)
     {
         InvalidateActiveRule();
+        // Stories-DistressPersistence-Start
         ResetSelectedPlanet();
         StartPlanetVote();
+        // Stories-DistressPersistence-End
         _spawnedDropships = false;
         _commandingOfficerBriefingScheduled = false;
         OperationName = null;
         _usingCustomOperationName = false;
         ActiveNightmareScenario = null;
         _config.SetCVar(CCVars.GameDisallowLateJoins, false);
-
     }
 
     /// <summary>

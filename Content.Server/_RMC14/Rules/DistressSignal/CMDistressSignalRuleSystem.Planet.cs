@@ -28,7 +28,7 @@ public sealed partial class CMDistressSignalRuleSystem
     private bool SpawnXenoMap(Entity<CMDistressSignalRuleComponent> rule)
     {
         var planet = SelectRandomPlanet();
-        TrackPlayedPlanet(planet.Proto.ID);
+        TrackPlayedPlanet(planet.Proto.ID); // Stories-DistressPersistence
 
         if (!_mapLoader.TryLoadMap(planet.Comp.Map, out var mapNullable, out var grids))
             return false;
@@ -136,17 +136,19 @@ public sealed partial class CMDistressSignalRuleSystem
     /// Forces the selected planet for the current round, overriding random selection or voting.
     /// </summary>
     /// <param name="planet">The planet to use for this round.</param>
+    // Stories-DistressPersistence-Start
     public bool SetPlanet(RMCPlanet planet)
     {
         return TryPersistVotingState(planet, _carryoverVotes, keepPendingOnFailure: false);
     }
+    // Stories-DistressPersistence-End
 
     /// <summary>
     /// Starts a voting session for selecting the next planet map, supporting carryover votes from previous rounds.
     /// </summary>
     private void StartPlanetVote()
     {
-        if (!_config.GetCVar(RMCCVars.RMCPlanetMapVote) || !TryPreparePersistence())
+        if (!_config.GetCVar(RMCCVars.RMCPlanetMapVote) || !TryPreparePersistence()) // Stories-DistressPersistence
             return;
 
         var planets = _rmcPlanet.GetCandidatesInRotation();
@@ -227,6 +229,7 @@ public sealed partial class CMDistressSignalRuleSystem
             }
             sb.AppendLine(Loc.GetString("rmc-distress-signal-next-map-win", ("winner", picked.Proto.Name)));
 
+            // Stories-DistressPersistence-Start
             var carryoverVotes = new Dictionary<EntProtoId<RMCPlanetMapPrototypeComponent>, int>(_carryoverVotes);
             foreach (var (planet, votes) in planets.Zip(args.Votes))
             {
@@ -236,6 +239,7 @@ public sealed partial class CMDistressSignalRuleSystem
 
             carryoverVotes[picked.Proto.ID] = 0;
             TryPersistVotingState(picked, carryoverVotes, keepPendingOnFailure: true, sb.ToString());
+            // Stories-DistressPersistence-End
         };
         _currentVote.OnCancelled += _ => _currentVote = null;
     }

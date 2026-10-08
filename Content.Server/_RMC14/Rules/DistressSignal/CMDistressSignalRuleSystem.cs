@@ -8,7 +8,6 @@ using Content.Server._RMC14.Xenonids.Hive;
 using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
 using Content.Server.Chat.Managers;
-using Content.Server.Database;
 using Content.Server.Fax;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Events;
@@ -73,8 +72,8 @@ using Robust.Server.Audio;
 using Robust.Server.Containers;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
+using Robust.Shared.Asynchronous; // Stories-DistressPersistence
 using Robust.Shared.Configuration;
-using Robust.Shared.Asynchronous;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
@@ -160,9 +159,7 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
     [Dependency] private readonly SharedXenoConstructionSystem _xenoConstruction = default!;
     [Dependency] private readonly SharedRoleSystem _roles = default!;
     [Dependency] private readonly LarvaQueueSystem _larvaQueue = default!;
-    [Dependency] private readonly IServerDbManager _db = default!;
-    [Dependency] private readonly ServerDbEntryManager _dbEntry = default!;
-    [Dependency] private readonly ITaskManager _task = default!;
+    [Dependency] private readonly ITaskManager _task = default!; // Stories-DistressPersistence
 
     private readonly HashSet<string> _operationNames = new();
     private readonly HashSet<string> _operationPrefixes = new();
@@ -222,6 +219,7 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
 
     private Entity<CMDistressSignalRuleComponent>? TryGetActiveRuleEntity()
     {
+        // Stories-DistressPersistence-Start
         if (_activeRule.HasValue &&
             Exists(_activeRule.Value) &&
             HasComp<ActiveGameRuleComponent>(_activeRule.Value))
@@ -230,6 +228,7 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
         }
 
         _activeRule = null;
+        // Stories-DistressPersistence-End
         var query = QueryActiveRules();
         while (query.MoveNext(out var uid, out _, out var comp, out var gameRule))
         {
@@ -268,7 +267,7 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
         SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnCommandingOfficerSpawnComplete);
         SubscribeLocalEvent<RoundEndMessageEvent>(OnRoundEndMessage);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
-        SubscribeLocalEvent<RoundStartingEvent>(OnPersistenceRoundStarting);
+        SubscribeLocalEvent<RoundStartingEvent>(OnPersistenceRoundStarting); // Stories-DistressPersistence
         SubscribeLocalEvent<DropshipLandedOnPlanetEvent>(OnDropshipLandedOnPlanet);
         SubscribeLocalEvent<DropshipHijackStartEvent>(OnDropshipHijackStart);
         SubscribeLocalEvent<DropshipHijackLandedEvent>(OnDropshipHijackLanded);
@@ -286,7 +285,7 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
         SubscribeLocalEvent<XenoComponent, ComponentInit>(OnXenoComponentInit);
         SubscribeLocalEvent<HiveMemberComponent, HiveChangedEvent>(OnHiveChanged);
 
-        Subs.CVar(_config, RMCCVars.CMMarinesPerXeno, OnMarinesPerXenoChanged, true);
+        Subs.CVar(_config, RMCCVars.CMMarinesPerXeno, OnMarinesPerXenoChanged, true); // Stories-DistressPersistence
         Subs.CVar(_config, RMCCVars.RMCAutoBalance, v => _autoBalance = v, true);
         Subs.CVar(_config, RMCCVars.RMCAutoBalanceStep, v => _autoBalanceStep = v, true);
         Subs.CVar(_config, RMCCVars.RMCAutoBalanceMax, v => _autoBalanceMax = v, true);
@@ -294,7 +293,7 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
         Subs.CVar(_config, RMCCVars.RMCMarinesPerSurvivor, v => _marinesPerSurvivor = v, true);
         Subs.CVar(_config, RMCCVars.RMCSurvivorsMaximum, v => _maximumSurvivors = v, true);
         Subs.CVar(_config, RMCCVars.RMCSurvivorsMinimum, v => _minimumSurvivors = v, true);
-        Subs.CVar(_config, RMCCVars.RMCPlanetMapVoteExcludeLast, OnMapVoteExcludeLastChanged, true);
+        Subs.CVar(_config, RMCCVars.RMCPlanetMapVoteExcludeLast, OnMapVoteExcludeLastChanged, true); // Stories-DistressPersistence
         Subs.CVar(_config, RMCCVars.RMCUseCarryoverVoting, v => _useCarryoverVoting = v, true);
         Subs.CVar(_config, RMCCVars.RMCLandingZoneMiasmaEnabled, v => _landingZoneMiasmaEnabled = v, true);
         Subs.CVar(_config, RMCCVars.RMCDropshipInitialDelayMinutes, v => _dropshipPreflight = TimeSpan.FromMinutes(v), true);
@@ -311,7 +310,7 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
         Subs.CVar(_config, RMCCVars.RMCQueenBuildingBoostRemoteRange, v => _queenBoostRemoteRange = v, true);
 
         ReloadPrototypes();
-        BeginPersistenceLoad();
+        InitializePersistence(); // Stories-DistressPersistence
     }
 
     private void OnPrototypesReloaded(PrototypesReloadedEventArgs ev)
@@ -322,8 +321,10 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
 
     private void OnMapLoading(LoadingMapsEvent ev)
     {
+        // Stories-DistressPersistence-Start
         if (TryPreparePersistence())
             SelectRandomPlanet();
+        // Stories-DistressPersistence-End
 
         GameTicker.UpdateInfoText();
     }

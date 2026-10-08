@@ -1,6 +1,8 @@
+// ReSharper disable CheckNamespace
 using System.Linq;
 using System.Threading.Tasks;
-using Content.Server.Database;
+using Content.Server._Stories.DistressSignal;
+using Content.Shared._Stories.DistressSignal;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Events;
 using Content.Shared._RMC14.CCVar;
@@ -14,11 +16,14 @@ namespace Content.Server._RMC14.Rules.DistressSignal;
 
 public sealed partial class CMDistressSignalRuleSystem
 {
-    private Task<(int ServerId, RMCDistressSignalStateRecord State)>? _persistenceLoadTask;
+    private Task<StoriesDistressSignalState>? _persistenceLoadTask;
     private bool _persistenceLoaded;
     private bool _persistenceInitialized;
     private bool _applyingPersistedBalance;
-    private int _persistenceServerId;
+    private StoriesDistressSignalStore? _persistenceStore;
+    private DateTime _nextPersistenceAttempt;
+    private bool _persistenceConfigurationInvalid;
+    private int? _lastFinalizedRoundId;
     private float _persistedMarinesPerXeno;
     private PendingRoundFinalization? _pendingRoundFinalization;
     private PendingVotingState? _pendingVotingState;
@@ -31,26 +36,59 @@ public sealed partial class CMDistressSignalRuleSystem
         Dictionary<string, int> CarryoverVotes,
         string? Announcement);
 
-    private void BeginPersistenceLoad()
+    private void InitializePersistence()
     {
-        if (_persistenceLoaded || _persistenceLoadTask != null)
+        var url = _config.GetCVar(StoriesDistressSignalCVars.ApiUrl);
+        if (string.IsNullOrWhiteSpace(url))
             return;
 
-        _persistenceLoadTask = LoadPersistence();
-
-        async Task<(int ServerId, RMCDistressSignalStateRecord State)> LoadPersistence()
+        try
         {
-            var server = await _dbEntry.ServerEntity;
-            var state = await _db.GetOrCreateRMCDistressSignalState(
-                server.Id,
-                _mapVoteExcludeLast,
-                _marinesPerXeno);
-            return (server.Id, state);
+            _persistenceStore = new StoriesDistressSignalStore(
+                url,
+                _config.GetCVar(StoriesDistressSignalCVars.ApiToken),
+                _config.GetCVar(StoriesDistressSignalCVars.ServerId));
+            BeginPersistenceLoad();
         }
+        catch (Exception e)
+        {
+            _persistenceConfigurationInvalid = true;
+            Log.Error($"Invalid Distress Signal persistence configuration: {e.Message}");
+        }
+    }
+
+    public override void Shutdown()
+    {
+        _persistenceStore?.Dispose();
+        base.Shutdown();
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+        if (_persistenceStore != null && DateTime.UtcNow >= _nextPersistenceAttempt &&
+            (!_persistenceLoaded || _pendingRoundFinalization != null || _pendingVotingState != null))
+        {
+            TryPreparePersistence();
+        }
+    }
+
+    private void BeginPersistenceLoad()
+    {
+        if (_persistenceStore == null || _persistenceLoaded || _persistenceLoadTask != null ||
+            DateTime.UtcNow < _nextPersistenceAttempt)
+            return;
+
+        _persistenceLoadTask = _persistenceStore.GetOrCreateState(_mapVoteExcludeLast, _marinesPerXeno);
     }
 
     private bool TryPreparePersistence(bool block = false)
     {
+        if (_persistenceConfigurationInvalid)
+            return false;
+        if (_persistenceStore == null)
+            return true;
+
         if (!_persistenceLoaded)
         {
             BeginPersistenceLoad();
@@ -67,7 +105,7 @@ public sealed partial class CMDistressSignalRuleSystem
                     return false;
 
                 var loaded = loadTask.GetAwaiter().GetResult();
-                ApplyLoadedPersistence(loaded.ServerId, loaded.State);
+                ApplyLoadedPersistence(loaded);
                 _persistenceLoaded = true;
                 _persistenceInitialized = true;
                 _persistenceLoadTask = null;
@@ -75,7 +113,7 @@ public sealed partial class CMDistressSignalRuleSystem
             catch (Exception e)
             {
                 Log.Error($"Failed to load Distress Signal persistence:\n{e}");
-                _persistenceLoadTask = null;
+                InvalidatePersistence();
                 return false;
             }
         }
@@ -83,9 +121,8 @@ public sealed partial class CMDistressSignalRuleSystem
         return TryFlushPendingPersistence();
     }
 
-    private void ApplyLoadedPersistence(int serverId, RMCDistressSignalStateRecord state)
+    private void ApplyLoadedPersistence(StoriesDistressSignalState state)
     {
-        _persistenceServerId = serverId;
         ReplaceRecentPlanets(state.RecentPlanetIds);
 
         var allPlanetIds = _rmcPlanet.GetAllPlanets()
@@ -113,8 +150,7 @@ public sealed partial class CMDistressSignalRuleSystem
 
         if (carryoverVotes.Count != state.CarryoverVotes.Count || selectedPlanetId != state.SelectedPlanetId)
         {
-            WaitForPersistence(() => _db.SetRMCDistressSignalVotingState(
-                serverId,
+            WaitForPersistence(() => _persistenceStore!.SetVotingState(
                 selectedPlanetId,
                 carryoverVotes));
         }
@@ -129,19 +165,18 @@ public sealed partial class CMDistressSignalRuleSystem
         {
             if (_pendingRoundFinalization is { } round)
             {
-                var balance = WaitForPersistence(() => _db.FinishRMCDistressSignalRound(
-                    _persistenceServerId,
+                var balance = WaitForPersistence(() => _persistenceStore!.FinishRound(
                     round.RoundId,
                     round.Result,
                     round.MarinesPerXeno));
                 ApplyPersistedBalance(balance);
+                _lastFinalizedRoundId = round.RoundId;
                 _pendingRoundFinalization = null;
             }
 
             if (_pendingVotingState is { } voting)
             {
-                WaitForPersistence(() => _db.SetRMCDistressSignalVotingState(
-                    _persistenceServerId,
+                WaitForPersistence(() => _persistenceStore!.SetVotingState(
                     voting.SelectedPlanetId,
                     voting.CarryoverVotes));
                 ApplyVotingState(voting);
@@ -162,6 +197,7 @@ public sealed partial class CMDistressSignalRuleSystem
     {
         _persistenceLoaded = false;
         _persistenceLoadTask = null;
+        _nextPersistenceAttempt = DateTime.UtcNow.AddSeconds(5);
     }
 
     private void OnPersistenceRoundStarting(RoundStartingEvent ev)
@@ -181,7 +217,7 @@ public sealed partial class CMDistressSignalRuleSystem
         if (TryPreparePersistence())
             return;
 
-        var message = Loc.GetString("rmc-distress-signal-persistence-unavailable");
+        var message = Loc.GetString("stories-distress-signal-persistence-unavailable");
         _chatManager.SendAdminAnnouncement(message);
         _chatManager.DispatchServerAnnouncement(message);
         ev.Cancel();
@@ -191,7 +227,7 @@ public sealed partial class CMDistressSignalRuleSystem
     {
         _marinesPerXeno = value;
 
-        if (_applyingPersistedBalance || !_persistenceInitialized)
+        if (_persistenceStore == null || _applyingPersistedBalance || !_persistenceInitialized)
             return;
 
         try
@@ -199,7 +235,7 @@ public sealed partial class CMDistressSignalRuleSystem
             if (!TryPreparePersistence(block: true))
                 throw new InvalidOperationException("Distress Signal persistence is unavailable.");
 
-            WaitForPersistence(() => _db.SetRMCDistressSignalBalance(_persistenceServerId, value));
+            WaitForPersistence(() => _persistenceStore!.SetBalance(value));
             ApplyPersistedBalance(value);
         }
         catch (Exception e)
@@ -231,13 +267,12 @@ public sealed partial class CMDistressSignalRuleSystem
         _mapVoteExcludeLast = Math.Max(0, value);
         TrimRecentPlanets();
 
-        if (!_persistenceLoaded || _mapVoteExcludeLast <= previous)
+        if (_persistenceStore == null || !_persistenceLoaded || _mapVoteExcludeLast <= previous)
             return;
 
         try
         {
-            var planets = WaitForPersistence(() => _db.GetRecentRMCDistressSignalPlanets(
-                _persistenceServerId,
+            var planets = WaitForPersistence(() => _persistenceStore!.GetRecentPlanets(
                 _mapVoteExcludeLast));
             ReplaceRecentPlanets(planets);
         }
@@ -261,13 +296,19 @@ public sealed partial class CMDistressSignalRuleSystem
 
     private void TrackPlayedPlanet(EntProtoId<RMCPlanetMapPrototypeComponent> planetId)
     {
+        if (_persistenceStore == null)
+        {
+            _lastPlanetMaps.Enqueue(planetId);
+            TrimRecentPlanets();
+            return;
+        }
+
         if (!TryPreparePersistence(block: true))
             throw new InvalidOperationException("Distress Signal persistence is unavailable.");
 
         try
         {
-            WaitForPersistence(() => _db.AddRMCDistressSignalRound(
-                _persistenceServerId,
+            WaitForPersistence(() => _persistenceStore!.AddRound(
                 GameTicker.RoundId,
                 planetId.Id,
                 _marinesPerXeno));
@@ -292,18 +333,27 @@ public sealed partial class CMDistressSignalRuleSystem
 
     private void FinishPersistentRound(int roundId, DistressSignalRuleResult result, float marinesPerXeno)
     {
+        if (_lastFinalizedRoundId == roundId)
+            return;
+        if (_persistenceStore == null)
+        {
+            ApplyPersistedBalance(marinesPerXeno);
+            _lastFinalizedRoundId = roundId;
+            return;
+        }
+
         var pending = new PendingRoundFinalization(roundId, (int) result, marinesPerXeno);
         try
         {
             if (!TryPreparePersistence(block: true))
                 throw new InvalidOperationException("Distress Signal persistence is unavailable.");
 
-            var balance = WaitForPersistence(() => _db.FinishRMCDistressSignalRound(
-                _persistenceServerId,
+            var balance = WaitForPersistence(() => _persistenceStore!.FinishRound(
                 pending.RoundId,
                 pending.Result,
                 pending.MarinesPerXeno));
             ApplyPersistedBalance(balance);
+            _lastFinalizedRoundId = roundId;
             _pendingRoundFinalization = null;
         }
         catch (Exception e)
@@ -328,6 +378,12 @@ public sealed partial class CMDistressSignalRuleSystem
                 .ToDictionary(v => v.Key.Id, v => v.Value),
             announcement);
 
+        if (_persistenceStore == null && !_persistenceConfigurationInvalid)
+        {
+            ApplyVotingState(pending);
+            return true;
+        }
+
         if (!TryPreparePersistence(block: true))
         {
             if (keepPendingOnFailure)
@@ -338,8 +394,7 @@ public sealed partial class CMDistressSignalRuleSystem
 
         try
         {
-            WaitForPersistence(() => _db.SetRMCDistressSignalVotingState(
-                _persistenceServerId,
+            WaitForPersistence(() => _persistenceStore!.SetVotingState(
                 pending.SelectedPlanetId,
                 pending.CarryoverVotes));
             ApplyVotingState(pending);

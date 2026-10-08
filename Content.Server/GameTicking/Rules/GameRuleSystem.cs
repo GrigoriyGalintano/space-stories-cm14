@@ -22,14 +22,14 @@ public abstract partial class GameRuleSystem<T> : EntitySystem where T : ICompon
     {
         base.Initialize();
 
-        SubscribeLocalEvent<RoundStartAttemptEvent>(OnRoundStartAttempt); // RMC14
+        SubscribeLocalEvent<RoundStartAttemptEvent>(OnRoundStartAttempt); // Stories-DistressPersistence
         SubscribeLocalEvent<T, GameRuleAddedEvent>(OnGameRuleAdded);
         SubscribeLocalEvent<T, GameRuleStartedEvent>(OnGameRuleStarted);
         SubscribeLocalEvent<T, GameRuleEndedEvent>(OnGameRuleEnded);
         SubscribeLocalEvent<RoundEndTextAppendEvent>(OnRoundEndTextAppend);
     }
 
-    // RMC14 start
+    // Stories-DistressPersistence-Start
     private void OnRoundStartAttempt(RoundStartAttemptEvent args)
     {
         if (args.Cancelled)
@@ -70,7 +70,7 @@ public abstract partial class GameRuleSystem<T> : EntitySystem where T : ICompon
     protected virtual void BeforeStartAttempt(RoundStartAttemptEvent ev)
     {
     }
-    // RMC14 end
+    // Stories-DistressPersistence-End
 
     private void OnGameRuleAdded(EntityUid uid, T component, ref GameRuleAddedEvent args)
     {
