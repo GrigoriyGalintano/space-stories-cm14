@@ -85,6 +85,7 @@ public sealed class DialogSystem : EntitySystem
         dialog.Message = new DialogOption(message);
         dialog.DialogType = DialogType.Options;
         dialog.Options = options;
+        dialog.Event = null;
         dialog.InputEvent = null;
         dialog.ConfirmEvent = null;
         dialog.EnableSearch = enableSearch;
@@ -102,7 +103,8 @@ public sealed class DialogSystem : EntitySystem
     {
         var dialog = PrepareDialog(target, actor);
         dialog.DialogType = DialogType.Input;
-        dialog.Message = new DialogOption(message, ev);
+        dialog.Message = new DialogOption(message);
+        dialog.Event = null;
         dialog.Options.Clear();
         dialog.InputEvent = ev;
         dialog.ConfirmEvent = null;
@@ -127,7 +129,8 @@ public sealed class DialogSystem : EntitySystem
         var dialog = PrepareDialog(target, actor);
         dialog.DialogType = DialogType.Confirm;
         dialog.Title = title;
-        dialog.Message = new DialogOption(message, ev);
+        dialog.Message = new DialogOption(message);
+        dialog.Event = null;
         dialog.Options.Clear();
         dialog.InputEvent = null;
         dialog.ConfirmEvent = ev;
