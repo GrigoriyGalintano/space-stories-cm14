@@ -40,6 +40,12 @@ public sealed partial class MarineCommunicationsComputerComponent : Component
     public bool SendAnnouncementOverlay = true;
 
     [DataField, AutoNetworkedField]
+    public bool CanTransmitDistress = true;
+
+    [DataField, AutoNetworkedField]
+    public int DistressReasonLimit = 200;
+
+    [DataField, AutoNetworkedField]
     public string? AnnounceName;
 
     [DataField, AutoNetworkedField]

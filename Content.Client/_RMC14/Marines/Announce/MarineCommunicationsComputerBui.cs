@@ -48,6 +48,16 @@ public sealed class MarineCommunicationsComputerBui(EntityUid owner, Enum uiKey)
         if (comp is { CanCreateEcho: true })
             _window.EchoButton.OnPressed += _ => SendPredictedMessage(new MarineCommunicationsEchoSquadMsg());
 
+        if (comp is { CanTransmitDistress: true })
+        {
+            _window.DistressButton.OnPressed += _ => SendPredictedMessage(new MarineCommunicationsDistressBeaconMsg());
+        }
+        else
+        {
+            _window.DistressButton.Visible = false;
+            _window.DistressSeparator.Visible = false;
+        }
+
         if (comp is { CanInitiateEvac: true })
         {
             _window.EvacuationButton.OnPressed += _ =>
@@ -127,6 +137,9 @@ public sealed class MarineCommunicationsComputerBui(EntityUid owner, Enum uiKey)
         _window.EchoButton.Visible =
             computer.CanCreateEcho;
         _window.EchoSeparator.Visible = _window.EchoButton.Visible;
+        _window.DistressButton.Visible = computer.CanTransmitDistress;
+        _window.DistressButton.Disabled = State is not MarineCommunicationsComputerBuiState { DistressBeaconEnabled: true };
+        _window.DistressSeparator.Visible = _window.DistressButton.Visible;
 
         if (EntMan.TryGetComponent(Owner, out MarineControlComputerComponent? evaccomputer))
         {

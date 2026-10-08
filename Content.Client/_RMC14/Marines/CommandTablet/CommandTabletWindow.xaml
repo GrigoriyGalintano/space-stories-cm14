@@ -41,7 +41,9 @@
                                HorizontalExpand="True" Align="Center" FontColorOverride="#FFFFFF" />
                     </BoxContainer>
                 </crt:RMCCrtPanel>
-                <!-- TODO RMC14: Add Distress Beacon only when RMC14 has a real distress/ERT system. -->
+                <crt:RMCCrtActionButton Name="DistressButton" Access="Public"
+                    Text="{Loc rmc-ert-announcement-title-distress-beacon}" IconState="warning"
+                    Variant="Filled" ContentAlignment="Left" MinHeight="29" />
                 <crt:RMCCrtActionButton Name="EvacuationButton" Access="Public"
                     Text="{Loc rmc-command-tablet-initiate-evacuation}" IconState="door_open"
                     Variant="Filled" ContentAlignment="Left" MinHeight="29" />

@@ -6,6 +6,7 @@ using Content.Server.Radio.EntitySystems;
 using Content.Shared._RMC14.ARES;
 using Content.Shared._RMC14.ARES.Logs;
 using Content.Shared._RMC14.Announce;
+using Content.Shared._RMC14.AlertLevel;
 using Content.Shared._RMC14.Dropship;
 using Content.Shared._RMC14.Marines.Announce;
 using Content.Shared._RMC14.Marines.GroundsideOperations;
@@ -30,11 +31,13 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
 {
     [Dependency] private readonly IAdminLogManager _adminLogs = default!;
     [Dependency] private readonly AnnouncementRouterSystem _announcementRouter = default!;
+    [Dependency] private readonly RMCAlertLevelSystem _alertLevel = default!;
     [Dependency] private readonly ARESCoreSystem _core = default!;
     [Dependency] private readonly CMDistressSignalRuleSystem _distressSignal = default!;
     [Dependency] private readonly SharedDropshipSystem _dropship = default!;
     [Dependency] private readonly RadioSystem _radio = default!;
     [Dependency] private readonly SquadSystem _squad = default!;
+    [Dependency] private readonly SharedUserInterfaceSystem _ui = default!;
     // Stories-TTS-Start
     [Dependency] private readonly TTSSystem _tts = default!;
     [Dependency] private readonly IConfigurationManager _configManager = default!;
@@ -50,6 +53,7 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
         SubscribeLocalEvent<MarineCommunicationsComputerComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<MarineCommunicationsComputerComponent, BoundUIOpenedEvent>(OnBUIOpened);
 
+        SubscribeLocalEvent<RMCAlertLevelChangedEvent>(OnAlertLevelChanged);
         SubscribeLocalEvent<RMCPlanetComponent, RMCPlanetAddedEvent>(OnPlanetAdded);
 
         Subs.BuiEvents<MarineCommunicationsComputerComponent>(MarineCommunicationsComputerUI.Key,
@@ -75,6 +79,16 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
     }
 
     private void OnPlanetAdded(Entity<RMCPlanetComponent> ent, ref RMCPlanetAddedEvent args)
+    {
+        UpdateCommunicationsComputers();
+    }
+
+    private void OnAlertLevelChanged(ref RMCAlertLevelChangedEvent ev)
+    {
+        UpdateCommunicationsComputers();
+    }
+
+    private void UpdateCommunicationsComputers()
     {
         var computers = EntityQueryEnumerator<MarineCommunicationsComputerComponent>();
         while (computers.MoveNext(out var uid, out var computer))
@@ -121,6 +135,12 @@ public sealed class MarineAnnounceSystem : SharedMarineAnnounceSystem
 
         computer.Comp.LandingZones.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
         Dirty(computer);
+
+        var distressBeaconEnabled = computer.Comp.CanTransmitDistress && _alertLevel.IsRedOrDeltaAlert();
+        var state = new MarineCommunicationsComputerBuiState(
+            computer.Comp.Planet, computer.Comp.Operation,
+            new List<LandingZone>(computer.Comp.LandingZones), distressBeaconEnabled);
+        _ui.SetUiState(computer.Owner, MarineCommunicationsComputerUI.Key, state);
     }
 
     public override void AnnounceToMarines(
