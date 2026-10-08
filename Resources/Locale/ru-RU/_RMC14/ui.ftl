@@ -4,6 +4,17 @@ rmc-ui-options-cassettes-volume = Громкость кассет:
 rmc-ui-options-hijack-song-volume = Громкость песен захвата:
 rmc-ui-options-xeno-ability-previews = Показать предварительный просмотр способностей ксеноморфов
 rmc-ui-options-marine-equipment-previews = Показать предварительный просмотр снаряжения морпехов
+rmc-ui-options-post-death-chat-mute = Кратковременно заглушать чат после смерти
+rmc-ui-options-post-death-chat-mute-confirmation-title = Отключить заглушение чата после смерти?
+rmc-ui-options-post-death-chat-mute-confirmation-text = Отключение этого заглушения означает, что вы можете сразу же увидеть реакцию других персонажей после смерти вашего персонажа.
+  Помните о необходимости разделять взаимодействия персонажей и взаимодействия игроков: комментарии о вашем персонаже не обязательно направлены в ваш адрес.
+
+  Если вас что-то расстроило, сделайте перерыв перед ответом и используйте помощь администрации (ahelp) при нарушениях правил.
+  Ознакомьтесь с "Отказом от ответственности за сеттинг ролевой игры" в разделе правил "Не проявлять враждебность/не преследовать других".
+
+  Продолжая, вы подтверждаете, что можете увидеть потенциально неприятные реакции после смерти, и соглашаетесь не злиться на других игроков из-за внутриигровых взаимодействий персонажей.
+rmc-ui-options-post-death-chat-mute-confirmation-accept = Я понимаю, отключить
+rmc-ui-options-post-death-chat-mute-confirmation-deny = Оставить заглушение включённым
 
 rmc-ui-voicelines = Голосовые реплики
 rmc-ui-options-tab-voicelines = Голосовые реплики
@@ -94,7 +105,7 @@ rmc-other-credits-tab = Другое
 rmc-ui-auto-punctuate = Автоматически расставляйте знаки препинания в символьных сообщениях
 rmc-ui-auto-eject-magazines = Автоматическое извлечение магазинов из оружия
 rmc-ui-damage-yourself = Возможность наносить себе повреждения с помощью оружия ближнего боя
-rmc-ui-hive-leader-tackle-xenos = Tackle other xenos as hive leader.
+rmc-ui-hive-leader-tackle-xenos = Толкать других ксеноморфов в качестве лидера улья.
 rmc-ui-show-new-player-icons = Отображайте значки новых игроков в качестве ролей наставника или руководителя отдела.
 rmc-ui-xeno-night-vision-default = Ночное видение ксеноморфов по умолчанию
 rmc-ui-xeno-night-vision-default-off = Выключено

@@ -49,8 +49,6 @@
       jobs:
       - CMNurse
       entries:
-      - id: RMCScrubsLightBlue
-        recommended: true
       - id: RMCScrubsPharm
       - id: CMScrubsPurple
       - id: RMCScrubsOlive
@@ -66,8 +64,6 @@
       - CMCMO
       - CMResearcher
       entries:
-      - id: CMScrubsBlue
-        recommended: true
       - id: CMScrubsGreen
         recommended: true
       - id: RMCScrubsPharm
@@ -149,9 +145,7 @@
       - id: CMBackpackMarine
         name: рюкзак
         replaceSlot: back
-      - id: CMSatchelMarine
-        name: сумка
-        replaceSlot: back
+
       - id: CMBackpackMedical
         replaceSlot: back
         recommended: true

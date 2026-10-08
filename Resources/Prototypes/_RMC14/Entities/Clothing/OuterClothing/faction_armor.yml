@@ -296,12 +296,6 @@
     walkModifier: 0.666
     sprintModifier: 0.666
   # Stories-Balance-End
-  - type: ClothingRequireEquipped
-    autoUnequip: true
-    denyReason: rmc-armor-not-un-security-jumpsuit
-    whitelist:
-      tags:
-      - RMCUniformUNSecurity
 
 - type: entity
   parent: RMCArmorPMCRiot
