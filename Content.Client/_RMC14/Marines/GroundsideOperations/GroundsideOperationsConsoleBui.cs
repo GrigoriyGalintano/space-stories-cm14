@@ -44,6 +44,7 @@ public sealed class GroundsideOperationsConsoleBui(EntityUid owner, Enum uiKey) 
         _window.RedAlertButton.OnPressed += _ => ConfirmRedAlert();
         _window.GeneralQuartersButton.OnPressed += _ => ConfirmGeneralQuarters();
         _window.EvacuationButton.OnPressed += _ => ConfirmEvacuation();
+        _window.DistressButton.OnPressed += _ => SendPredictedMessage(new MarineCommunicationsDistressBeaconMsg());
         Refresh();
     }
 
@@ -225,6 +226,11 @@ public sealed class GroundsideOperationsConsoleBui(EntityUid owner, Enum uiKey) 
         }
 
         _window.SetButtonState(_window.EchoButton, !communications.CanCreateEcho);
+        _window.DistressButton.Visible = communications.CanTransmitDistress;
+        _window.SetButtonState(
+            _window.DistressButton,
+            groundside.AlertLevel < RMCAlertLevels.Red,
+            iconState: RMCCrtIcons.Warning);
 
         var groundAnnouncementLeft = Remaining(communications.LastAnnouncement, communications.Cooldown);
         SetCooldownButton(

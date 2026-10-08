@@ -32,6 +32,8 @@ public sealed class CommandTabletBui(EntityUid owner, Enum uiKey) : BoundUserInt
         _window.TacticalMapButton.OnPressed += _ =>
             SendPredictedMessage(new MarineCommunicationsOpenMapMsg());
         _window.EvacuationButton.OnPressed += _ => ConfirmEvacuation();
+        _window.DistressButton.OnPressed += _ =>
+            SendPredictedMessage(new MarineCommunicationsDistressBeaconMsg());
         Refresh();
     }
 
@@ -51,6 +53,8 @@ public sealed class CommandTabletBui(EntityUid owner, Enum uiKey) : BoundUserInt
         RefreshAnnouncement(communications);
         _window.MedalButton.Visible = communications.CanGiveMedals;
         _window.TacticalMapButton.Visible = EntMan.HasComponent<TacticalMapComputerComponent>(Owner);
+        _window.DistressButton.Visible = communications.CanTransmitDistress;
+        _window.DistressButton.Disabled = State is not MarineCommunicationsComputerBuiState { DistressBeaconEnabled: true };
 
         if (!communications.CanInitiateEvac ||
             !EntMan.TryGetComponent(Owner, out MarineControlComputerComponent? control))

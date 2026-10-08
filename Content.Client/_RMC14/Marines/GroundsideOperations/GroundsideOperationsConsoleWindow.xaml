@@ -92,7 +92,9 @@
                             <crt:RMCCrtActionButton Name="EvacuationButton" Access="Public"
                                 IconState="door_open" Variant="Filled" MinHeight="32"
                                 IconSize="14" ContentMargin="7 4" ContentSeparation="6" TextFontSize="10" />
-                            <!-- TODO RMC14: restore distress/ERT only after a native workflow exists. -->
+                            <crt:RMCCrtActionButton Name="DistressButton" Access="Public"
+                                Text="{Loc rmc-ert-announcement-title-distress-beacon}" IconState="warning" Variant="Filled" MinHeight="32"
+                                IconSize="14" ContentMargin="7 4" ContentSeparation="6" TextFontSize="10" />
                             <Control VerticalExpand="True" />
                         </BoxContainer>
 

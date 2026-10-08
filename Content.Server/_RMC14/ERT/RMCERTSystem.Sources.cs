@@ -27,6 +27,7 @@ using Content.Shared._RMC14.Dropship;
 using Content.Shared._RMC14.ERT;
 using Content.Shared._RMC14.Evacuation;
 using Content.Shared._RMC14.Marines.Announce;
+using Content.Shared._RMC14.Marines.GroundsideOperations;
 using Content.Shared._RMC14.Rules;
 using Content.Shared.Buckle;
 using Content.Shared.Database;
@@ -74,11 +75,20 @@ public sealed partial class RMCERTSystem
         _dialog.OpenInput(args.Actor, Loc.GetString("rmc-ert-prompt-console-reason"), ev, true, ent.Comp.DistressReasonLimit);
     }
 
+    private void OnGroundsideOperationsDistressBeacon(
+        Entity<GroundsideOperationsConsoleComponent> ent,
+        ref MarineCommunicationsDistressBeaconMsg args)
+    {
+        if (TryComp(ent, out MarineCommunicationsComputerComponent? communications))
+            OnMarineCommunicationsDistressBeacon((ent.Owner, communications), ref args);
+    }
+
     private void OnConsoleReason(Entity<ActorComponent> ent, ref RMCERTConsoleDistressReasonEvent args)
     {
         if (!TryGetEntity(args.Console, out var consoleUid) ||
             !TryComp(consoleUid.Value, out MarineCommunicationsComputerComponent? consoleComp) ||
-            !_ui.IsUiOpen(consoleUid.Value, MarineCommunicationsComputerUI.Key, ent.Owner) ||
+            (!_ui.IsUiOpen(consoleUid.Value, MarineCommunicationsComputerUI.Key, ent.Owner) &&
+             !_ui.IsUiOpen(consoleUid.Value, GroundsideOperationsConsoleUi.Key, ent.Owner)) ||
             !_interaction.InRangeUnobstructed(ent.Owner, consoleUid.Value))
         {
             return;
@@ -210,6 +220,7 @@ public sealed partial class RMCERTSystem
             _popup.PopupEntity(result.Error, console, user, PopupType.MediumCaution);
 
         _ui.CloseUi(console, MarineCommunicationsComputerUI.Key, user);
+        _ui.CloseUi(console, GroundsideOperationsConsoleUi.Key, user);
     }
 
     private void CreateHandheldDistressRequest(Entity<RMCERTDistressBeaconComponent> beacon, EntityUid user, string reason)

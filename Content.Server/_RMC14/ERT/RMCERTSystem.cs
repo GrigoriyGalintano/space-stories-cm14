@@ -28,6 +28,7 @@ using Content.Shared._RMC14.Dropship;
 using Content.Shared._RMC14.ERT;
 using Content.Shared._RMC14.Evacuation;
 using Content.Shared._RMC14.Marines.Announce;
+using Content.Shared._RMC14.Marines.GroundsideOperations;
 using Content.Shared._RMC14.Rules;
 using Content.Shared.Buckle;
 using Content.Shared.Database;
@@ -136,6 +137,10 @@ public sealed partial class RMCERTSystem : EntitySystem
         Subs.BuiEvents<MarineCommunicationsComputerComponent>(MarineCommunicationsComputerUI.Key, subs =>
         {
             subs.Event<MarineCommunicationsDistressBeaconMsg>(OnMarineCommunicationsDistressBeacon);
+        });
+        Subs.BuiEvents<GroundsideOperationsConsoleComponent>(GroundsideOperationsConsoleUi.Key, subs =>
+        {
+            subs.Event<MarineCommunicationsDistressBeaconMsg>(OnGroundsideOperationsDistressBeacon);
         });
 
         _adminManager.OnPermsChanged += OnAdminPermsChanged;
