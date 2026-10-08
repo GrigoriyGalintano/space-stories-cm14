@@ -1,4 +1,6 @@
-﻿using Robust.Shared.Serialization;
+using Content.Shared._RMC14.Dialog;
+using Robust.Shared.Network;
+using Robust.Shared.Serialization;
 
 namespace Content.Shared._RMC14.Marines.Announce;
 
@@ -12,6 +14,12 @@ public enum MarineCommunicationsComputerUI
 public sealed class MarineCommunicationsOpenMapMsg : BoundUserInterfaceMessage;
 
 [Serializable, NetSerializable]
+public sealed class MarineCommunicationsOpenAnnouncementMsg : BoundUserInterfaceMessage;
+
+[Serializable, NetSerializable]
+public sealed record MarineCommunicationsAnnouncementDialogEvent(NetEntity User, string Message = "") : DialogInputEvent(Message);
+
+[Serializable, NetSerializable]
 public sealed class MarineCommunicationsEchoSquadMsg : BoundUserInterfaceMessage;
 
 [Serializable, NetSerializable]
@@ -19,6 +27,9 @@ public sealed class MarineCommunicationsOverwatchMsg : BoundUserInterfaceMessage
 
 [Serializable, NetSerializable]
 public sealed class MarineCommunicationsDistressBeaconMsg : BoundUserInterfaceMessage;
+
+[Serializable, NetSerializable]
+public sealed class MarineCommunicationsToggleEvacuationMsg : BoundUserInterfaceMessage;
 
 [Serializable, NetSerializable]
 public sealed class MarineCommunicationsComputerMsg(string text) : BoundUserInterfaceMessage

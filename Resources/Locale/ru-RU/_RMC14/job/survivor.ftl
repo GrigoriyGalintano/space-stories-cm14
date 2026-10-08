@@ -148,19 +148,53 @@ rmc-job-greeting-corporate-dome-goon-engi = Вы — корпоративный 
 
 # New Varadero Survs
 
+rmc-job-greeting-varadero = В соленом вечернем бризе разрушенной военно-морской базы Нью-Варадеро все еще витает зловоние горящего форона. Предсмертный хохот спектра эхом отдается в вашей голове, когда вы понимаете, что теперь вы одни из немногих выживших людей на этих измученных войной берегах. Благодаря чистой хитрости, стойкости и огневой мощи Организации Объединенных Наций вам удалось выжить против непрекращающихся орд ксенонидов и поверженного одинокого спектра... но крик новой королевы-матери возвращает вас к реальности. Это лишь вопрос времени, когда очередная кислотная волна этих ужасных тварей попытается смести вас.
+
+   Вы осведомлены об угрозе ксенонидов.
+
+   Ваша главная цель — пережить вспышку заражения.
+
+   Вы [bold][color=#51A16C][font size=16]НЕ ВРАЖДЕБНЫ к КМП США![/font][/color][/bold]
+
 rmc-job-name-survivor-commander-new-varadero = Командир
+rmc-job-prefix-survivor-varadero-commander = КМП США КОМ
 
-cm-job-name-surivor-beach-bum = Пляжный бродяга
+rmc-job-name-survivor-varadero-synth = Вспомогательный синтетик
+rmc-job-prefix-survivor-varadero-synth = КМП США СИН
 
-cm-job-name-survivor-cargo-technician = Техник грузового отсека Нью-Варадеро
+rmc-job-name-surivor-beach-bum = Пляжный бродяга
 
-cm-job-name-survivor-medical-technician = Фельдшер Нью-Варадеро
+rmc-job-name-survivor-varadero-chaplain = Базовый капеллан
+rmc-job-prefix-survivor-varadero-chaplain = КМП США КАП
 
-cm-job-name-survivor-technician = Инженер-техник Нью-Варадеро
+rmc-job-name-survivor-varadero-un-asst-rep = Помощник представителя США
+rmc-job-prefix-survivor-varadero-un-asst-rep = UN AST REP
 
-cm-job-name-survivor-un-peacekeeper = Миротворец США
+rmc-job-name-survivor-varadero-firefighter = Аэродромный пожарный
+rmc-job-prefix-survivor-varadero-firefighter = КМП США АЭПОЖ
 
-cm-job-name-survivor-new-varadero-researcher = Исследователь Новый-Варадеро
+rmc-job-name-survivor-ground-crew = Наземный техник
+rmc-job-prefix-survivor-ground-crew = КМП США НТЕХ
+
+rmc-job-name-survivor-pilot = Пилот истребителя
+rmc-job-prefix-survivor-pilot = КМП США ПИ
+
+rmc-job-name-survivor-medical-technician = Фельдшер
+rmc-job-prefix-survivor-medical-technician = КМП США МЕДТЕХ
+
+rmc-job-name-survivor-new-varadero-researcher = Исследователь Нью-Варадеро
+rmc-job-prefix-survivor-new-varadero-researcher = WY RSR
+
+rmc-job-name-survivor-new-varadero-xenoarchaeologist = Ксеноархеолог Нью-Варадеро
+rmc-job-prefix-survivor-new-varadero-xenoarchaeologist = WY XARC
+
+rmc-job-name-survivor-new-varadero-xenobiologist = Ксенобиолог Нью-Варадеро
+rmc-job-prefix-survivor-new-varadero-xenobiologist = WY XBIO
+
+rmc-job-name-survivor-new-varadero-rd = Научный руководитель Нью-Варадеро
+rmc-job-prefix-survivor-new-varadero-rd = WY RD
+
+rmc-job-name-survivor-varadero-base-police = Миротворец
 
 # Hybrisa Prospera Survs
 
@@ -369,7 +403,7 @@ rmc-job-greeting-riot-in-progress-CMB-TL = You are a CMB Riot Control Team Leade
 
   You are a CMB Riot Control Team Leader, running a team as part of the Riot Control Unit of the Colony Marshal Bureau. Your dispatcher received a distress signal from the infamous Fiorina Orbital Penitentiary. You figured it was just another typical case of the prison dealing with a riot their understaffed security force couldn't handle, with more and more of its personnel getting dispatched elsewhere in the galaxy. This wasn't the first time your team was called in to assist, but unfortunately for you, this time it also wasn't the 'minor riot' you expected it to be. Loaded up with only beanbags and finding nobody to greet you on the LZ after being dropped off, you led your team towards the armory to speak to the Quartermaster, but only found corpses of both prisoners and security littered around on the way. Worried about armed prisoners, your team was in the process of switching to lethals in the armory when some sort of huge alien jumped out from the shadows and snatched Jerry away while he was off praying. The thing dragged him off too fast to catch and his screams faded away down the halls, poor bastard. Now, you'll need to decide whether to look for more clues about what the hell happened here, hunt whatever's out there, or hold a position and hope someone else will respond to the distress signal before it's too late...
 
-  You are [bold][color=#51A16C][font size=16]NON-HOSTILE to the UNMC![/font][/color][/bold]
+  You are [bold][color=#51A16C][font size=16]NON-HOSTILE to the КМП США![/font][/color][/bold]
 
 rmc-job-greeting-riot-in-progress-CMB = You are a CMB Riot Control Officer!
 
@@ -379,7 +413,7 @@ rmc-job-greeting-riot-in-progress-CMB = You are a CMB Riot Control Officer!
 
   You are a CMB Riot Control Officer, a part of the Riot Control Unit of the Colony Marshal Bureau. Your team leader briefed you on a distress signal coming in from the infamous Fiorina Orbital Penitentiary, probably another minor riot going sour fast. The prison was an understaffed mess so you weren't too surprised they had sent out a distress signal, calling you in to do their jobs yet again. Unfortunately for you, this time it also wasn't the 'minor riot' you expected it to be. Loaded up with only beanbags and finding nobody to greet you on the LZ after being dropped off, you and the rest of your team had gone towards the armory to speak to the Quartermaster, but only found corpses of both prisoners and security littered around on the way. Worried about armed prisoners, your team was in the process of switching to lethals in the armory when some sort of huge alien jumped out from the shadows and snatched Jerry away while he was off praying. The thing dragged him off too fast to catch and his screams faded away down the halls, poor bastard. Now, you'll need to decide whether to look for more clues about what the hell happened here, hunt whatever's out there, or hold a position and hope someone else will respond to the distress signal before it's too late...
 
-  You are [bold][color=#51A16C][font size=16]NON-HOSTILE to the UNMC![/font][/color][/bold]
+  You are [bold][color=#51A16C][font size=16]NON-HOSTILE to the КМП США![/font][/color][/bold]
 
 rmc-job-greeting-riot-in-progress-CMB-synth = You are a CMB Support Synthetic!
 
@@ -389,7 +423,7 @@ rmc-job-greeting-riot-in-progress-CMB-synth = You are a CMB Support Synthetic!
 
   You are a CMB Support Synthetic attached to a Riot Control Unit of the Colony Marshal Bureau. Your team leader briefed you on a distress signal coming in from the infamous Fiorina Orbital Penitentiary, probably another minor riot going sour fast. The prison was an understaffed mess so you weren't too surprised they had sent out a distress signal, calling you in to do their jobs yet again. Unfortunately for you, this time it also wasn't the 'minor riot' you expected it to be. Loaded up with only beanbags and finding nobody to greet you on the LZ after being dropped off, you and the rest of your team had gone towards the armory to speak to the Quartermaster, but only found corpses of both prisoners and security littered around on the way. Worried about armed prisoners, your team was in the process of switching to lethals in the armory when some sort of huge alien jumped out from the shadows and snatched Jerry away while he was off praying. The thing dragged him off too fast to catch and his screams faded away down the halls, poor bastard. Now, you'll need to decide whether to look for more clues about what the hell happened here, hunt whatever's out there, or hold a position and hope someone else will respond to the distress signal before it's too late...
 
-  You are [bold][color=#51A16C][font size=16]NON-HOSTILE to the UNMC![/font][/color][/bold]
+  You are [bold][color=#51A16C][font size=16]NON-HOSTILE to the КМП США![/font][/color][/bold]
 
 rmc-job-greeting-riot-in-progress-CMB-riot-synth = You are a CMB Riot Control Synthetic!
 
@@ -432,6 +466,8 @@ rmc-job-name-survivor-solaris-scientist = Исследователь Соляр�
 rmc-job-name-survivor-solaris-trucker = Оператор тяжелой техники Соляриса
 
 rmc-job-name-survivor-unmc-recruiter = Рекрутер КМП США
+
+cm-job-name-survivor-un-peacekeeper = Миротворец США
 
 rmc-job-name-survivor-solaris-corporate-supervisor = Руководитель колонии
 rmc-job-prefix-survivor-solaris-corporate-supervisor = Руководитель
@@ -512,7 +548,7 @@ rmc-job-greeting-shivas-assistant-manager = Вы — последний живо
 
   Вы — ассистент операционного менеджера, дислоцированный на "Ифрите" компанией "Вестон-Ямада". Вся эта вспышка превратилась в гигантский кошмар. Вы и весь остальной персонал компании бежали в оперативный бункер, пока не услышали стрельбу снаружи и не закрыли гермозатворы. У вас заканчиваются еда, вода и боеприпасы для оружия, которое вы когда-то называли "бесполезным" и пустой тратой денег компании. Вы помните, что администратор Шталь отправил сигнал бедствия на любой корабль в радиусе действия, надеясь, что компания вас заберет; он побежал к космопорту. С тех пор вы его не видели. Пытаясь прорваться внутрь, так называемые "ксенониды" атаковали затворы, но безрезультатно. Скоро они попробуют снова. Вы должны выжить и найти способ связаться с "Вестон-Ямада".
 
-  Вы [bold][color=#51A16C][font size=16]НЕ ВРАЖДЕБНЫ к КМП ООН![/font][/color][/bold]
+  Вы [bold][color=#51A16C][font size=16]НЕ ВРАЖДЕБНЫ к КМП США![/font][/color][/bold]
 
 rmc-job-greeting-shivas-commando = Вы — последний живой боец службы безопасности в колонии!
 
@@ -522,7 +558,7 @@ rmc-job-greeting-shivas-commando = Вы — последний живой бое
 
   Вы — наемник, размещенный на "Ифрите" компанией "Вестон-Ямада". Вся эта вспышка превратилась в гигантский кошмар. Вы и весь остальной персонал компании бежали в оперативный бункер, пока не услышали стрельбу снаружи и не закрыли гермозатворы. У вас заканчиваются еда, вода и боеприпасы. В то время как вас назначили защищать людей, укрывшихся в бункере, остальная часть вашей группы была рассредоточена по всей колонии. С тех пор вы никого из них не видели. Пытаясь прорваться внутрь, так называемые "ксенониды" атаковали затворы, но безрезультатно. Скоро они попробуют снова. Вы должны выжить и найти способ связаться с "Вестон-Ямада".
 
-  Вы [bold][color=#51A16C][font size=16]НЕ ВРАЖДЕБНЫ к КМП ООН![/font][/color][/bold]
+  Вы [bold][color=#51A16C][font size=16]НЕ ВРАЖДЕБНЫ к КМП США![/font][/color][/bold]
 
 rmc-job-greeting-shivas-panic-room-researcher = Вы — ученый "Вестон-Ямада" в колонии!
 
@@ -532,7 +568,7 @@ rmc-job-greeting-shivas-panic-room-researcher = Вы — ученый "Вест�
 
   Вы — ученый, работающий на "Ифрите" на компанию "Вестон-Ямада". Вся эта вспышка превратилась в гигантский кошмар. Вы и весь остальной персонал компании бежали в оперативный бункер, пока не услышали стрельбу снаружи и не закрыли гермозатворы. У вас заканчиваются еда, вода и боеприпасы. Вы помните, что вид Ксенонидов (такое кодовое название им дал директор по исследованиям Кларк) имеет множество различных подвидов, среди которых есть некий "лидер", а их кислота смертельна, если попадет на вас или на затворы. Вы убежали далеко от лабораторий и с тех пор не видели своих коллег. Пытаясь прорваться внутрь, эти так называемые "ксенониды" атаковали затворы, но безрезультатно. Скоро они попробуют снова. Вы должны выжить и найти способ связаться с "Вестон-Ямада".
 
-  Вы [bold][color=#51A16C][font size=16]НЕ ВРАЖДЕБНЫ к КМП ООН![/font][/color][/bold]
+  Вы [bold][color=#51A16C][font size=16]НЕ ВРАЖДЕБНЫ к КМП США![/font][/color][/bold]
 
 rmc-job-greeting-shivas-panic-room-doctor = Вы — врач в колонии!
 
@@ -542,7 +578,7 @@ rmc-job-greeting-shivas-panic-room-doctor = Вы — врач в колонии!
 
   Вы — врач, работающий на "Ифрите" на компанию "Вестон-Ямада". Вся эта вспышка превратилась в гигантский кошмар. Вы и весь остальной персонал компании бежали в оперативный бункер, пока не услышали стрельбу снаружи и не закрыли гермозатворы. У вас заканчиваются еда, вода и боеприпасы. Вы помните, что у ксенонидов есть своего рода имплантатор, который вцепляется в лицо, а затем... что-то вырывается из груди, проламывая грудную клетку. В медблоке у вас было предостаточно таких случаев. Пытаясь прорваться внутрь, так называемые "ксенониды" атаковали затворы, но безрезультатно. Скоро они попробуют снова. Вы должны выжить и найти способ связаться с "Вестон-Ямада".
 
-  Вы [bold][color=#51A16C][font size=16]НЕ ВРАЖДЕБНЫ к КМП ООН![/font][/color][/bold]
+  Вы [bold][color=#51A16C][font size=16]НЕ ВРАЖДЕБНЫ к КМП США![/font][/color][/bold]
 
 rmc-job-greeting-shivas-panic-room-engineer = Вы — инженер в колонии!
 
@@ -552,20 +588,20 @@ rmc-job-greeting-shivas-panic-room-engineer = Вы — инженер в кол�
 
   Вы — инженер, работающий на "Ифрите" на компанию "Вестон-Ямада". Вся эта вспышка превратилась в гигантский кошмар. Вы и весь остальной персонал компании бежали в оперативный бункер, пока не услышали стрельбу снаружи и не закрыли гермозатворы. У вас заканчиваются еда, вода и боеприпасы. Вы помните, что ксенониды, похоже, способны видеть в темноте: вы видели, как один из них схватил вашего коллегу, пытавшегося починить генераторы после отключения электричества. Пытаясь прорваться внутрь, так называемые "ксенониды" атаковали затворы, но безрезультатно. Скоро они попробуют снова. Вы должны выжить и найти способ связаться с "Вестон-Ямада".
 
-  Вы [bold][color=#51A16C][font size=16]НЕ ВРАЖДЕБНЫ к КМП ООН![/font][/color][/bold]
+  Вы [bold][color=#51A16C][font size=16]НЕ ВРАЖДЕБНЫ к КМП США![/font][/color][/bold]
 
 # Tyrargo Rift survs
 
-rmc-job-greeting-tyrargo = You are a UNMC Marine. What began as a training exercise on this planet turned into a nightmare, the unexpected arrival of a massive xenonid hive has turned this world into a warzone. You and your battalion have been tasked to defend the city of Tyrargo Rift to give time for the tens of thousands of civilians to be evacuated to a safe zone. It's been two weeks since the siege of the city began. The last few thousand civilians are held up at the museum evacuation site. You and your squad have been holding this trench line by yourselves for the last week, but your ammo is almost gone and the bugs are making the largest push soon. It's time to prepare for the final fight.
+rmc-job-greeting-tyrargo = You are a КМП США Marine. What began as a training exercise on this planet turned into a nightmare, the unexpected arrival of a massive xenonid hive has turned this world into a warzone. You and your battalion have been tasked to defend the city of Tyrargo Rift to give time for the tens of thousands of civilians to be evacuated to a safe zone. It's been two weeks since the siege of the city began. The last few thousand civilians are held up at the museum evacuation site. You and your squad have been holding this trench line by yourselves for the last week, but your ammo is almost gone and the bugs are making the largest push soon. It's time to prepare for the final fight.
 
   You are fully aware of the xenonid threat and are able to use this knowledge as you see fit.
 
   You are NOT aware of the marines or their intentions.
 
-  You are [bold][color=#51A16C][font size=16]NON-HOSTILE to the UNMC![/font][/color][/bold]
+  You are [bold][color=#51A16C][font size=16]NON-HOSTILE to the КМП США![/font][/color][/bold]
 
-rmc-job-name-tyrargo = UNMC Tyrargo Survivor
-rmc-job-description-tyrargo = You are a UNMC Marine. Your training exercises have turned into a massive battle against the xenonids. Do what it takes to survive!
+rmc-job-name-tyrargo = КМП США Tyrargo Survivor
+rmc-job-description-tyrargo = You are a КМП США Marine. Your training exercises have turned into a massive battle against the xenonids. Do what it takes to survive!
 
 rmc-job-name-tyrargo-cmt = Combat Medical Technician
 rmc-job-prefix-tyrargo-cmt = CMT

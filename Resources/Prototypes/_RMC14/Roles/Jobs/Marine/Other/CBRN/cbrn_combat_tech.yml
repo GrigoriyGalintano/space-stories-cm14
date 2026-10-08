@@ -14,7 +14,7 @@
   access: [ CMAccessERT ]
   accessGroups:
   - ShipMasterAccess
-  overwatchRoleName: Combat Technicians
+  overwatchRoleName: rmc-overwatch-role-combat-technicians
   spawnMenuRoleName: CBRN Combat Techician
   roleWeight: 1
   displayWeight: 1

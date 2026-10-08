@@ -20,3 +20,5 @@ ent-RMCIDCardRiotOfficerCorpse = { ent-CMIDCardSilver }
     .desc = { ent-CMIDCardSilver.desc }
 ent-RMCIDCardConstableCorpse = { ent-RMCIDCardTSEPA }
     .desc = { ent-RMCIDCardTSEPA.desc }
+ent-CMIDCardBasePolice = base police ID card
+    .desc = { ent-CMIDCardStandardDogtag.desc }
