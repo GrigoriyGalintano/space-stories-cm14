@@ -51,6 +51,15 @@ public sealed class StoriesDistressSignalStore : IDisposable
     public Task SetBalance(float marinesPerXeno) =>
         Send<object>(HttpMethod.Put, "balance", new { marinesPerXeno });
 
+    public Task Write(StoriesDistressSignalWrite write) => write.Kind switch
+    {
+        StoriesDistressSignalWriteKind.StartRound => AddRound(write.RoundId, write.PlanetId!, write.MarinesPerXeno),
+        StoriesDistressSignalWriteKind.FinishRound => FinishRound(write.RoundId, write.Result, write.MarinesPerXeno),
+        StoriesDistressSignalWriteKind.Voting => SetVotingState(write.PlanetId, write.CarryoverVotes!),
+        StoriesDistressSignalWriteKind.Balance => SetBalance(write.MarinesPerXeno),
+        _ => throw new ArgumentOutOfRangeException(nameof(write)),
+    };
+
     private async Task<T> Send<T>(HttpMethod method, string path, object body)
     {
         using var request = new HttpRequestMessage(method, $"{_serverPath}/{path}")

@@ -139,7 +139,7 @@ public sealed partial class CMDistressSignalRuleSystem
     // Stories-DistressPersistence-Start
     public bool SetPlanet(RMCPlanet planet)
     {
-        return TryPersistVotingState(planet, _carryoverVotes, keepPendingOnFailure: false);
+        return TryPersistVotingState(planet, _carryoverVotes);
     }
     // Stories-DistressPersistence-End
 
@@ -148,8 +148,16 @@ public sealed partial class CMDistressSignalRuleSystem
     /// </summary>
     private void StartPlanetVote()
     {
-        if (!_config.GetCVar(RMCCVars.RMCPlanetMapVote) || !TryPreparePersistence()) // Stories-DistressPersistence
+        // Stories-DistressPersistence-Start
+        _persistencePlanetVotePending = false;
+        if (!_config.GetCVar(RMCCVars.RMCPlanetMapVote))
             return;
+        if (!TryPreparePersistence())
+        {
+            _persistencePlanetVotePending = true;
+            return;
+        }
+        // Stories-DistressPersistence-End
 
         var planets = _rmcPlanet.GetCandidatesInRotation();
         if (!_useCarryoverVoting)
@@ -238,7 +246,7 @@ public sealed partial class CMDistressSignalRuleSystem
             }
 
             carryoverVotes[picked.Proto.ID] = 0;
-            TryPersistVotingState(picked, carryoverVotes, keepPendingOnFailure: true, sb.ToString());
+            TryPersistVotingState(picked, carryoverVotes, sb.ToString());
             // Stories-DistressPersistence-End
         };
         _currentVote.OnCancelled += _ => _currentVote = null;

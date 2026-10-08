@@ -72,7 +72,7 @@ using Robust.Server.Audio;
 using Robust.Server.Containers;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
-using Robust.Shared.Asynchronous; // Stories-DistressPersistence
+using Robust.Shared.ContentPack; // Stories-DistressPersistence
 using Robust.Shared.Configuration;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
@@ -159,7 +159,7 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
     [Dependency] private readonly SharedXenoConstructionSystem _xenoConstruction = default!;
     [Dependency] private readonly SharedRoleSystem _roles = default!;
     [Dependency] private readonly LarvaQueueSystem _larvaQueue = default!;
-    [Dependency] private readonly ITaskManager _task = default!; // Stories-DistressPersistence
+    [Dependency] private readonly IResourceManager _distressResources = default!; // Stories-DistressPersistence
 
     private readonly HashSet<string> _operationNames = new();
     private readonly HashSet<string> _operationPrefixes = new();
