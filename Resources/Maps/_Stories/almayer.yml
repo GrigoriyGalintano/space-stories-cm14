@@ -175078,217 +175078,91 @@ entities:
     - type: Transform
       pos: 90.5,2.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 170
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23639
     components:
     - type: Transform
       pos: 90.5,0.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 170
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23640
     components:
     - type: Transform
       pos: 90.5,1.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 212.5
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23641
     components:
     - type: Transform
       pos: 90.5,-2.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 212.5
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23642
     components:
     - type: Transform
       pos: 90.5,-1.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 212.5
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23643
     components:
     - type: Transform
       pos: 90.5,-3.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 170
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23644
     components:
     - type: Transform
       pos: 97.5,-3.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 212.5
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23645
     components:
     - type: Transform
       pos: 98.5,-3.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 212.5
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23646
     components:
     - type: Transform
       pos: 98.5,2.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 212.5
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23647
     components:
     - type: Transform
       pos: 96.5,-3.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 255
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23648
     components:
     - type: Transform
       pos: 97.5,2.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 212.5
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23649
     components:
     - type: Transform
       pos: 96.5,2.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 170
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23650
     components:
     - type: Transform
       pos: 93.5,0.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 212.5
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23651
     components:
     - type: Transform
       pos: 93.5,-0.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 212.5
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23652
     components:
     - type: Transform
       pos: 93.5,-1.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 170
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23653
     components:
     - type: Transform
       pos: 95.5,-0.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 170
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23654
     components:
     - type: Transform
       pos: 96.5,-0.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 170
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
   - uid: 23655
     components:
     - type: Transform
       pos: 94.5,-0.5
       parent: 1
-    - type: RMCFusionReactor
-      state: Weld
-      terminalFailure: True
-      failureChance: 170
-      enabled: False
-    - type: RMCPowerSource
-      enabled: False
 - proto: RMCGeneratorFusionCell
   entities:
   - uid: 23656
