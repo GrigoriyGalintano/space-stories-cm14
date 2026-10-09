@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 10/09/2026 21:09:04
-  entityCount: 29574
+  entityCount: 29579
 maps:
 - 1
 grids:
@@ -207537,5 +207537,45 @@ entities:
     components:
     - type: Transform
       pos: 90.5,-0.5
+      parent: 1
+- proto: RMCBasketballHoopLeft
+  entities:
+  - uid: 29655
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -13.5,121.5
+      parent: 1
+      anchored: true
+- proto: RMCBasketballHoopRight
+  entities:
+  - uid: 29656
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -3.5,121.5
+      parent: 1
+      anchored: true
+- proto: RMCBasketballScoreboard
+  entities:
+  - uid: 29657
+    components:
+    - type: Transform
+      pos: -8.5,124.5
+      parent: 1
+      anchored: true
+- proto: RMCBasketballReset
+  entities:
+  - uid: 29658
+    components:
+    - type: Transform
+      pos: -10.5,124.1
+      parent: 1
+- proto: RMCBasketball
+  entities:
+  - uid: 29659
+    components:
+    - type: Transform
+      pos: -8.5,121.5
       parent: 1
 ...
