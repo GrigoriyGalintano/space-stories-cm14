@@ -119,6 +119,7 @@
   - HippieGlassesPinkRMC
   - HippieGlassesSunriseRMC
   - HippieGlassesSunsetRMC
+  - STGogglesM1A1Black # Stories-GogglesM1A1Black
 
 - type: loadoutGroup
   id: EyewearRMCPVE
@@ -846,6 +847,7 @@
   - GogglesPolarizedOrangeRMC
   - GogglesM1A1BlueRMC
   - GlassesSecurityRMC
+  - STGogglesM1A1Black # Stories-GogglesM1A1Black
 
 - type: loadoutGroup
   id: SynthShoesRMC
