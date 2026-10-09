@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 10/09/2026 21:09:04
-  entityCount: 29553
+  entityCount: 29574
 maps:
 - 1
 grids:
@@ -36706,11 +36706,6 @@ entities:
     components:
     - type: Transform
       pos: 52.5,7.5
-      parent: 1
-  - uid: 19064
-    components:
-    - type: Transform
-      pos: -58.5,110.5
       parent: 1
 - proto: CMASRSConsolePowered
   entities:
@@ -77264,6 +77259,11 @@ entities:
     components:
     - type: Transform
       pos: 115.5,-7.5
+      parent: 1
+  - uid: 29640
+    components:
+    - type: Transform
+      pos: -106.5,110.5
       parent: 1
 - proto: CMTableReinforcedBlack
   entities:
@@ -192663,57 +192663,11 @@ entities:
       parent: 1
 - proto: RMCPropCommunicationsConsole
   entities:
-  - uid: 19062
-    components:
-    - type: Transform
-      pos: -72.02898,103.52811
-      parent: 1
   - uid: 24279
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: 114.51246,51.14073
-      parent: 1
-- proto: RMCPropCommunicationsConsoleAlt
-  entities:
-  - uid: 822
-    components:
-    - type: Transform
-      pos: -69.5,106.5
-      parent: 1
-  - uid: 869
-    components:
-    - type: Transform
-      pos: -71.5,106.5
-      parent: 1
-  - uid: 871
-    components:
-    - type: Transform
-      pos: -67.5,106.5
-      parent: 1
-  - uid: 5726
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -67.5,98.5
-      parent: 1
-  - uid: 5761
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -71.5,98.5
-      parent: 1
-  - uid: 7731
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -69.5,98.5
-      parent: 1
-  - uid: 29025
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -55.53933,103.55149
       parent: 1
 - proto: RMCPropComputerTOCShuttleB
   entities:
@@ -207539,5 +207493,175 @@ entities:
     components:
     - type: Transform
       pos: -115.5,87.5
+      parent: 1
+- proto: RMCComputerCrewMonitoring
+  entities:
+  - uid: 29634
+    components:
+    - type: Transform
+      pos: -42.5,-0.5
+      parent: 1
+  - uid: 29638
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -122.5,99.5
+      parent: 1
+  - uid: 19064
+    components:
+    - type: Transform
+      pos: -64.5,110.5
+      parent: 1
+  - uid: 29643
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -10.5,108.5
+      parent: 1
+- proto: RMCComputerCrewMonitoringCompact
+  entities:
+  - uid: 29635
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -42.5,-5.3125
+      parent: 1
+  - uid: 29636
+    components:
+    - type: Transform
+      pos: -32.21875,0.5
+      parent: 1
+  - uid: 29637
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -8.25,-3.5
+      parent: 1
+  - uid: 29639
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -118.5,109.5
+      parent: 1
+  - uid: 29641
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -106.5,110.5
+      parent: 1
+  - uid: 869
+    components:
+    - type: Transform
+      pos: -71.5,106.5
+      parent: 1
+  - uid: 822
+    components:
+    - type: Transform
+      pos: -69.5,106.5
+      parent: 1
+  - uid: 871
+    components:
+    - type: Transform
+      pos: -67.5,106.5
+      parent: 1
+  - uid: 5761
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -71.5,98.5
+      parent: 1
+  - uid: 7731
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -69.5,98.5
+      parent: 1
+  - uid: 5726
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -67.5,98.5
+      parent: 1
+  - uid: 19062
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -72.25,103.5
+      parent: 1
+  - uid: 29025
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -55.53933,103.55149
+      parent: 1
+  - uid: 29642
+    components:
+    - type: Transform
+      pos: -24.5,110.2
+      parent: 1
+  - uid: 29644
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -4.5,96.2
+      parent: 1
+  - uid: 29646
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 34.5,96.21875
+      parent: 1
+  - uid: 29647
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 117.25,60.5
+      parent: 1
+  - uid: 29648
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 123.75,58.5
+      parent: 1
+- proto: RMCPortableCrewMonitor
+  entities:
+  - uid: 29645
+    components:
+    - type: Transform
+      pos: 3.5,131.5
+      parent: 1
+- proto: RMCPowerMonitoringConsole
+  entities:
+  - uid: 29649
+    components:
+    - type: Transform
+      pos: 88.5,-0.5
+      parent: 1
+  - uid: 29650
+    components:
+    - type: Transform
+      pos: 100.5,2.5
+      parent: 1
+  - uid: 29651
+    components:
+    - type: Transform
+      pos: 76.5,114.5
+      parent: 1
+  - uid: 29652
+    components:
+    - type: Transform
+      pos: 82.5,114.5
+      parent: 1
+  - uid: 29653
+    components:
+    - type: Transform
+      pos: 83.5,114.5
+      parent: 1
+- proto: RMCFusionFuelRecycler
+  entities:
+  - uid: 29654
+    components:
+    - type: Transform
+      pos: 90.5,-0.5
       parent: 1
 ...
