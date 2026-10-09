@@ -90,6 +90,11 @@ rmc-overwatch-console-ready = [color=green][bold] \[ ГОТОВО \][/bold][/col
 rmc-overwatch-console-not-ready = [color=red][bold] \[ НЕ ГОТОВО \][/bold][/color]
 rmc-overwatch-console-orbital-safety-engaged = [color=red][bold][ БЛОКИРОВКА АКТИВНА ][/bold][/color]
 rmc-overwatch-console-cooldown = [color=#D3B400][bold][ ПЕРЕЗАРЯДКА — { $seconds } СЕКУНД ][/bold][/color]
+rmc-overwatch-console-announcement-cooldown = Следующее объявление этому отряду можно отправить через { $seconds } { $seconds ->
+    [one] секунду
+    [few] секунды
+    *[other] секунд
+}.
 rmc-overwatch-console-no-warhead-loaded = [color=red][bold]БОЕГОЛОВКА НЕ ЗАРЯЖЕНА[/bold][/color]
 
 # Transfer messages

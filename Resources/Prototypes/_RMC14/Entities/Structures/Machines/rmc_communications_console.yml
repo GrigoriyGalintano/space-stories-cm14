@@ -71,6 +71,7 @@
         type: DialogBui
   - type: GroundsideOperationsConsole
   - type: MarineCommunicationsComputer
+    sendAnnouncementOverlay: true # Stories-Announcements
     canGiveMedals: true
     canInitiateEvac: true
   - type: MarineControlComputer

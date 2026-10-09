@@ -1,15 +1,19 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using Content.Shared._RMC14.ARES;
 using Content.Shared._RMC14.ARES.Logs;
 using Content.Shared._RMC14.Chat;
 using Content.Shared._RMC14.Dialog;
+using Content.Shared._RMC14.Intel;
 using Content.Shared._RMC14.Marines.ControlComputer;
 using Content.Shared._RMC14.Marines.GroundsideOperations;
 using Content.Shared._RMC14.Marines.Roles.Ranks;
 using Content.Shared._RMC14.Marines.Skills;
 using Content.Shared._RMC14.Marines.Squads;
+using Content.Shared._RMC14.Announce;
 using Content.Shared._RMC14.Overwatch;
+using Content.Shared._RMC14.Survivor;
 using Content.Shared._RMC14.TacticalMap;
+using Content.Shared._RMC14.AlertLevel;
 using Content.Shared._RMC14.Weapons.Ranged.IFF;
 using Content.Shared.Access.Systems;
 using Content.Shared.Administration.Logs;
@@ -25,6 +29,7 @@ using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
+using Robust.Shared.Maths;
 
 namespace Content.Shared._RMC14.Marines.Announce;
 
@@ -45,8 +50,11 @@ public abstract class SharedMarineAnnounceSystem : EntitySystem
     [Dependency] private readonly SharedUserInterfaceSystem _ui = default!;
     [Dependency] private readonly SharedCMChatSystem _rmcChat = default!; // Stories-Chat
 
-    public static readonly SoundSpecifier DefaultAnnouncementSound = new SoundPathSpecifier("/Audio/_RMC14/Announcements/Marine/notice2.ogg");
-    public static readonly SoundSpecifier DefaultSquadSound = new SoundPathSpecifier("/Audio/_RMC14/Effects/tech_notification.ogg");
+    public static readonly SoundSpecifier DefaultAnnouncementSound =
+        new SoundPathSpecifier("/Audio/_RMC14/Announcements/Marine/notice2.ogg", AudioParams.Default.WithVolume(-2f));
+
+    public static readonly SoundSpecifier DefaultSquadSound =
+        new SoundPathSpecifier("/Audio/_RMC14/Effects/tech_notification.ogg", AudioParams.Default.WithVolume(-2f));
     public static readonly SoundSpecifier AresAnnouncementSound = new SoundPathSpecifier("/Audio/_RMC14/AI/announce.ogg");
 
     public int CharacterLimit = 1000;
@@ -55,6 +63,8 @@ public abstract class SharedMarineAnnounceSystem : EntitySystem
 
     public override void Initialize()
     {
+        base.Initialize();
+
         SubscribeLocalEvent<MarineCommunicationsComputerComponent, MarineCommunicationsAnnouncementDialogEvent>(OnMarineCommunicationsAnnouncementDialog);
         SubscribeLocalEvent<MarineCommunicationsComputerComponent, EchoSquadReasonEvent>(OnEchoSquadReason);
         SubscribeLocalEvent<MarineCommunicationsComputerComponent, EchoSquadConfirmEvent>(OnEchoSquadConfirm);
@@ -186,7 +196,8 @@ public abstract class SharedMarineAnnounceSystem : EntitySystem
 
         if (closeCommunicationsUi)
             _ui.CloseUi(ent.Owner, MarineCommunicationsComputerUI.Key);
-        AnnounceSigned(actor, message, name: ent.Comp.AnnounceName);
+        AnnounceSigned(actor, message, name: ent.Comp.AnnounceName,
+            options: new SignedAnnouncementOptions { SendOverlay = ent.Comp.SendAnnouncementOverlay });
 
         ent.Comp.LastAnnouncement = _timing.CurTime;
         Dirty(ent);
@@ -279,13 +290,20 @@ public abstract class SharedMarineAnnounceSystem : EntitySystem
     }
 
     // Stories-Chat-Start
-    public Filter GetMarineFilter()
+    public Filter GetMarineFilter(Filter? filter = null, bool excludeSurvivors = true)
     {
-        return Filter.Empty()
-            .AddWhereAttachedEntity(e =>
+        var recipients = filter == null
+            ? Filter.Empty().AddWhereAttachedEntity(e =>
                 HasComp<MarineComponent>(e) ||
-                HasComp<GhostComponent>(e)
-            );
+                HasComp<GhostComponent>(e))
+            : Filter.Empty().AddPlayers(filter.Recipients);
+
+        if (excludeSurvivors)
+            recipients.RemoveWhereAttachedEntity(HasComp<RMCSurvivorComponent>);
+
+        // Non-rescued survivors must never receive marine announcements.
+        recipients.RemoveWhereAttachedEntity(HasComp<IntelRescueSurvivorObjectiveComponent>);
+        return recipients;
     }
     // Stories-Chat-End
 
@@ -341,6 +359,21 @@ public abstract class SharedMarineAnnounceSystem : EntitySystem
     {
     }
 
+    public virtual void AnnounceOverwatchSquad(
+        EntityUid sender,
+        string message,
+        EntityUid squad,
+        SoundSpecifier? sound = null)
+    {
+    }
+
+    public virtual void AnnounceAlertLevel(
+        ProtoId<AnnouncementPresetPrototype> preset,
+        string message,
+        Filter? filter = null)
+    {
+    }
+
     /// <summary>
     ///     Dispatches already wrapped announcement to Marines.
     /// </summary>
@@ -352,16 +385,18 @@ public abstract class SharedMarineAnnounceSystem : EntitySystem
         string message,
         string wrappedMessage,
         SoundSpecifier? sound = null,
-        Filter? filter = null)
+        Filter? filter = null,
+        bool excludeSurvivors = true)
     {
     }
 
     public void AnnounceToMarines(
         string message,
         SoundSpecifier? sound = null,
-        Filter? filter = null)
+        Filter? filter = null,
+        bool excludeSurvivors = true)
     {
-        AnnounceToMarines(message, message, sound, filter);
+        AnnounceToMarines(message, message, sound, filter, excludeSurvivors);
     }
     // Stories-Chat-Start
 
@@ -393,24 +428,34 @@ public abstract class SharedMarineAnnounceSystem : EntitySystem
         string message,
         string? author = null,
         string? name = null,
-        SoundSpecifier? sound = null,
-        Filter? filter = null)
+        SignedAnnouncementOptions? options = null)
     {
         if (_net.IsClient)
             return;
 
-        author ??= Loc.GetString("rmc-announcement-author"); // Get "Command" fluent string if author==null
+        options ??= new SignedAnnouncementOptions();
+        author ??= Loc.GetString("rmc-announcement-author");
         name ??= _rankSystem.GetSpeakerFullRankName(sender) ?? Name(sender);
         var wrappedMessage = Loc.GetString("rmc-announcement-message-signed", ("author", author), ("message", message), ("name", name));
 
-        AnnounceToMarines(message, wrappedMessage, sound, filter); // Stories-Chat
+        DispatchSignedAnnouncement(sender, message, wrappedMessage, author, name, options);
         _adminLog.Add(LogType.RMCMarineAnnounce, $"{ToPrettyString(sender):source} marine announced message: {message}");
 
         if (_idCard.TryFindIdCard(sender, out var idCard) && TryComp(idCard, out ItemIFFComponent? idCardIFF))
             foreach (var faction in idCardIFF.Factions)
             {
-                _core.CreateARESLog(faction, LogCat, (string)$"{Name(sender)} sent an announcement: {message}");
+                _core.CreateARESLog(faction, LogCat, $"{Name(sender)} sent an announcement: {message}");
             }
+    }
+
+    protected virtual void DispatchSignedAnnouncement(
+        EntityUid sender,
+        string message,
+        string wrappedMessage,
+        string author,
+        string name,
+        SignedAnnouncementOptions options)
+    {
     }
 
     public string FormatHighCommand(string? author, string message)
