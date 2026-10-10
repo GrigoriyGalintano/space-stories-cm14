@@ -130,7 +130,8 @@ public sealed class StatusIconOverlay : Overlay
                 else
                     handle.UseShader(_unshadedShader);
 
-                var position = new Vector2(xOffset, yOffset);
+                var position = _statusIcon.GetIconPosition(uid, proto, new Vector2(xOffset, yOffset),
+                    texture.Size / (float) EyeManager.PixelsPerMeter);
                 handle.DrawTexture(texture, position);
             }
 

@@ -1,3 +1,4 @@
+using System.Numerics;
 using Content.Shared._RMC14.Stealth;
 using Content.Shared.CCVar;
 using Content.Shared.Ghost;
@@ -65,6 +66,13 @@ public sealed class StatusIconSystem : SharedStatusIconSystem
         var ev = new GetStatusIconsEvent(list);
         RaiseLocalEvent(uid, ref ev);
         return ev.StatusIcons;
+    }
+
+    public Vector2 GetIconPosition(EntityUid uid, StatusIconData icon, Vector2 position, Vector2 size)
+    {
+        var ev = new GetStatusIconPositionEvent(icon, position, size);
+        RaiseLocalEvent(uid, ref ev);
+        return ev.Position;
     }
 
     /// <summary>
