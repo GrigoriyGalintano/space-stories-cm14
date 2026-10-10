@@ -3,6 +3,7 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared.Wires;
 
+// RMC14 start - Wire interactions used by forensic investigations.
 /// <summary>
 /// Raised on the device after a user successfully cuts an intact wire.
 /// </summary>
@@ -14,6 +15,7 @@ public readonly record struct WireCutEvent(EntityUid User);
 /// </summary>
 [ByRefEvent]
 public readonly record struct WireMendedEvent(EntityUid User);
+// RMC14 end
 
 [Serializable, NetSerializable]
 public sealed partial class WireDoAfterEvent : DoAfterEvent

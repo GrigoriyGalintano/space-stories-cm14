@@ -1,3 +1,4 @@
+// RMC14 - Coordinates status icon placement with the marine HUD.
 using System.Numerics;
 using Content.Shared.StatusIcon;
 
