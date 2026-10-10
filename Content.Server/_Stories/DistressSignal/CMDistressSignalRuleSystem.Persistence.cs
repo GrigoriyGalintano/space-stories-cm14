@@ -16,24 +16,22 @@ public sealed partial class CMDistressSignalRuleSystem
 {
     private StoriesDistressSignalStore? _persistenceStore;
     private bool _applyingPersistedBalance;
-    private DateTime _nextLocalPersistenceAttempt;
-    private int? _lastFinalizedRoundId;
 
     private void InitializePersistence()
     {
-        _persistenceStore = new StoriesDistressSignalStore(_distressResources.UserData, _marinesPerXeno);
-        _nextLocalPersistenceAttempt = default;
+        _persistenceStore = new StoriesDistressSignalStore(_distressResources.UserData, _marinesPerXeno, _mapVoteExcludeLast);
         foreach (var error in _persistenceStore.RecoveryErrors)
             Log.Error($"Distress Signal local recovery: {error}. Gameplay continues with the recovered state.");
         if (_persistenceStore.HasSnapshot)
             ApplyLoadedPersistence(_persistenceStore.State);
-        _lastFinalizedRoundId = _persistenceStore.State.Rounds.LastOrDefault(r => r.Result != null)?.RoundId;
         FlushLocalPersistence();
     }
 
     public override void Shutdown()
     {
-        FlushLocalPersistence(force: true);
+        if (_persistenceStore != null && !_persistenceStore.ShutdownAsync(TimeSpan.FromSeconds(2)).GetAwaiter().GetResult())
+            Log.Error("Distress Signal could not finish its final save within the shutdown limit or storage is unavailable.");
+        ReportPersistenceWriteError();
         base.Shutdown();
     }
 
@@ -43,20 +41,16 @@ public sealed partial class CMDistressSignalRuleSystem
         FlushLocalPersistence();
     }
 
-    private void FlushLocalPersistence(bool force = false)
+    private void FlushLocalPersistence()
     {
-        if (_persistenceStore == null || !force && DateTime.UtcNow < _nextLocalPersistenceAttempt)
-            return;
-        try
-        {
-            _persistenceStore.Flush();
-            _nextLocalPersistenceAttempt = default;
-        }
-        catch (Exception e)
-        {
-            _nextLocalPersistenceAttempt = DateTime.UtcNow.AddSeconds(30);
-            Log.Error($"Distress Signal cannot save local state; continuing in memory, restart may lose data: {e.Message}");
-        }
+        _persistenceStore?.FlushAsync();
+        ReportPersistenceWriteError();
+    }
+
+    private void ReportPersistenceWriteError()
+    {
+        if (_persistenceStore?.TakeWriteError() is { } error)
+            Log.Error($"Distress Signal cannot save local state; continuing in memory, retry in 30s: {error.Message}");
     }
 
     private void RecordLocalPersistence(Action<StoriesDistressSignalStore> update)
@@ -76,7 +70,7 @@ public sealed partial class CMDistressSignalRuleSystem
 
     private void ApplyLoadedPersistence(StoriesDistressSignalState state)
     {
-        ReplaceRecentPlanets(state.Rounds.Select(r => r.PlanetId));
+        ReplaceRecentPlanets(state.RecentPlanetIds);
         var allPlanets = _rmcPlanet.GetAllPlanets();
         var allPlanetIds = allPlanets.Select(p => p.Proto.ID).ToHashSet();
         _carryoverVotes.Clear();
@@ -121,9 +115,12 @@ public sealed partial class CMDistressSignalRuleSystem
 
     private void OnMapVoteExcludeLastChanged(int value)
     {
-        _mapVoteExcludeLast = Math.Max(0, value);
+        _mapVoteExcludeLast = Math.Clamp(value, 0, StoriesDistressSignalStore.MaxRecentPlanets);
         if (_persistenceStore != null)
-            ReplaceRecentPlanets(_persistenceStore.State.Rounds.Select(r => r.PlanetId));
+        {
+            RecordLocalPersistence(store => store.SetRecentPlanetCount(_mapVoteExcludeLast));
+            ReplaceRecentPlanets(_persistenceStore.State.RecentPlanetIds);
+        }
         else
             TrimRecentPlanets();
     }
@@ -140,7 +137,7 @@ public sealed partial class CMDistressSignalRuleSystem
     {
         _lastPlanetMaps.Enqueue(planetId);
         TrimRecentPlanets();
-        RecordLocalPersistence(store => store.StartRound(GameTicker.RoundId, planetId.Id, _marinesPerXeno));
+        RecordLocalPersistence(store => store.RecordPlayedPlanet(planetId.Id));
     }
 
     private void TrimRecentPlanets()
@@ -149,13 +146,20 @@ public sealed partial class CMDistressSignalRuleSystem
             _lastPlanetMaps.Dequeue();
     }
 
-    private void FinishPersistentRound(int roundId, DistressSignalRuleResult result, float value)
+    private void FinishPersistentRound(int roundId, float value)
     {
-        if (_lastFinalizedRoundId == roundId)
+        try
+        {
+            if (_persistenceStore == null || !_persistenceStore.FinalizeRound(roundId, value))
+                return;
+        }
+        catch (Exception e)
+        {
+            Log.Error($"Distress Signal could not finalize local round state: {e.Message}");
             return;
-        ApplyPersistedBalance(value);
-        _lastFinalizedRoundId = roundId;
-        RecordLocalPersistence(store => store.FinishRound(roundId, (int) result, value));
+        }
+        ApplyPersistedBalance(_persistenceStore.State.MarinesPerXeno);
+        FlushLocalPersistence();
     }
 
     private void PersistVotingState(RMCPlanet? selectedPlanet,

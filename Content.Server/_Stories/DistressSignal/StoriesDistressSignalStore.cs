@@ -1,40 +1,55 @@
+using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Utility;
 
 namespace Content.Server._Stories.DistressSignal;
 
-public sealed record StoriesDistressSignalRound(int RoundId, string PlanetId, float BalanceBefore,
-    float? BalanceAfter = null, int? Result = null);
-
 public sealed record StoriesDistressSignalState(float MarinesPerXeno,
-    Dictionary<string, int> CarryoverVotes, string? SelectedPlanetId, List<StoriesDistressSignalRound> Rounds);
+    ImmutableArray<string> RecentPlanetIds, ImmutableDictionary<string, int> CarryoverVotes,
+    string? SelectedPlanetId, int? LastFinalizedRoundId);
 
 public sealed class StoriesDistressSignalStore
 {
+    public const int MaxRecentPlanets = 10000;
     private sealed record Envelope(int Version, string Data, string Sha256);
 
     private static readonly ResPath Directory = new("/distress-signal");
     private readonly IWritableDirProvider _data;
+    private readonly object _writeLock = new();
+    private StoriesDistressSignalState _state;
+    private Task _writer = Task.CompletedTask;
     private long _generation;
-    private bool _dirty;
+    private long _stateVersion = 1;
+    private long _savedVersion;
+    private long _failedVersion = -1;
+    private DateTime _nextWriteAttempt;
+    private Exception? _writeError;
+    private int _recentCount;
+    private bool _stopping;
+    private bool _abandonWrites;
 
-    public StoriesDistressSignalState State { get; private set; }
+    public StoriesDistressSignalState State { get { lock (_writeLock) return _state; } }
+    public bool HasPendingWrite { get { lock (_writeLock) return _savedVersion != _stateVersion; } }
     public bool HasSnapshot { get; private set; }
     public List<string> RecoveryErrors { get; } = new();
 
-    public StoriesDistressSignalStore(IWritableDirProvider data, float initialBalance)
+    public StoriesDistressSignalStore(IWritableDirProvider data, float initialBalance, int recentPlanetCount = 2)
     {
         _data = data;
-        State = new(initialBalance, new(), null, new());
+        _recentCount = Math.Clamp(recentPlanetCount, 0, MaxRecentPlanets);
+        _state = new(initialBalance, ImmutableArray<string>.Empty, ImmutableDictionary<string, int>.Empty, null, null);
         try
         {
-            _data.CreateDir(Directory);
+            if (!_data.IsDir(Directory))
+                return;
             foreach (var file in Checkpoints())
             {
                 try
@@ -44,13 +59,14 @@ public sealed class StoriesDistressSignalStore
                     using var stream = _data.Open(Directory / file, FileMode.Open, FileAccess.Read, FileShare.Read);
                     var envelope = JsonSerializer.Deserialize<Envelope>(stream)
                         ?? throw new InvalidDataException("Empty checkpoint");
-                    if (envelope.Version != 1 || Hash(envelope.Data) != envelope.Sha256)
-                        throw new InvalidDataException("Invalid checkpoint version or checksum");
-                    var state = JsonSerializer.Deserialize<StoriesDistressSignalState>(envelope.Data)
-                        ?? throw new InvalidDataException("Empty state");
+                    if (Hash(envelope.Data) != envelope.Sha256)
+                        throw new InvalidDataException("Invalid checkpoint checksum");
+                    var state = ReadState(envelope);
                     Validate(state);
-                    State = state;
+                    _state = state with { RecentPlanetIds = state.RecentPlanetIds.TakeLast(_recentCount).ToImmutableArray() };
                     HasSnapshot = true;
+                    if (envelope.Version == 2 && _state.RecentPlanetIds.Length == state.RecentPlanetIds.Length)
+                        _savedVersion = _stateVersion;
                     break;
                 }
                 catch (Exception e)
@@ -62,70 +78,178 @@ public sealed class StoriesDistressSignalStore
             }
         }
         catch (Exception e) { RecoveryErrors.Add(e.Message); }
-        _dirty = !HasSnapshot;
     }
 
-    public void SetBalance(float value) => Update(State with { MarinesPerXeno = value });
-
-    public void SetVotingState(string? selectedPlanetId, Dictionary<string, int> votes) =>
-        Update(State with { SelectedPlanetId = selectedPlanetId, CarryoverVotes = new(votes) });
-
-    public void StartRound(int roundId, string planetId, float balance)
+    private StoriesDistressSignalState ReadState(Envelope envelope)
     {
-        var existing = State.Rounds.Find(r => r.RoundId == roundId);
-        if (existing != null)
+        if (envelope.Version == 2)
+            return JsonSerializer.Deserialize<StoriesDistressSignalState>(envelope.Data)
+                ?? throw new InvalidDataException("Empty state");
+        if (envelope.Version != 1)
+            throw new InvalidDataException("Unsupported checkpoint version");
+
+        using var document = JsonDocument.Parse(envelope.Data);
+        var root = document.RootElement;
+        var rounds = root.GetProperty("Rounds").EnumerateArray();
+        var recent = rounds.Select(r => r.GetProperty("PlanetId").GetString()!).TakeLast(_recentCount).ToImmutableArray();
+        var finalized = rounds.Where(r => r.GetProperty("Result").ValueKind != JsonValueKind.Null)
+            .Select(r => (int?) r.GetProperty("RoundId").GetInt32()).LastOrDefault();
+        return new(root.GetProperty("MarinesPerXeno").GetSingle(), recent,
+            root.GetProperty("CarryoverVotes").Deserialize<ImmutableDictionary<string, int>>()!,
+            root.GetProperty("SelectedPlanetId").GetString(), finalized);
+    }
+
+    public void SetBalance(float value) => Update(state => state with { MarinesPerXeno = value });
+
+    public void SetVotingState(string? selectedPlanetId, IReadOnlyDictionary<string, int> votes) =>
+        Update(state => state with { SelectedPlanetId = selectedPlanetId, CarryoverVotes = votes.ToImmutableDictionary() });
+
+    public void RecordPlayedPlanet(string planetId) => Update(state => state with
+    {
+        RecentPlanetIds = state.RecentPlanetIds.Add(planetId).TakeLast(_recentCount).ToImmutableArray(),
+        SelectedPlanetId = null,
+    });
+
+    public void SetRecentPlanetCount(int count)
+    {
+        lock (_writeLock)
         {
-            if (existing.PlanetId != planetId)
-                throw new InvalidDataException("Round ID already uses another planet");
-            return;
+            _recentCount = Math.Clamp(count, 0, MaxRecentPlanets);
+            Update(state => state with { RecentPlanetIds = state.RecentPlanetIds.TakeLast(_recentCount).ToImmutableArray() });
         }
-
-        var rounds = State.Rounds.ToList();
-        rounds.Add(new(roundId, planetId, balance));
-        Update(State with { Rounds = rounds, SelectedPlanetId = null });
     }
 
-    public void FinishRound(int roundId, int result, float balance)
+    public bool FinalizeRound(int roundId, float balance)
     {
-        var index = State.Rounds.FindIndex(r => r.RoundId == roundId);
-        if (index < 0)
-            throw new InvalidDataException("Round finish has no matching start");
-        if (State.Rounds[index].Result != null)
-            return;
-
-        var rounds = State.Rounds.ToList();
-        rounds[index] = rounds[index] with { Result = result, BalanceAfter = balance };
-        Update(State with { Rounds = rounds, MarinesPerXeno = balance });
+        lock (_writeLock)
+        {
+            if (roundId < 0)
+                throw new ArgumentOutOfRangeException(nameof(roundId));
+            if (_state.LastFinalizedRoundId >= roundId)
+                return false;
+            Update(state => state with { MarinesPerXeno = balance, LastFinalizedRoundId = roundId });
+            return true;
+        }
     }
 
-    private void Update(StoriesDistressSignalState state)
+    private void Update(Func<StoriesDistressSignalState, StoriesDistressSignalState> update)
     {
-        Validate(state);
-        State = state;
-        _dirty = true;
+        lock (_writeLock)
+        {
+            if (_stopping)
+                throw new InvalidOperationException("Distress Signal persistence is stopping");
+            var state = update(_state);
+            Validate(state);
+            _state = state;
+            _stateVersion++;
+        }
     }
 
-    public void Flush()
+    public Task FlushAsync(bool force = false)
     {
-        if (!_dirty)
-            return;
+        lock (_writeLock)
+        {
+            if (!_writer.IsCompleted)
+                return _writer;
+            if (_abandonWrites || _savedVersion == _stateVersion ||
+                !force && (_stopping || DateTime.UtcNow < _nextWriteAttempt))
+                return Task.CompletedTask;
+            return _writer = Task.Run(WritePending);
+        }
+    }
 
+    private void WritePending()
+    {
+        while (true)
+        {
+            StoriesDistressSignalState state;
+            long version;
+            lock (_writeLock)
+            {
+                if (_abandonWrites || _savedVersion == _stateVersion)
+                    return;
+                state = _state;
+                version = _stateVersion;
+            }
+
+            try
+            {
+                WriteSnapshot(state);
+                lock (_writeLock)
+                {
+                    _savedVersion = version;
+                    _nextWriteAttempt = default;
+                    _failedVersion = -1;
+                }
+            }
+            catch (Exception e)
+            {
+                lock (_writeLock)
+                {
+                    _writeError = e;
+                    _failedVersion = version;
+                    _nextWriteAttempt = DateTime.UtcNow.AddSeconds(30);
+                }
+                return;
+            }
+        }
+    }
+
+    public Exception? TakeWriteError()
+    {
+        lock (_writeLock)
+        {
+            var error = _writeError;
+            _writeError = null;
+            return error;
+        }
+    }
+
+    public async Task<bool> ShutdownAsync(TimeSpan timeout)
+    {
+        lock (_writeLock)
+            _stopping = true;
+        using var cancellation = new CancellationTokenSource(timeout);
+        while (true)
+        {
+            try
+            {
+                await FlushAsync(force: true).WaitAsync(cancellation.Token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                lock (_writeLock)
+                    _abandonWrites = true;
+                return false;
+            }
+
+            lock (_writeLock)
+            {
+                if (_savedVersion == _stateVersion)
+                    return true;
+                if (_failedVersion == _stateVersion || _abandonWrites)
+                    return false;
+            }
+        }
+    }
+
+    private void WriteSnapshot(StoriesDistressSignalState state)
+    {
         _data.CreateDir(Directory);
         var name = "checkpoint-" + checked(++_generation).ToString("D20", CultureInfo.InvariantCulture);
         var temporary = Directory / "checkpoint.tmp";
-        var payload = JsonSerializer.Serialize(State);
+        var payload = JsonSerializer.Serialize(state);
         using (var stream = _data.Open(temporary, FileMode.Create, FileAccess.Write, FileShare.None))
         {
-            JsonSerializer.Serialize(stream, new Envelope(1, payload, Hash(payload)));
+            JsonSerializer.Serialize(stream, new Envelope(2, payload, Hash(payload)));
             if (stream is FileStream file)
                 file.Flush(flushToDisk: true);
             else
                 stream.Flush();
         }
 
-        // Publish a complete snapshot and retain the previous one for recovery.
+        // Only the sequential writer accesses the temporary file and checkpoint generations.
         _data.Rename(temporary, Directory / (name + ".json"));
-        _dirty = false;
         HasSnapshot = true;
         foreach (var old in Checkpoints().Skip(2))
         {
@@ -142,14 +266,11 @@ public sealed class StoriesDistressSignalStore
     private static void Validate(StoriesDistressSignalState state)
     {
         if (!float.IsFinite(state.MarinesPerXeno) || state.MarinesPerXeno <= 0 ||
-            state.CarryoverVotes == null || state.Rounds == null ||
+            state.CarryoverVotes == null || state.RecentPlanetIds.IsDefault ||
+            state.RecentPlanetIds.Length > MaxRecentPlanets || state.RecentPlanetIds.Any(string.IsNullOrWhiteSpace) ||
             state.SelectedPlanetId != null && string.IsNullOrWhiteSpace(state.SelectedPlanetId) ||
-            state.CarryoverVotes.Any(v => string.IsNullOrWhiteSpace(v.Key) || v.Value < 0) ||
-            state.Rounds.Select(r => r.RoundId).Distinct().Count() != state.Rounds.Count ||
-            state.Rounds.Any(r => r.RoundId < 0 || string.IsNullOrWhiteSpace(r.PlanetId) ||
-                !float.IsFinite(r.BalanceBefore) || r.BalanceBefore <= 0 ||
-                r.BalanceAfter is { } balance && (!float.IsFinite(balance) || balance <= 0) ||
-                (r.Result == null) != (r.BalanceAfter == null) || r.Result is < 1 or > 6))
+            state.LastFinalizedRoundId < 0 ||
+            state.CarryoverVotes.Any(v => string.IsNullOrWhiteSpace(v.Key) || v.Value < 0))
             throw new InvalidDataException("Invalid Distress Signal state");
     }
 

@@ -295,7 +295,7 @@ public sealed partial class CMDistressSignalRuleSystem
         if (_autoBalance && adjust != 0)
             value = Math.Clamp(value + adjust * _autoBalanceStep, _autoBalanceMin, _autoBalanceMax);
 
-        FinishPersistentRound(ev.RoundId, result, value);
+        FinishPersistentRound(ev.RoundId, value);
         // Stories-DistressPersistence-End
     }
 
