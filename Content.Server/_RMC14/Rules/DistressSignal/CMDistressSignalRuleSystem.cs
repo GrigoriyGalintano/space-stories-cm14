@@ -338,8 +338,7 @@ public sealed partial class CMDistressSignalRuleSystem : GameRuleSystem<CMDistre
     private void OnMapLoading(LoadingMapsEvent ev)
     {
         // Stories-DistressPersistence-Start
-        if (TryPreparePersistence())
-            SelectRandomPlanet();
+        SelectRandomPlanet();
         // Stories-DistressPersistence-End
 
         GameTicker.UpdateInfoText();

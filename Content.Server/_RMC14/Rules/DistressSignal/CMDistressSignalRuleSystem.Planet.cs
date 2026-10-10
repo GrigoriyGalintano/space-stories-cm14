@@ -123,13 +123,13 @@ public sealed partial class CMDistressSignalRuleSystem
             return SelectedPlanetMap.Value;
 
         var planet = _random.Pick(_rmcPlanet.GetCandidatesInRotation());
-        SelectedPlanetMap = planet;
+        PersistVotingState(planet, _carryoverVotes);
         return planet;
     }
 
     private void ResetSelectedPlanet()
     {
-        SelectedPlanetMap = null;
+        PersistVotingState(null, _carryoverVotes);
     }
 
     /// <summary>
@@ -137,9 +137,9 @@ public sealed partial class CMDistressSignalRuleSystem
     /// </summary>
     /// <param name="planet">The planet to use for this round.</param>
     // Stories-DistressPersistence-Start
-    public bool SetPlanet(RMCPlanet planet)
+    public void SetPlanet(RMCPlanet planet)
     {
-        return TryPersistVotingState(planet, _carryoverVotes);
+        PersistVotingState(planet, _carryoverVotes);
     }
     // Stories-DistressPersistence-End
 
@@ -148,16 +148,8 @@ public sealed partial class CMDistressSignalRuleSystem
     /// </summary>
     private void StartPlanetVote()
     {
-        // Stories-DistressPersistence-Start
-        _persistencePlanetVotePending = false;
         if (!_config.GetCVar(RMCCVars.RMCPlanetMapVote))
             return;
-        if (!TryPreparePersistence())
-        {
-            _persistencePlanetVotePending = true;
-            return;
-        }
-        // Stories-DistressPersistence-End
 
         var planets = _rmcPlanet.GetCandidatesInRotation();
         if (!_useCarryoverVoting)
@@ -166,6 +158,7 @@ public sealed partial class CMDistressSignalRuleSystem
             {
                 _carryoverVotes[planet.Proto.ID] = 0;
             }
+            PersistVotingState(SelectedPlanetMap, _carryoverVotes);
         }
 
         planets.RemoveAll(p => _lastPlanetMaps.Contains(p.Proto.ID));
@@ -246,7 +239,7 @@ public sealed partial class CMDistressSignalRuleSystem
             }
 
             carryoverVotes[picked.Proto.ID] = 0;
-            TryPersistVotingState(picked, carryoverVotes, sb.ToString());
+            PersistVotingState(picked, carryoverVotes, sb.ToString());
             // Stories-DistressPersistence-End
         };
         _currentVote.OnCancelled += _ => _currentVote = null;
@@ -262,11 +255,10 @@ public sealed partial class CMDistressSignalRuleSystem
     }
 
     /// <summary>
-    /// Cancels any active or deferred planet selection vote.
+    /// Cancels the currently active planet selection vote if one exists.
     /// </summary>
     public void CancelPlanetVote()
     {
-        _persistencePlanetVotePending = false;
         _currentVote?.Cancel();
     }
 }

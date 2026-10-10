@@ -29,15 +29,8 @@ public sealed class ForcePlanetMapCommand : ToolshedCommand
         }
 
         var planetSys = Sys<CMDistressSignalRuleSystem>();
-        // Stories-DistressPersistence-Start
-        if (!planetSys.SetPlanet(first.Value))
-        {
-            ctx.WriteLine("Failed to persist the selected planet. The previous selection was kept.");
-            return;
-        }
-
         planetSys.CancelPlanetVote();
-        // Stories-DistressPersistence-End
+        planetSys.SetPlanet(first.Value);
         ctx.WriteLine($"The next round's planet has been set to {first.Value}");
     }
 }

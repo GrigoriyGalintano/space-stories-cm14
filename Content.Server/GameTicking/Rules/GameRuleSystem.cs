@@ -22,20 +22,15 @@ public abstract partial class GameRuleSystem<T> : EntitySystem where T : ICompon
     {
         base.Initialize();
 
-        SubscribeLocalEvent<RoundStartAttemptEvent>(OnRoundStartAttempt); // Stories-DistressPersistence
+        SubscribeLocalEvent<RoundStartAttemptEvent>(OnStartAttempt);
         SubscribeLocalEvent<T, GameRuleAddedEvent>(OnGameRuleAdded);
         SubscribeLocalEvent<T, GameRuleStartedEvent>(OnGameRuleStarted);
         SubscribeLocalEvent<T, GameRuleEndedEvent>(OnGameRuleEnded);
         SubscribeLocalEvent<RoundEndTextAppendEvent>(OnRoundEndTextAppend);
     }
 
-    // Stories-DistressPersistence-Start
-    private void OnRoundStartAttempt(RoundStartAttemptEvent args)
+    private void OnStartAttempt(RoundStartAttemptEvent args)
     {
-        if (args.Cancelled)
-            return;
-
-        BeforeStartAttempt(args);
         if (args.Forced || args.Cancelled)
             return;
 
@@ -63,14 +58,6 @@ public abstract partial class GameRuleSystem<T> : EntitySystem where T : ICompon
             }
         }
     }
-
-    /// <summary>
-    /// Called before a round start attempt is processed, including forced starts.
-    /// </summary>
-    protected virtual void BeforeStartAttempt(RoundStartAttemptEvent ev)
-    {
-    }
-    // Stories-DistressPersistence-End
 
     private void OnGameRuleAdded(EntityUid uid, T component, ref GameRuleAddedEvent args)
     {

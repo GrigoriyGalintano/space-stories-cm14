@@ -1,76 +1,157 @@
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Threading.Tasks;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using Robust.Shared.ContentPack;
+using Robust.Shared.Utility;
 
 namespace Content.Server._Stories.DistressSignal;
 
-public sealed record StoriesDistressSignalState(
-    float MarinesPerXeno,
-    List<string> RecentPlanetIds,
-    Dictionary<string, int> CarryoverVotes,
-    string? SelectedPlanetId);
+public sealed record StoriesDistressSignalRound(int RoundId, string PlanetId, float BalanceBefore,
+    float? BalanceAfter = null, int? Result = null);
 
-/// <summary>
-/// HTTP boundary to the independent FastAPI/SQLite store. One writer per server key.
-/// </summary>
-public sealed class StoriesDistressSignalStore : IDisposable
+public sealed record StoriesDistressSignalState(float MarinesPerXeno,
+    Dictionary<string, int> CarryoverVotes, string? SelectedPlanetId, List<StoriesDistressSignalRound> Rounds);
+
+public sealed class StoriesDistressSignalStore
 {
-    private readonly HttpClient _client;
-    private readonly string _serverPath;
+    private sealed record Envelope(int Version, string Data, string Sha256);
 
-    public StoriesDistressSignalStore(string url, string token, string serverId)
+    private static readonly ResPath Directory = new("/distress-signal");
+    private readonly IWritableDirProvider _data;
+    private long _generation;
+    private bool _dirty;
+
+    public StoriesDistressSignalState State { get; private set; }
+    public bool HasSnapshot { get; private set; }
+    public List<string> RecoveryErrors { get; } = new();
+
+    public StoriesDistressSignalStore(IWritableDirProvider data, float initialBalance)
     {
-        if (string.IsNullOrWhiteSpace(serverId) || string.IsNullOrWhiteSpace(token))
-            throw new ArgumentException("Distress Signal persistence requires a server ID and API token.");
-
-        _client = new HttpClient
+        _data = data;
+        State = new(initialBalance, new(), null, new());
+        try
         {
-            BaseAddress = new Uri(url.TrimEnd('/') + "/"),
-            Timeout = TimeSpan.FromSeconds(3),
-        };
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        _serverPath = $"servers/{Uri.EscapeDataString(serverId)}";
+            _data.CreateDir(Directory);
+            foreach (var file in Checkpoints())
+            {
+                try
+                {
+                    var generation = long.Parse(file[11..^5], CultureInfo.InvariantCulture);
+                    _generation = Math.Max(_generation, generation);
+                    using var stream = _data.Open(Directory / file, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    var envelope = JsonSerializer.Deserialize<Envelope>(stream)
+                        ?? throw new InvalidDataException("Empty checkpoint");
+                    if (envelope.Version != 1 || Hash(envelope.Data) != envelope.Sha256)
+                        throw new InvalidDataException("Invalid checkpoint version or checksum");
+                    var state = JsonSerializer.Deserialize<StoriesDistressSignalState>(envelope.Data)
+                        ?? throw new InvalidDataException("Empty state");
+                    Validate(state);
+                    State = state;
+                    HasSnapshot = true;
+                    break;
+                }
+                catch (Exception e)
+                {
+                    RecoveryErrors.Add($"{file}: {e.Message}");
+                    try { _data.Rename(Directory / file, Directory / (file + ".corrupt-" + Guid.NewGuid().ToString("N"))); }
+                    catch (Exception renameError) { RecoveryErrors.Add(renameError.Message); }
+                }
+            }
+        }
+        catch (Exception e) { RecoveryErrors.Add(e.Message); }
+        _dirty = !HasSnapshot;
     }
 
-    public Task<StoriesDistressSignalState> GetOrCreateState(int recentPlanetCount, float initialMarinesPerXeno) =>
-        Send<StoriesDistressSignalState>(HttpMethod.Post, "load", new { recentPlanetCount, initialMarinesPerXeno });
+    public void SetBalance(float value) => Update(State with { MarinesPerXeno = value });
 
-    public Task<List<string>> GetRecentPlanets(int count) =>
-        Send<List<string>>(HttpMethod.Post, "history", new { count });
+    public void SetVotingState(string? selectedPlanetId, Dictionary<string, int> votes) =>
+        Update(State with { SelectedPlanetId = selectedPlanetId, CarryoverVotes = new(votes) });
 
-    public Task AddRound(int roundId, string planetId, float marinesPerXeno) =>
-        Send<object>(HttpMethod.Put, $"rounds/{roundId}/start", new { planetId, marinesPerXeno });
-
-    public Task<float> FinishRound(int roundId, int result, float marinesPerXeno) =>
-        Send<float>(HttpMethod.Put, $"rounds/{roundId}/finish", new { result, marinesPerXeno });
-
-    public Task SetVotingState(string? selectedPlanetId, IReadOnlyDictionary<string, int> carryoverVotes) =>
-        Send<object>(HttpMethod.Put, "voting", new { selectedPlanetId, carryoverVotes });
-
-    public Task SetBalance(float marinesPerXeno) =>
-        Send<object>(HttpMethod.Put, "balance", new { marinesPerXeno });
-
-    public Task Write(StoriesDistressSignalWrite write) => write.Kind switch
+    public void StartRound(int roundId, string planetId, float balance)
     {
-        StoriesDistressSignalWriteKind.StartRound => AddRound(write.RoundId, write.PlanetId!, write.MarinesPerXeno),
-        StoriesDistressSignalWriteKind.FinishRound => FinishRound(write.RoundId, write.Result, write.MarinesPerXeno),
-        StoriesDistressSignalWriteKind.Voting => SetVotingState(write.PlanetId, write.CarryoverVotes!),
-        StoriesDistressSignalWriteKind.Balance => SetBalance(write.MarinesPerXeno),
-        _ => throw new ArgumentOutOfRangeException(nameof(write)),
-    };
-
-    private async Task<T> Send<T>(HttpMethod method, string path, object body)
-    {
-        using var request = new HttpRequestMessage(method, $"{_serverPath}/{path}")
+        var existing = State.Rounds.Find(r => r.RoundId == roundId);
+        if (existing != null)
         {
-            Content = JsonContent.Create(body),
-        };
-        using var response = await _client.SendAsync(request).ConfigureAwait(false);
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<T>().ConfigureAwait(false)
-            ?? throw new InvalidOperationException("Empty Distress Signal persistence response.");
+            if (existing.PlanetId != planetId)
+                throw new InvalidDataException("Round ID already uses another planet");
+            return;
+        }
+
+        var rounds = State.Rounds.ToList();
+        rounds.Add(new(roundId, planetId, balance));
+        Update(State with { Rounds = rounds, SelectedPlanetId = null });
     }
 
-    public void Dispose() => _client.Dispose();
+    public void FinishRound(int roundId, int result, float balance)
+    {
+        var index = State.Rounds.FindIndex(r => r.RoundId == roundId);
+        if (index < 0)
+            throw new InvalidDataException("Round finish has no matching start");
+        if (State.Rounds[index].Result != null)
+            return;
+
+        var rounds = State.Rounds.ToList();
+        rounds[index] = rounds[index] with { Result = result, BalanceAfter = balance };
+        Update(State with { Rounds = rounds, MarinesPerXeno = balance });
+    }
+
+    private void Update(StoriesDistressSignalState state)
+    {
+        Validate(state);
+        State = state;
+        _dirty = true;
+    }
+
+    public void Flush()
+    {
+        if (!_dirty)
+            return;
+
+        _data.CreateDir(Directory);
+        var name = "checkpoint-" + checked(++_generation).ToString("D20", CultureInfo.InvariantCulture);
+        var temporary = Directory / "checkpoint.tmp";
+        var payload = JsonSerializer.Serialize(State);
+        using (var stream = _data.Open(temporary, FileMode.Create, FileAccess.Write, FileShare.None))
+        {
+            JsonSerializer.Serialize(stream, new Envelope(1, payload, Hash(payload)));
+            if (stream is FileStream file)
+                file.Flush(flushToDisk: true);
+            else
+                stream.Flush();
+        }
+
+        // Publish a complete snapshot and retain the previous one for recovery.
+        _data.Rename(temporary, Directory / (name + ".json"));
+        _dirty = false;
+        HasSnapshot = true;
+        foreach (var old in Checkpoints().Skip(2))
+        {
+            try { _data.Delete(Directory / old); }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
+        }
+    }
+
+    private string[] Checkpoints() => _data.DirectoryEntries(Directory)
+        .Where(f => f.StartsWith("checkpoint-", StringComparison.Ordinal) && f.EndsWith(".json", StringComparison.Ordinal))
+        .OrderDescending(StringComparer.Ordinal).ToArray();
+
+    private static void Validate(StoriesDistressSignalState state)
+    {
+        if (!float.IsFinite(state.MarinesPerXeno) || state.MarinesPerXeno <= 0 ||
+            state.CarryoverVotes == null || state.Rounds == null ||
+            state.SelectedPlanetId != null && string.IsNullOrWhiteSpace(state.SelectedPlanetId) ||
+            state.CarryoverVotes.Any(v => string.IsNullOrWhiteSpace(v.Key) || v.Value < 0) ||
+            state.Rounds.Select(r => r.RoundId).Distinct().Count() != state.Rounds.Count ||
+            state.Rounds.Any(r => r.RoundId < 0 || string.IsNullOrWhiteSpace(r.PlanetId) ||
+                !float.IsFinite(r.BalanceBefore) || r.BalanceBefore <= 0 ||
+                r.BalanceAfter is { } balance && (!float.IsFinite(balance) || balance <= 0) ||
+                (r.Result == null) != (r.BalanceAfter == null) || r.Result is < 1 or > 6))
+            throw new InvalidDataException("Invalid Distress Signal state");
+    }
+
+    private static string Hash(string value) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value)));
 }
