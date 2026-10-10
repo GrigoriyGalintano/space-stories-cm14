@@ -726,6 +726,8 @@ public sealed class WiresSystem : SharedWiresSystem
                 if (wire.Action == null || wire.Action.Cut(user, wire))
                 {
                     wire.IsCut = true;
+                    var cut = new WireCutEvent(user);
+                    RaiseLocalEvent(used, ref cut);
                 }
 
                 UpdateUserInterface(used);
@@ -747,6 +749,8 @@ public sealed class WiresSystem : SharedWiresSystem
                 if (wire.Action == null || wire.Action.Mend(user, wire))
                 {
                     wire.IsCut = false;
+                    var mended = new WireMendedEvent(user);
+                    RaiseLocalEvent(used, ref mended);
                 }
 
                 UpdateUserInterface(used);

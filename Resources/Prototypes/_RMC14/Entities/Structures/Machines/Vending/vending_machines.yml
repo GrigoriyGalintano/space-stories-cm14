@@ -583,7 +583,8 @@
     CMHeadset: 6
     RMCUniversalRecorder: 3
     RMCBoxRegulationTapes: 5
-    #ClueScanner: 3
+    RMCPoliceForensicScanner: 3
+    RMCForensicSpray: 3
     #Camera: 8
     #CameraFilm: 8
     RMCWhistle: 5

@@ -1,0 +1,161 @@
+rmc-police-records-title = Криминальные записи
+rmc-police-sentencing-title = Оформление приговоров
+rmc-police-jas = Автоматизированная судебная система
+rmc-police-access-denied = Доступ запрещён. Проверьте доступ, расстояние и питание терминала.
+rmc-police-disconnected = Не удалось подключиться к корабельной базе личного состава.
+rmc-police-high-command-only = Изменять должность в записи и удалять записи личного состава может только высшее командование.
+rmc-police-new-record-name = Новая запись
+rmc-police-unknown = Неизвестно
+rmc-police-none = Нет
+rmc-police-gender = Пол
+rmc-police-add-comment-short = Добавить комментарий
+rmc-police-register-short = Зарегистрировать
+rmc-police-remove-short = Убрать
+rmc-police-no-comments = Комментариев нет.
+rmc-police-no-incidents = Происшествий не зарегистрировано.
+rmc-police-history-entry = Происшествие №{$number} — {$sentence}
+rmc-police-incident-charges = Обвинения
+rmc-police-no-laws = Подходящих статей нет.
+rmc-police-save = Сохранить
+rmc-police-text-length = {$length} / {$max} символов
+rmc-police-invalid-name = Имя должно содержать от 1 до 49 букв, пробелов, апострофов или дефисов.
+rmc-police-invalid-age = Возраст должен быть целым числом от 18 до 100.
+rmc-police-cancel = Отмена
+rmc-police-confirm = Подтвердить
+rmc-police-confirm-description = Подтвердите действие. Оно изменит сохранённую запись.
+rmc-police-search = Поиск по имени, должности, отряду или номеру записи...
+rmc-police-select = Выбрать
+rmc-police-new-record = Новая запись личного состава
+rmc-police-new-security-record = Создать криминальную запись
+rmc-police-delete-record = Удалить запись личного состава
+rmc-police-personnel = База личного состава
+rmc-police-personal-data = Личные данные
+rmc-police-security-data = Криминальные сведения
+rmc-police-no-results = Подходящих записей нет.
+rmc-police-select-record = Выберите запись личного состава.
+rmc-police-all-statuses = Все статусы
+rmc-police-sort-name = Сортировать по имени
+rmc-police-sort-rank = Сортировать по должности
+rmc-police-sort-id = Сортировать по номеру записи
+rmc-police-name = Имя
+rmc-police-age = Возраст (18–100)
+rmc-police-edit = Изменить
+rmc-police-edit-rank = Изменить должность в записи (высшее командование)
+rmc-police-record-id = Номер записи: {$id}
+rmc-police-rank-value = Должность: {$rank}
+rmc-police-squad-value = Отряд: {$squad}
+rmc-police-status = Криминальный статус
+rmc-police-status-None = Нет
+rmc-police-status-Arrest = Арестовать
+rmc-police-status-Incarcerated = В заключении
+rmc-police-status-Released = Освобождён
+rmc-police-status-Suspect = Подозреваемый
+rmc-police-status-NJP = Внесудебное наказание
+rmc-police-physical = Физическое состояние
+rmc-police-physical-Active = Активен
+rmc-police-physical-Inactive = Неактивен
+rmc-police-physical-Unknown = Неизвестно
+rmc-police-mental = Психическое состояние
+rmc-police-mental-Stable = Стабильное
+rmc-police-mental-Watch = Наблюдение
+rmc-police-mental-Unstable = Нестабильное
+rmc-police-mental-Insane = Невменяемость
+rmc-police-gender-Male = Мужской
+rmc-police-gender-Female = Женский
+rmc-police-gender-Epicene = Другой
+rmc-police-gender-Neuter = Не указан
+rmc-police-comments = Комментарии
+rmc-police-add-comment = Добавить комментарий (до 500 символов)
+rmc-police-delete-comment = Удалить комментарий
+rmc-police-comment-deleted = Удалено: {$author}, {$time}.
+rmc-police-incidents = История происшествий
+rmc-police-print-record = Распечатать запись
+rmc-police-print-title = Полицейский отчёт ({$name})
+rmc-police-incident-print-title = Закодированный отчёт о происшествии ({$name})
+rmc-police-record-print =
+    КРИМИНАЛЬНАЯ ЗАПИСЬ
+    Имя: {$name}
+    Отпечаток: {$id}
+    Должность: {$rank}
+    Возраст: {$age}
+    Пол: {$gender}
+    Отряд: {$squad}
+    Физическое состояние: {$physical}
+    Психическое состояние: {$mental}
+    Криминальный статус: {$status}
+    Тяжкие преступления: {$crimes}
+rmc-police-fingerprints = Анализ отпечатков
+rmc-police-scanner-slot = Криминалистический сканер
+rmc-police-scanner-connected = Сканер подключён.
+rmc-police-scanner-count = Сохранено наборов отпечатков: {$count}
+rmc-police-scanner-stored = Сохранено наборов отпечатков: [color=yellow]{$count}[/color]
+rmc-police-scanner-unskilled = Вы не знаете, как пользоваться этим сканером.
+rmc-police-scanner-start = Вы начинаете сканирование отпечатков...
+rmc-police-scanner-empty = Новых наборов отпечатков не найдено.
+rmc-police-scanner-found = Найдено новых наборов отпечатков: {$found}. Всего сохранено: {$total}.
+rmc-police-scanner-full = Память сканера заполнена. Проанализируйте и очистите его на консоли криминальных записей.
+rmc-police-clue-item = Отпечатки собраны с предмета: {$item}.
+rmc-police-clue-window = В отпечатке найден небольшой осколок стекла.
+rmc-police-clue-wall = В отпечатке есть частицы металла и грязи.
+rmc-police-clue-door = В отпечатке есть кусочки проводов и частицы металла.
+rmc-police-clue-vendor = В отпечатке найден небольшой кусочек перерезанного провода.
+rmc-police-clue-airlock-wire = В отпечатке есть масло и кусочки проводов.
+rmc-police-clue-apc-wire = В отпечатке есть частицы проводов.
+rmc-police-clue-apc-electronics = В отпечатке есть частицы электроники.
+rmc-police-clue-apc-cell = В отпечатке есть следы аккумуляторной кислоты.
+rmc-police-clue-apc-multitool = Похоже, этот отпечаток оставлен после работы с мультитулом.
+rmc-police-forensic-spray-name = криминалистический спрей
+rmc-police-forensic-spray-desc = Спрей с красителем, связывающимся с кожным жиром, оставленным отпечатками пальцев.
+rmc-police-scanner-disconnected = Вставьте криминалистический сканер в терминал.
+rmc-police-no-fingerprints = Сохранённых отпечатков нет.
+rmc-police-print-fingerprints = Распечатать отчёт об отпечатках
+rmc-police-clear-fingerprints = Очистить сканер
+rmc-police-eject-scanner = Извлечь сканер
+rmc-police-new-report = Новый отчёт о происшествии
+rmc-police-scrap-report = Удалить отчёт о происшествии
+rmc-police-export = Экспортировать и распечатать
+rmc-police-incident-report = Отчёт о происшествии
+rmc-police-report-help = Создайте отчёт или примените к консоли оригинал закодированного отчёта для импорта. Зарегистрируйте подозреваемого по ID в руке или тяните его за собой. Для регистрации свидетеля держите его ID, а для добавления улики — сам предмет.
+rmc-police-report-changed = Другой офицер изменил отчёт. Проверьте обновлённые данные и повторите действие.
+rmc-police-report-in-progress = Работа над отчётом уже идёт.
+rmc-police-report-incomplete = Укажите подозреваемого и добавьте обвинение с ненулевым сроком перед экспортом.
+rmc-police-original-only = Импортировать можно только оригиналы закодированных отчётов. Копии недействительны.
+rmc-police-hold-id = Держите ID этого человека в активной руке.
+rmc-police-hold-evidence = Держите улику в активной руке.
+rmc-police-suspect-value = Подозреваемый: {$name}
+rmc-police-scan-suspect = Зарегистрировать по ID или тому, кого тянете
+rmc-police-sentence-value = Приговор: {$sentence}
+rmc-police-permanent = ПОЖИЗНЕННОЕ ЗАКЛЮЧЕНИЕ
+rmc-police-minutes = {$minutes} мин.
+rmc-police-summary = Описание происшествия
+rmc-police-edit-summary = Изменить описание
+rmc-police-charges = Текущие обвинения
+rmc-police-no-charges = Выберите обвинения в каталоге законов.
+rmc-police-add-charge = Добавить обвинение
+rmc-police-remove-charge = Снять обвинение
+rmc-police-witnesses = Свидетели
+rmc-police-evidence = Улики
+rmc-police-add-witness = Зарегистрировать свидетеля по ID
+rmc-police-add-evidence = Добавить предмет в руке как улику
+rmc-police-edit-notes = Изменить примечания
+rmc-police-remove-entry = Удалить запись
+rmc-police-law-catalogue = Каталог законов
+rmc-police-search-laws = Поиск законов...
+rmc-police-law-category-Minor = Незначительные нарушения
+rmc-police-law-category-Major = Серьёзные нарушения
+rmc-police-law-category-Capital = Особо тяжкие преступления
+rmc-police-law-category-Optional = Дополнительные обвинения
+rmc-police-law-category-Precautionary = Превентивные меры
+rmc-police-law-category-Civilian = Гражданские законы
+rmc-police-incident-print =
+    ОТЧЁТ О ПРОИСШЕСТВИИ
+    Подозреваемый: {$name}
+    Приговор: {$sentence}
+    Описание: {$summary}
+    Обвинения:
+rmc-police-mark-insubordination = Сообщить о неповиновении этого морпеха
+rmc-police-insubordination-charge = Неповиновение.
+rmc-police-insubordination-reported = Overwatch: офицер наблюдения сообщил о вашем неповиновении.
+rmc-police-insubordination-confirmed = Сообщение о неповиновении принято. В личном деле установлен статус «Арестовать».
+rmc-police-insubordination-incarcerated = Морпех уже находится в заключении. Его запись не изменена.
+rmc-police-insubordination-already-wanted = Морпех уже объявлен в розыск за неповиновение.

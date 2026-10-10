@@ -257,6 +257,7 @@ public sealed partial class RMCCrtActionButton : ContainerButton, IRMCCrtThemedC
 
         if (!_context.ThemeEnabled)
         {
+            Background.BorderThickness = 1;
             UpdateNanoAppearance();
             return;
         }
@@ -266,7 +267,9 @@ public sealed partial class RMCCrtActionButton : ContainerButton, IRMCCrtThemedC
         ModulateSelfOverride = null;
         StyleBoxOverride = _transparentStyle;
         var palette = _context.Palette;
+        Background.BorderThickness = Variant == RMCCrtButtonVariant.Flat ? 0 : 1;
         var isDanger = Tone == RMCCrtTone.Danger || Variant == RMCCrtButtonVariant.Danger;
+        Background.Effects = isDanger ? RMCCrtEffects.None : RMCCrtEffects.HorizontalScanlines;
         Color background;
         Color border;
         Color foreground;
@@ -281,7 +284,7 @@ public sealed partial class RMCCrtActionButton : ContainerButton, IRMCCrtThemedC
         {
             background = DrawMode switch
             {
-                DrawModeEnum.Pressed => Color.InterpolateBetween(palette.Background, palette.Danger, 0.65f),
+                DrawModeEnum.Pressed => Color.InterpolateBetween(palette.Danger, palette.Background, 0.1f),
                 DrawModeEnum.Hover => Color.InterpolateBetween(palette.Danger, Color.White, 0.18f),
                 _ => palette.Danger,
             };
@@ -305,7 +308,7 @@ public sealed partial class RMCCrtActionButton : ContainerButton, IRMCCrtThemedC
             {
                 DrawModeEnum.Pressed => palette.PressedBackground.WithAlpha(0.75f),
                 DrawModeEnum.Hover => palette.HoverBackground,
-                _ => palette.Background.WithAlpha(0.72f),
+                _ => Variant == RMCCrtButtonVariant.Flat ? Color.Transparent : palette.Background.WithAlpha(0.72f),
             };
             border = palette.Border;
             foreground = Tone switch

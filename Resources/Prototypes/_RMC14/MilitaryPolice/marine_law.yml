@@ -1,0 +1,366 @@
+# Ported from CM-SS13: https://github.com/cmss13-devs/cmss13/tree/ae42879bbb47e8440e40ac18ba43ca28434db003/code/modules/law/laws
+
+- type: rmcMarineLaw
+  id: rmc-law-capital-attempted-murder
+  name: rmc-law-capital-attempted-murder
+  description: rmc-law-capital-attempted-murder-description
+  category: Capital
+  brigTime: 60
+  specialPunishment: rmc-law-capital-attempted-murder-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-capital-murder
+  name: rmc-law-capital-murder
+  description: rmc-law-capital-murder-description
+  category: Capital
+  brigTime: 60
+  specialPunishment: rmc-law-capital-murder-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-capital-desertion
+  name: rmc-law-capital-desertion
+  description: rmc-law-capital-desertion-description
+  category: Capital
+  brigTime: 60
+  specialPunishment: rmc-law-capital-desertion-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-capital-sedition
+  name: rmc-law-capital-sedition
+  description: rmc-law-capital-sedition-description
+  category: Capital
+  brigTime: 60
+  specialPunishment: rmc-law-capital-sedition-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-capital-jailbreak-escape
+  name: rmc-law-capital-jailbreak-escape
+  description: rmc-law-capital-jailbreak-escape-description
+  category: Capital
+  brigTime: 60
+  specialPunishment: rmc-law-capital-jailbreak-escape-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-capital-crimes-against-humanity
+  name: rmc-law-capital-crimes-against-humanity
+  description: rmc-law-capital-crimes-against-humanity-description
+  category: Capital
+  brigTime: 60
+  specialPunishment: rmc-law-capital-crimes-against-humanity-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-civilian-terror-association
+  name: rmc-law-civilian-terror-association
+  description: rmc-law-civilian-terror-association-description
+  category: Civilian
+  brigTime: 60
+  conditions: rmc-law-civilian-terror-association-conditions
+
+- type: rmcMarineLaw
+  id: rmc-law-civilian-terrorism
+  name: rmc-law-civilian-terrorism
+  description: rmc-law-civilian-terrorism-description
+  category: Civilian
+  brigTime: 60
+  conditions: rmc-law-civilian-terrorism-conditions
+
+- type: rmcMarineLaw
+  id: rmc-law-civilian-minor-civil-insubordination
+  name: rmc-law-civilian-minor-civil-insubordination
+  description: rmc-law-civilian-minor-civil-insubordination-description
+  category: Civilian
+  brigTime: 5
+  conditions: rmc-law-civilian-minor-civil-insubordination-conditions
+
+- type: rmcMarineLaw
+  id: rmc-law-civilian-major-civil-insubordination
+  name: rmc-law-civilian-major-civil-insubordination
+  description: rmc-law-civilian-major-civil-insubordination-description
+  category: Civilian
+  brigTime: 10
+  conditions: rmc-law-civilian-major-civil-insubordination-conditions
+
+- type: rmcMarineLaw
+  id: rmc-law-civilian-black-marketeering
+  name: rmc-law-civilian-black-marketeering
+  description: rmc-law-civilian-black-marketeering-description
+  category: Civilian
+  brigTime: 7.5
+  specialPunishment: rmc-law-civilian-black-marketeering-punishment
+  conditions: rmc-law-civilian-black-marketeering-conditions
+
+- type: rmcMarineLaw
+  id: rmc-law-civilian-arms-dealing
+  name: rmc-law-civilian-arms-dealing
+  description: rmc-law-civilian-arms-dealing-description
+  category: Civilian
+  brigTime: 15
+  specialPunishment: rmc-law-civilian-arms-dealing-punishment
+  conditions: rmc-law-civilian-arms-dealing-conditions
+
+- type: rmcMarineLaw
+  id: rmc-law-major-damage-to-government-property
+  name: rmc-law-major-damage-to-government-property
+  description: rmc-law-major-damage-to-government-property-description
+  category: Major
+  brigTime: 10
+  specialPunishment: rmc-law-major-damage-to-government-property-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-major-disorderly-conduct
+  name: rmc-law-major-disorderly-conduct
+  description: rmc-law-major-disorderly-conduct-description
+  category: Major
+  brigTime: 10
+
+- type: rmcMarineLaw
+  id: rmc-law-major-assault
+  name: rmc-law-major-assault
+  description: rmc-law-major-assault-description
+  category: Major
+  brigTime: 15
+
+- type: rmcMarineLaw
+  id: rmc-law-major-contraband
+  name: rmc-law-major-contraband
+  description: rmc-law-major-contraband-description
+  category: Major
+  brigTime: 15
+  specialPunishment: rmc-law-major-contraband-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-major-insubordination
+  name: rmc-law-major-insubordination
+  description: rmc-law-major-insubordination-description
+  category: Major
+  brigTime: 15
+
+- type: rmcMarineLaw
+  id: rmc-law-major-interference
+  name: rmc-law-major-interference
+  description: rmc-law-major-interference-description
+  category: Major
+  brigTime: 15
+
+- type: rmcMarineLaw
+  id: rmc-law-major-neglect-of-duty
+  name: rmc-law-major-neglect-of-duty
+  description: rmc-law-major-neglect-of-duty-description
+  category: Major
+  brigTime: 15
+
+- type: rmcMarineLaw
+  id: rmc-law-major-listening-bugs
+  name: rmc-law-major-listening-bugs
+  description: rmc-law-major-listening-bugs-description
+  category: Major
+  brigTime: 15
+  specialPunishment: rmc-law-major-listening-bugs-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-major-subterfuge
+  name: rmc-law-major-subterfuge
+  description: rmc-law-major-subterfuge-description
+  category: Major
+  brigTime: 15
+  specialPunishment: rmc-law-major-subterfuge-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-major-assault-with-a-deadly-weapon
+  name: rmc-law-major-assault-with-a-deadly-weapon
+  description: rmc-law-major-assault-with-a-deadly-weapon-description
+  category: Major
+  brigTime: 20
+
+- type: rmcMarineLaw
+  id: rmc-law-major-illegal-confinement
+  name: rmc-law-major-illegal-confinement
+  description: rmc-law-major-illegal-confinement-description
+  category: Major
+  brigTime: 20
+
+- type: rmcMarineLaw
+  id: rmc-law-major-manslaughter
+  name: rmc-law-major-manslaughter
+  description: rmc-law-major-manslaughter-description
+  category: Major
+  brigTime: 20
+  specialPunishment: rmc-law-major-manslaughter-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-major-prevarication
+  name: rmc-law-major-prevarication
+  description: rmc-law-major-prevarication-description
+  category: Major
+  brigTime: 20
+
+- type: rmcMarineLaw
+  id: rmc-law-major-sexual-harrasment
+  name: rmc-law-major-sexual-harrasment
+  description: rmc-law-major-sexual-harrasment-description
+  category: Major
+  brigTime: 30
+
+- type: rmcMarineLaw
+  id: rmc-law-major-animal-cruelty
+  name: rmc-law-major-animal-cruelty
+  description: rmc-law-major-animal-cruelty-description
+  category: Major
+  brigTime: 30
+
+- type: rmcMarineLaw
+  id: rmc-law-major-misuse-of-authority
+  name: rmc-law-major-misuse-of-authority
+  description: rmc-law-major-misuse-of-authority-description
+  category: Major
+  brigTime: 20
+
+- type: rmcMarineLaw
+  id: rmc-law-major-unauthorized-deployment
+  name: rmc-law-major-unauthorized-deployment
+  description: rmc-law-major-unauthorized-deployment-description
+  category: Major
+  brigTime: 10
+
+- type: rmcMarineLaw
+  id: rmc-law-minor-contraband
+  name: rmc-law-minor-contraband
+  description: rmc-law-minor-contraband-description
+  category: Minor
+  brigTime: 7.5
+  specialPunishment: rmc-law-minor-contraband-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-minor-damage-to-government-property
+  name: rmc-law-minor-damage-to-government-property
+  description: rmc-law-minor-damage-to-government-property-description
+  category: Minor
+  brigTime: 7.5
+  specialPunishment: rmc-law-minor-damage-to-government-property-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-minor-insubordination
+  name: rmc-law-minor-insubordination
+  description: rmc-law-minor-insubordination-description
+  category: Minor
+  brigTime: 7.5
+
+- type: rmcMarineLaw
+  id: rmc-law-minor-interference
+  name: rmc-law-minor-interference
+  description: rmc-law-minor-interference-description
+  category: Minor
+  brigTime: 7.5
+
+- type: rmcMarineLaw
+  id: rmc-law-minor-trespassing
+  name: rmc-law-minor-trespassing
+  description: rmc-law-minor-trespassing-description
+  category: Minor
+  brigTime: 7.5
+  specialPunishment: rmc-law-minor-trespassing-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-minor-listening-bugs
+  name: rmc-law-minor-listening-bugs
+  description: rmc-law-minor-listening-bugs-description
+  category: Minor
+  brigTime: 7.5
+  specialPunishment: rmc-law-minor-listening-bugs-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-minor-disrespect
+  name: rmc-law-minor-disrespect
+  description: rmc-law-minor-disrespect-description
+  category: Minor
+  brigTime: 10
+
+- type: rmcMarineLaw
+  id: rmc-law-minor-failure-to-follow-procedure
+  name: rmc-law-minor-failure-to-follow-procedure
+  description: rmc-law-minor-failure-to-follow-procedure-description
+  category: Minor
+  brigTime: 10
+  specialPunishment: rmc-law-minor-failure-to-follow-procedure-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-minor-intoxication
+  name: rmc-law-minor-intoxication
+  description: rmc-law-minor-intoxication-description
+  category: Minor
+  brigTime: 10
+
+- type: rmcMarineLaw
+  id: rmc-law-minor-theft
+  name: rmc-law-minor-theft
+  description: rmc-law-minor-theft-description
+  category: Minor
+  brigTime: 10
+  specialPunishment: rmc-law-minor-theft-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-minor-false-testimony
+  name: rmc-law-minor-false-testimony
+  description: rmc-law-minor-false-testimony-description
+  category: Minor
+  brigTime: 5
+
+- type: rmcMarineLaw
+  id: rmc-law-optional-minor-unruly
+  name: rmc-law-optional-minor-unruly
+  description: rmc-law-optional-minor-unruly-description
+  category: Optional
+  brigTime: 7.5
+
+- type: rmcMarineLaw
+  id: rmc-law-optional-aiding
+  name: rmc-law-optional-aiding
+  description: rmc-law-optional-aiding-description
+  category: Optional
+  brigTime: 10
+  specialPunishment: rmc-law-optional-aiding-punishment
+
+- type: rmcMarineLaw
+  id: rmc-law-optional-resisting-arrest
+  name: rmc-law-optional-resisting-arrest
+  description: rmc-law-optional-resisting-arrest-description
+  category: Optional
+  brigTime: 10
+
+- type: rmcMarineLaw
+  id: rmc-law-optional-resisting-search
+  name: rmc-law-optional-resisting-search
+  description: rmc-law-optional-resisting-search-description
+  category: Optional
+  brigTime: 5
+
+- type: rmcMarineLaw
+  id: rmc-law-optional-major-unruly
+  name: rmc-law-optional-major-unruly
+  description: rmc-law-optional-major-unruly-description
+  category: Optional
+  brigTime: 15
+
+- type: rmcMarineLaw
+  id: rmc-law-precautionary-discretionary-arrest
+  name: rmc-law-precautionary-discretionary-arrest
+  description: rmc-law-precautionary-discretionary-arrest-description
+  category: Precautionary
+  brigTime: 60
+  conditions: rmc-law-precautionary-discretionary-arrest-conditions
+
+- type: rmcMarineLaw
+  id: rmc-law-precautionary-insanity
+  name: rmc-law-precautionary-insanity
+  description: rmc-law-precautionary-insanity-description
+  category: Precautionary
+  brigTime: 60
+  conditions: rmc-law-precautionary-insanity-conditions
+
+- type: rmcMarineLaw
+  id: rmc-law-precautionary-prisoner-of-war
+  name: rmc-law-precautionary-prisoner-of-war
+  description: rmc-law-precautionary-prisoner-of-war-description
+  category: Precautionary
+  brigTime: 60
+  conditions: rmc-law-precautionary-prisoner-of-war-conditions
