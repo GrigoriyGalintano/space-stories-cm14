@@ -262,10 +262,11 @@ public sealed partial class CMDistressSignalRuleSystem
     }
 
     /// <summary>
-    /// Cancels the currently active planet selection vote if one exists.
+    /// Cancels any active or deferred planet selection vote.
     /// </summary>
     public void CancelPlanetVote()
     {
+        _persistencePlanetVotePending = false;
         _currentVote?.Cancel();
     }
 }

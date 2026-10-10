@@ -4,12 +4,16 @@ from contextlib import asynccontextmanager, contextmanager
 from datetime import datetime, timezone
 import hmac
 import json
+import math
 import os
 from pathlib import Path
 import sqlite3
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
@@ -88,9 +92,16 @@ def create_app(database: Path, token: str) -> FastAPI:
     api = FastAPI(title="Distress Signal persistence", lifespan=lifespan,
                   dependencies=[Depends(authorize)])
 
+    @api.exception_handler(RequestValidationError)
+    async def invalid_request(_, exc):
+        errors = jsonable_encoder(
+            exc.errors(),
+            custom_encoder={float: lambda value: value if math.isfinite(value) else str(value)},
+        )
+        return JSONResponse(status_code=422, content={"detail": errors})
+
     @api.exception_handler(sqlite3.OperationalError)
     async def unavailable(_, exc):
-        from fastapi.responses import JSONResponse
         return JSONResponse(status_code=503, content={"detail": "Storage unavailable"})
 
     def get_server(db, server_id):

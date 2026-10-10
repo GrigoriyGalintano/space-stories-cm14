@@ -157,15 +157,20 @@ public sealed partial class CMDistressSignalRuleSystem
     private void ApplyLoadedPersistence(StoriesDistressSignalState state)
     {
         ReplaceRecentPlanets(state.RecentPlanetIds);
-        var allPlanetIds = _rmcPlanet.GetAllPlanets().Select(p => p.Proto.ID).ToHashSet();
+        var allPlanets = _rmcPlanet.GetAllPlanets();
+        var allPlanetIds = allPlanets.Select(p => p.Proto.ID).ToHashSet();
         var carryoverVotes = state.CarryoverVotes
             .Where(v => v.Value > 0 && allPlanetIds.Contains(v.Key))
             .ToDictionary();
 
-        var candidates = _rmcPlanet.GetCandidatesInRotation();
-        candidates.TryFirstOrNull(p => p.Proto.ID == state.SelectedPlanetId, out var selected);
-        if (state.SelectedPlanetId != null && selected == null && candidates.Count > 0)
-            selected = _random.Pick(candidates);
+        // A valid administrative selection may be outside the current rotation.
+        allPlanets.TryFirstOrNull(p => p.Proto.ID == state.SelectedPlanetId, out var selected);
+        if (state.SelectedPlanetId != null && selected == null)
+        {
+            var candidates = _rmcPlanet.GetCandidatesInRotation();
+            if (candidates.Count > 0)
+                selected = _random.Pick(candidates);
+        }
 
         var selectedPlanetId = selected?.Proto.ID;
         // Do not replace voting state underneath an active vote.
