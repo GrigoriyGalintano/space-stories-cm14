@@ -17,7 +17,6 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
     private readonly RMCCrtLineEdit _search = new();
     private readonly RMCCrtOptionButton _category = new();
     private readonly BoxContainer _catalogue = Vertical();
-    private readonly RMCCrtLabel _catalogueName = Text(string.Empty, RMCCrtTone.Muted);
     private readonly RMCCrtLabel _sectionNotes = Text(string.Empty, RMCCrtTone.Muted);
     private readonly RMCCrtLabel _sentencingNotes = Text(string.Empty, RMCCrtTone.Muted);
     private readonly RMCCrtActionButton _new;
@@ -29,9 +28,8 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
     public RMCSentencingWindow() : base("rmc-police-sentencing-title")
     {
         IoCManager.InjectDependencies(this);
-        Toolbar.AddChild(Heading("rmc-police-jas"));
-        var catalogueHeader = Horizontal();
-        catalogueHeader.AddChild(_catalogueName);
+        var header = Horizontal();
+        header.AddChild(Heading("rmc-police-jas"));
         var guide = Button("rmc-police-open-law-guide", () =>
         {
             if (_state != null && _prototypes.TryIndex(_state.LawCatalogue, out var prototype) &&
@@ -39,8 +37,8 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
                 _systems.GetEntitySystem<GuidebookSystem>().OpenHelp(new() { catalogue.Guide });
         });
         guide.HorizontalExpand = false;
-        catalogueHeader.AddChild(guide);
-        Toolbar.AddChild(catalogueHeader);
+        header.AddChild(guide);
+        Toolbar.AddChild(header);
         var actions = Horizontal();
         _new = Button("rmc-police-new-report", () => Send(RMCSentencingAction.New), RMCCrtIcons.IdCard);
         _scrap = Button("rmc-police-scrap-report", () =>
@@ -76,14 +74,9 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
             if (_prototypes.TryIndex(state.LawCatalogue, out var prototype) &&
                 prototype.TryGetComponent(out RMCMarineLawCatalogueComponent? catalogue, ComponentFactory))
             {
-                _catalogueName.Text = prototype.Name;
                 foreach (var category in catalogue.Laws.Select(id => _prototypes.Index(id).Category)
                              .Distinct().OrderBy(category => category))
                     _category.AddItem(Loc.GetString($"rmc-police-law-category-{category}"), (int) category);
-            }
-            else
-            {
-                _catalogueName.Text = Loc.GetString("rmc-police-law-catalogue-unavailable");
             }
         }
         _state = state;

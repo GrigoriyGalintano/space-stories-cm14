@@ -173,6 +173,5 @@ rmc-police-punishment-SameAsCrime = Same punishment as the underlying offence
 rmc-police-sentence-with-njp = {$sentence}; NJP
 rmc-police-select-related-crime = Select the underlying offence...
 rmc-police-related-crime-value = Underlying offence: {$crime}
-rmc-police-law-catalogue-unavailable = Law catalogue unavailable
 rmc-police-open-law-guide = Law guide
 rmc-police-report-wrong-catalogue = This report does not match the applicable law catalogue or contains invalid charges.

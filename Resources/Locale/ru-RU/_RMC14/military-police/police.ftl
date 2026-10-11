@@ -173,6 +173,5 @@ rmc-police-punishment-SameAsCrime = То же наказание, что за о
 rmc-police-sentence-with-njp = {$sentence}; ДВС
 rmc-police-select-related-crime = Выберите основное преступление...
 rmc-police-related-crime-value = Основное преступление: {$crime}
-rmc-police-law-catalogue-unavailable = Каталог законов недоступен
 rmc-police-open-law-guide = Руководство по законам
 rmc-police-report-wrong-catalogue = Отчёт не соответствует действующему каталогу законов или содержит недопустимые обвинения.
