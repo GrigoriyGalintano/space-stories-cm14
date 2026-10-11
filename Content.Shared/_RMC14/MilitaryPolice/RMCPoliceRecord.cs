@@ -1,4 +1,7 @@
+using Content.Shared.Humanoid;
+using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.Preferences;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._RMC14.MilitaryPolice;
@@ -37,6 +40,12 @@ public enum RMCPoliceMentalStatus : byte
 [Serializable, NetSerializable, DataDefinition]
 public sealed partial class RMCPoliceRecord
 {
+    public static (int Min, int Max) GetAgeLimits(IPrototypeManager prototypes, HumanoidCharacterProfile? portrait)
+    {
+        var species = prototypes.Index<SpeciesPrototype>(portrait?.Species ?? SharedHumanoidAppearanceSystem.DefaultSpecies);
+        return (species.MinAge, species.MaxAge);
+    }
+
     [DataField]
     public HumanoidCharacterProfile? Portrait;
 

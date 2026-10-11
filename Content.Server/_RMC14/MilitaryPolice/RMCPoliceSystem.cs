@@ -348,9 +348,9 @@ public sealed class RMCPoliceSystem : EntitySystem
                _id.TryGetIdCard(worn.Value, out card);
     }
 
-    private void Error(EntityUid actor, LocId message)
+    private void Error(EntityUid actor, LocId message, params (string, object)[] args)
     {
-        _popup.PopupEntity(Loc.GetString(message), actor, actor, PopupType.MediumCaution);
+        _popup.PopupEntity(Loc.GetString(message, args), actor, actor, PopupType.MediumCaution);
     }
 
     private void LogChange(EntityUid actor, EntityUid console, string change)
@@ -378,7 +378,7 @@ public sealed class RMCPoliceSystem : EntitySystem
             var key = _records.AddRecordEntry(station.Value, new GeneralStationRecord
             {
                 Name = Loc.GetString("rmc-police-new-record-name"),
-                Age = 18,
+                Age = RMCPoliceRecord.GetAgeLimits(_prototypes, null).Min,
                 JobTitle = Loc.GetString("rmc-police-unknown"),
             });
             _records.AddRecordEntry(key, new RMCPoliceRecord());
@@ -505,9 +505,11 @@ public sealed class RMCPoliceSystem : EntitySystem
                     UpdateStatus(key, security, args.Actor);
                 break;
             case "age":
-                if (!int.TryParse(value, out var age) || age is < 18 or > 100)
+                _records.TryGetRecord<RMCPoliceRecord>(key, out var personal);
+                var limits = RMCPoliceRecord.GetAgeLimits(_prototypes, personal?.Portrait);
+                if (!int.TryParse(value, out var age) || age < limits.Min || age > limits.Max)
                 {
-                    Error(args.Actor, "rmc-police-invalid-age");
+                    Error(args.Actor, "rmc-police-invalid-age", ("min", limits.Min), ("max", limits.Max));
                     return;
                 }
                 general.Age = age;

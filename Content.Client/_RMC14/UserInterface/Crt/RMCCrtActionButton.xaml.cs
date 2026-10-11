@@ -19,6 +19,7 @@ public sealed partial class RMCCrtActionButton : ContainerButton, IRMCCrtThemedC
     private static readonly ISawmill Log = Logger.GetSawmill("rmc-crt");
 
     private readonly IResourceCache _resourceCache;
+    private readonly RMCCrtTextStyle _textStyle = new();
     private readonly StyleBoxFlat _transparentStyle = new() { BackgroundColor = Color.Transparent };
     private RMCCrtContentAlignment _contentAlignment = RMCCrtContentAlignment.Center;
     private Thickness _contentMargin = new(9, 5);
@@ -71,7 +72,11 @@ public sealed partial class RMCCrtActionButton : ContainerButton, IRMCCrtThemedC
     public Texture? IconTexture
     {
         get => IconControl.Texture;
-        set => IconControl.Texture = value;
+        set
+        {
+            IconControl.Texture = value;
+            IconControl.Visible = value != null;
+        }
     }
 
     public RMCCrtButtonVariant Variant
@@ -199,7 +204,7 @@ public sealed partial class RMCCrtActionButton : ContainerButton, IRMCCrtThemedC
 
         if (string.IsNullOrWhiteSpace(IconState))
         {
-            IconControl.Texture = null;
+            IconTexture = null;
             return;
         }
 
@@ -208,16 +213,16 @@ public sealed partial class RMCCrtActionButton : ContainerButton, IRMCCrtThemedC
             var rsi = _resourceCache.GetResource<RSIResource>(IconRsiPath).RSI;
             if (rsi.TryGetState(new RSI.StateId(IconState), out var state))
             {
-                IconControl.Texture = state.Frame0;
+                IconTexture = state.Frame0;
                 return;
             }
 
-            IconControl.Texture = null;
+            IconTexture = null;
             Log.Warning($"CRT icon state '{IconState}' does not exist in '{IconRsiPath}'.");
         }
         catch (Exception exception)
         {
-            IconControl.Texture = null;
+            IconTexture = null;
             Log.Error($"Failed to load CRT icon state '{IconState}' from '{IconRsiPath}': {exception}");
         }
     }
@@ -308,7 +313,7 @@ public sealed partial class RMCCrtActionButton : ContainerButton, IRMCCrtThemedC
             {
                 DrawModeEnum.Pressed => palette.PressedBackground.WithAlpha(0.75f),
                 DrawModeEnum.Hover => palette.HoverBackground,
-                _ => Variant == RMCCrtButtonVariant.Flat ? Color.Transparent : palette.Background.WithAlpha(0.72f),
+                _ => Variant == RMCCrtButtonVariant.Flat ? Color.Transparent : palette.ButtonBackground,
             };
             border = palette.Border;
             foreground = Tone switch
@@ -360,6 +365,8 @@ public sealed partial class RMCCrtActionButton : ContainerButton, IRMCCrtThemedC
         if (NameScope == null)
             return;
 
+        _textStyle.Apply(TextLabel, _context, TextFontSize);
+        TextLabel.Visible = !string.IsNullOrWhiteSpace(_text);
         TextLabel.SetMessage(RMCCrtThemeHelpers.CreateTextMessage(
             _text,
             _context,

@@ -93,7 +93,7 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
             (_statusFilter.SelectedId == -1 ||
              (int) (record.Security?.Status ?? RMCPoliceStatus.None) == _statusFilter.SelectedId) &&
             ($"{record.General.Name} {record.General.JobTitle} {record.General.Squad} " +
-             $"{record.Id} {record.General.Fingerprint}").Contains(_search.Text, StringComparison.OrdinalIgnoreCase));
+             $"{record.DisplayId} {record.General.Fingerprint}").Contains(_search.Text, StringComparison.OrdinalIgnoreCase));
         records = _sort.SelectedId switch
         {
             1 => records.OrderBy(record => record.General.JobTitle).ThenBy(record => record.General.Name),
@@ -111,8 +111,11 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
                 PopulateList();
                 PopulateDetails();
             });
-            button.Text = $"{record.General.Name}\n{record.General.JobTitle} / {record.General.Squad}\n" +
-                          Loc.GetString($"rmc-police-status-{record.Security?.Status ?? RMCPoliceStatus.None}");
+            var status = Loc.GetString($"rmc-police-status-{record.Security?.Status ?? RMCPoliceStatus.None}");
+            var summary = string.IsNullOrWhiteSpace(record.General.Squad)
+                ? Loc.GetString("rmc-police-list-status", ("status", status))
+                : Loc.GetString("rmc-police-list-squad-status", ("squad", record.General.Squad), ("status", status));
+            button.Text = $"{PersonnelTitle(record)}\n{summary}";
             button.ContentAlignment = RMCCrtContentAlignment.Left;
             button.Selected = _selected == record.Id;
             button.Variant = RMCCrtButtonVariant.Flat;
@@ -147,7 +150,7 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
         var header = Horizontal();
         header.AddChild(new RMCCrtLabel
         {
-            Text = record.General.Name,
+            Text = PersonnelTitle(record),
             TextFontSize = 12,
             Heading = true,
             HorizontalExpand = true,
@@ -156,7 +159,7 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
         print.HorizontalExpand = false;
         header.AddChild(print);
         Right.AddChild(header);
-        Right.AddChild(Text(Loc.GetString("rmc-police-record-id", ("id", record.Id))));
+        Right.AddChild(Text(Loc.GetString("rmc-police-record-id", ("id", record.DisplayId))));
 
         var tabs = Horizontal();
         AddTab(tabs, "rmc-police-security-data", RecordTab.Security);
@@ -188,8 +191,11 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
     private void PopulatePersonal(RMCPoliceRecordView record)
     {
         var general = record.General;
-        Field("rmc-police-name", general.Name, "name", 49);
-        Field("rmc-police-age", general.Age.ToString(), "age", 3);
+        var limits = RMCPoliceRecord.GetAgeLimits(_prototypes, record.Security?.Portrait);
+        Field("rmc-police-name", general.Name, "name", 49, ValidateName);
+        Field("rmc-police-age", general.Age.ToString(), "age", 3, value =>
+            int.TryParse(value, out var age) && age >= limits.Min && age <= limits.Max
+                ? null : Loc.GetString("rmc-police-invalid-age", ("min", limits.Min), ("max", limits.Max)));
         var rank = Horizontal();
         rank.AddChild(Text(Loc.GetString("rmc-police-rank-value", ("rank", general.JobTitle))));
         var editRank = Button("rmc-police-edit", () => EditRank(record.Id, general.JobPrototype));
@@ -199,19 +205,32 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
         Right.AddChild(rank);
         Right.AddChild(Text(Loc.GetString("rmc-police-squad-value",
             ("squad", general.Squad ?? Loc.GetString("rmc-police-unknown")))));
-        Right.AddChild(Text(Loc.GetString("rmc-police-gender"), RMCCrtTone.Muted));
-        var gender = new RMCCrtOptionButton();
+        var genderRow = Horizontal();
+        var genderLabel = Text($"{Loc.GetString("rmc-police-gender")}: ");
+        genderLabel.HorizontalExpand = false;
+        genderRow.AddChild(genderLabel);
+        var gender = new RMCCrtOptionButton
+        {
+            HorizontalExpand = false,
+            MinWidth = 120,
+            ToolTip = Loc.GetString("rmc-police-edit-record-hint"),
+        };
         foreach (var value in Enum.GetValues<Gender>())
             gender.AddItem(Loc.GetString($"rmc-police-gender-{value}"), (int) value);
         gender.SelectId((int) general.Gender);
         gender.OnItemSelected += id => Message?.Invoke(new RMCPoliceRecordMsg(
             RMCPoliceRecordAction.EditGeneral, record.Id, ((Gender) id).ToString(), "gender"));
-        Right.AddChild(gender);
+        genderRow.AddChild(gender);
+        Right.AddChild(genderRow);
         if (record.Security?.Portrait is { } portrait)
         {
             _prototypes.TryIndex<JobPrototype>(general.JobPrototype, out var job);
             _portrait = _ui.GetUIController<LobbyUIController>().LoadProfileEntity(portrait, job, job != null);
             var portraits = Horizontal();
+            portraits.HorizontalExpand = false;
+            portraits.HorizontalAlignment = HAlignment.Center;
+            portraits.SeparationOverride = 16;
+            portraits.ToolTip = Loc.GetString("rmc-police-portrait-hint");
             foreach (var direction in new[] { Direction.South, Direction.West })
             {
                 var view = new SpriteView
@@ -219,7 +238,6 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
                     OverrideDirection = direction,
                     Scale = new Vector2(3),
                     SetSize = new Vector2(96, 96),
-                    HorizontalExpand = true,
                 };
                 view.SetEntity(_portrait);
                 portraits.AddChild(view);
@@ -228,7 +246,8 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
         }
         Right.AddChild(new RMCCrtSeparator { Margin = new Thickness(0, 6) });
         var delete = Button("rmc-police-delete-record", () => Confirm("rmc-police-delete-record", () =>
-            Message?.Invoke(new RMCPoliceRecordMsg(RMCPoliceRecordAction.DeleteGeneral, record.Id))),
+            Message?.Invoke(new RMCPoliceRecordMsg(RMCPoliceRecordAction.DeleteGeneral, record.Id)),
+            Loc.GetString("rmc-police-delete-record-confirm", ("name", general.Name), ("id", record.DisplayId))),
             RMCCrtIcons.Ban, true);
         delete.ToolTip = Loc.GetString("rmc-police-high-command-only");
         Right.AddChild(delete);
@@ -315,21 +334,23 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
         }
     }
 
-    private void Field(LocId label, string value, string field, int maxLength)
+    private static string PersonnelTitle(RMCPoliceRecordView record) => Loc.GetString("rmc-police-personnel-title",
+        ("name", record.General.Name), ("position", string.IsNullOrWhiteSpace(record.General.JobTitle)
+            ? Loc.GetString("rmc-police-unknown") : record.General.JobTitle));
+
+    private void Field(LocId label, string value, string field, int maxLength, Func<string, string?> validate)
     {
         var id = _selected!.Value;
         var row = Horizontal();
         row.AddChild(Text($"{Loc.GetString(label)}: {value}"));
         var edit = Button("rmc-police-edit", () => Edit(label, value, text =>
             Message?.Invoke(new RMCPoliceRecordMsg(RMCPoliceRecordAction.EditGeneral, id, text, field)),
-            maxLength, multiline: false, validate: field == "age" ? ValidateAge : ValidateName));
+            maxLength, multiline: false, validate: validate));
+        edit.ToolTip = Loc.GetString("rmc-police-edit-record-hint");
         edit.HorizontalExpand = false;
         row.AddChild(edit);
         Right.AddChild(row);
     }
-
-    private static string? ValidateAge(string value) => int.TryParse(value, out var age) && age is >= 18 and <= 100
-        ? null : Loc.GetString("rmc-police-invalid-age");
 
     private static string? ValidateName(string value)
     {

@@ -141,7 +141,7 @@ public abstract class RMCPoliceWindow : DefaultWindow
         OpenEditor(editor);
     }
 
-    protected void Confirm(LocId title, Action action)
+    protected void Confirm(LocId title, Action action, string? description = null)
     {
         _editor?.Close();
         var editor = new DefaultWindow { Title = Loc.GetString(title), SetSize = new Vector2(420, 170) };
@@ -150,7 +150,7 @@ public abstract class RMCPoliceWindow : DefaultWindow
         var layout = Vertical();
         layout.Margin = new Thickness(8);
         theme.AddChild(layout);
-        layout.AddChild(Text(Loc.GetString("rmc-police-confirm-description"), RMCCrtTone.Warning));
+        layout.AddChild(Text(description ?? Loc.GetString("rmc-police-confirm-description"), RMCCrtTone.Warning));
         var actions = Horizontal();
         actions.AddChild(Button("rmc-police-confirm", () => { action(); editor.Close(); }, RMCCrtIcons.Ban, true));
         actions.AddChild(Button("rmc-police-cancel", () => editor.Close()));

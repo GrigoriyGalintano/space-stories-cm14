@@ -30,7 +30,11 @@ public sealed class RMCPoliceBuiState(
 }
 
 [Serializable, NetSerializable]
-public sealed record RMCPoliceRecordView(uint Id, GeneralStationRecord General, RMCPoliceRecord? Security);
+public sealed record RMCPoliceRecordView(uint Id, GeneralStationRecord General, RMCPoliceRecord? Security)
+{
+    // The station record key stays unchanged for IDs, HUDs and other consoles.
+    public ulong DisplayId => (ulong) Id + 1;
+}
 
 [Serializable, NetSerializable]
 public enum RMCPoliceRecordAction : byte

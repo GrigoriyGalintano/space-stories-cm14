@@ -96,6 +96,8 @@ public readonly record struct RMCCrtPalette(
     Color DisabledBackground,
     Color DisabledForeground)
 {
+    public Color ButtonBackground => Color.InterpolateBetween(Background, Fill, 0.25f);
+
     public Color HoverBackground => Color.InterpolateBetween(Background, Fill, 0.3f);
 
     public Color PressedBackground => Color.InterpolateBetween(Background, Fill, 0.65f);
