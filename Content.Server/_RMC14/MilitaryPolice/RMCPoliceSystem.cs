@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using Content.Server.Access.Systems;
@@ -8,6 +7,7 @@ using Content.Server.Destructible;
 using Content.Server.Station.Systems;
 using Content.Server.StationRecords;
 using Content.Server.StationRecords.Systems;
+using Content.Shared._RMC14.CCVar;
 using Content.Shared._RMC14.Marines.Squads;
 using Content.Shared._RMC14.MilitaryPolice;
 using Content.Shared._RMC14.Overwatch;
@@ -41,6 +41,7 @@ using Content.Shared.StationRecords;
 using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Configuration;
 using Robust.Shared.Containers;
 using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
@@ -64,6 +65,7 @@ public sealed class RMCPoliceSystem : EntitySystem
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedContainerSystem _containers = default!;
+    [Dependency] private readonly IConfigurationManager _config = default!;
     [Dependency] private readonly CriminalRecordsSystem _criminal = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly IdCardSystem _id = default!;
@@ -81,9 +83,12 @@ public sealed class RMCPoliceSystem : EntitySystem
     [Dependency] private readonly SharedGameTicker _ticker = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     private TimeSpan _nextHudRefresh;
+    private EntProtoId<RMCMarineLawCatalogueComponent> _lawCatalogue;
 
     public override void Initialize()
     {
+        _lawCatalogue = _config.GetCVar(RMCCVars.RMCMarineLawCatalogue);
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
         SubscribeLocalEvent<AfterGeneralRecordCreatedEvent>(OnRecordCreated);
         SubscribeLocalEvent<RecordModifiedEvent>(OnRecordModified);
         SubscribeLocalEvent<RecordRemovedEvent>(OnRecordRemoved);
@@ -107,6 +112,11 @@ public sealed class RMCPoliceSystem : EntitySystem
         });
         Subs.BuiEvents<OverwatchConsoleComponent>(OverwatchConsoleUI.Key, subs =>
             subs.Event<RMCOverwatchInsubordinationMsg>(OnInsubordination));
+    }
+
+    private void OnRoundRestartCleanup(RoundRestartCleanupEvent args)
+    {
+        _lawCatalogue = _config.GetCVar(RMCCVars.RMCMarineLawCatalogue);
     }
 
     private void OnRecordCreated(AfterGeneralRecordCreatedEvent args)
@@ -286,7 +296,7 @@ public sealed class RMCPoliceSystem : EntitySystem
 
         _ui.SetUiState(ent.Owner, RMCPoliceUiKey.Key,
             new RMCPoliceBuiState(station != null, views, ent.Comp.Report, ent.Comp.Revision,
-                scannerConnected, fingerprints));
+                scannerConnected, fingerprints, _lawCatalogue));
     }
 
     public void RefreshScanner(EntityUid scanner)
@@ -594,8 +604,9 @@ public sealed class RMCPoliceSystem : EntitySystem
 
         if (args.Action == RMCSentencingAction.New)
         {
-            if (ent.Comp.Report == null)
-                ent.Comp.Report = new RMCIncidentReport();
+            if (ent.Comp.Report == null && _prototypes.TryIndex(_lawCatalogue, out var prototype) &&
+                prototype.TryGetComponent(out RMCMarineLawCatalogueComponent? _, EntityManager.ComponentFactory))
+                ent.Comp.Report = new RMCIncidentReport { LawCatalogue = _lawCatalogue };
         }
         else if (ent.Comp.Report is { } report)
         {
@@ -618,10 +629,26 @@ public sealed class RMCPoliceSystem : EntitySystem
                     report.Summary = args.Text.Trim();
                     break;
                 case RMCSentencingAction.AddCharge:
-                    if (!_prototypes.HasIndex<RMCMarineLawPrototype>(args.Text) ||
+                    if (!_prototypes.TryIndex(report.LawCatalogue, out var cataloguePrototype) ||
+                        !cataloguePrototype.TryGetComponent(out RMCMarineLawCatalogueComponent? catalogue,
+                            EntityManager.ComponentFactory) ||
+                        !catalogue.Laws.Contains(args.Text) || !_prototypes.HasIndex<RMCMarineLawPrototype>(args.Text) ||
                         report.Charges.Count >= RMCIncidentReport.MaxEntries)
                         return;
-                    report.Charges.Add(args.Text);
+                    report.Charges.Add(new RMCIncidentCharge(args.Text));
+                    break;
+                case RMCSentencingAction.RelatedCrime:
+                    if (args.Index < 0 || args.Index >= report.Charges.Count ||
+                        !_prototypes.TryIndex(report.Charges[args.Index].Law, out var aiding) ||
+                        aiding.Punishment != RMCMarineLawPunishment.SameAsCrime ||
+                        !_prototypes.TryIndex(report.LawCatalogue, out var relatedPrototype) ||
+                        !relatedPrototype.TryGetComponent(out RMCMarineLawCatalogueComponent? relatedCatalogue,
+                            EntityManager.ComponentFactory) ||
+                        !relatedCatalogue.Laws.Contains(args.Text) ||
+                        !_prototypes.TryIndex<RMCMarineLawPrototype>(args.Text, out var related) ||
+                        related.Punishment == RMCMarineLawPunishment.SameAsCrime)
+                        return;
+                    report.Charges[args.Index].RelatedCrime = args.Text;
                     break;
                 case RMCSentencingAction.RemoveCharge:
                     if (args.Index < 0 || args.Index >= report.Charges.Count)
@@ -716,7 +743,8 @@ public sealed class RMCPoliceSystem : EntitySystem
 
     private bool Export(Entity<RMCPoliceConsoleComponent> ent, EntityUid actor, RMCIncidentReport report)
     {
-        if (string.IsNullOrWhiteSpace(report.Suspect) || report.CalculateSentence(_prototypes) <= 0)
+        if (report.LawCatalogue != _lawCatalogue || string.IsNullOrWhiteSpace(report.Suspect) ||
+            !report.TryCalculateSentence(_prototypes, EntityManager.ComponentFactory, out var sentence))
         {
             Error(actor, "rmc-police-report-incomplete");
             return false;
@@ -726,6 +754,7 @@ public sealed class RMCPoliceSystem : EntitySystem
         if (paper == null)
             return false;
 
+        report.FinalSentence = sentence;
         EnsureComp<RMCIncidentReportPaperComponent>(paper.Value).Report = report.Clone();
         if (GetStation(ent) is { } station && report.RecordId is { } id &&
             report.RecordStation == GetNetEntity(station))
@@ -749,12 +778,19 @@ public sealed class RMCPoliceSystem : EntitySystem
         if (TryComp(args.Used, out RMCIncidentReportPaperComponent? paper) && paper.Report != null)
         {
             args.Handled = true;
+            if (paper.Report.LawCatalogue != _lawCatalogue ||
+                !paper.Report.TryCalculateSentence(_prototypes, EntityManager.ComponentFactory, out _))
+            {
+                Error(args.User, "rmc-police-report-wrong-catalogue");
+                return;
+            }
             if (ent.Comp.Report != null)
             {
                 Error(args.User, "rmc-police-report-in-progress");
                 return;
             }
             ent.Comp.Report = paper.Report.Clone();
+            ent.Comp.Report.FinalSentence = null;
             ent.Comp.Revision++;
             LogChange(args.User, ent, $"imported incident report for {paper.Report.Suspect}");
             QueueDel(args.Used);
@@ -811,17 +847,21 @@ public sealed class RMCPoliceSystem : EntitySystem
 
     private string FormatIncident(RMCIncidentReport report)
     {
-        var sentence = report.CalculateSentence(_prototypes);
-        var time = sentence >= RMCIncidentReport.PermanentSentence
-            ? Loc.GetString("rmc-police-permanent")
-            : Loc.GetString("rmc-police-minutes", ("minutes", sentence.ToString("0.##", CultureInfo.InvariantCulture)));
+        report.TryCalculateSentence(_prototypes, EntityManager.ComponentFactory, out var calculated);
+        var time = (report.FinalSentence ?? calculated).GetDescription();
         var content = new StringBuilder(Loc.GetString("rmc-police-incident-print",
             ("name", report.Suspect), ("sentence", time), ("summary", report.Summary)));
+        if (_prototypes.TryIndex(report.LawCatalogue, out var catalogue))
+            content.AppendLine(Loc.GetString("rmc-police-law-catalogue-value", ("catalogue", catalogue.Name)));
+        content.AppendLine().AppendLine(Loc.GetString("rmc-police-incident-charges"));
         foreach (var charge in report.Charges)
         {
-            if (!_prototypes.TryIndex(charge, out var law))
+            if (!_prototypes.TryIndex(charge.Law, out var law))
                 continue;
             content.AppendLine().AppendLine(Loc.GetString(law.Name));
+            content.AppendLine(RMCMarineSentence.DescribePunishment(law.Punishment, law.BrigTime));
+            if (charge.RelatedCrime is { } related && _prototypes.TryIndex(related, out var relatedLaw))
+                content.AppendLine(Loc.GetString("rmc-police-related-crime-value", ("crime", Loc.GetString(relatedLaw.Name))));
             if (law.SpecialPunishment is { } punishment)
                 content.AppendLine(Loc.GetString(punishment));
             if (law.Conditions is { } conditions)

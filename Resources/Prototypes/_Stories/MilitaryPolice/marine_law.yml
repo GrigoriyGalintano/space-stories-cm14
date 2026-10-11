@@ -1,0 +1,415 @@
+# Based on /ServerInfo/Guidebook/_Stories/Law/STMarineLaw*.xml.
+# Separate severity variants preserve the circumstances and sanctions specified in the guide.
+- type: entity
+  id: STMarineLaw
+  name: Space Stories Marine Law
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLawCatalogue
+    guide: STMarineLaw
+    maxBrigTime: 30
+    sentencingNotes: stories-law-catalogue-sentencing
+    sectionNotes:
+      Minor: stories-law-catalogue-minor
+      Capital: stories-law-catalogue-capital
+      Precautionary: stories-law-catalogue-precautionary
+    laws:
+    - st-law-variable-property-damage-minor
+    - st-law-variable-property-damage-major
+    - st-law-variable-insubordination-minor
+    - st-law-variable-insubordination-major
+    - st-law-variable-interference-minor
+    - st-law-variable-interference-major
+    - st-law-variable-listening-devices-minor
+    - st-law-variable-listening-devices-major
+    - st-law-minor-procedure
+    - st-law-minor-smoking
+    - st-law-minor-hooliganism
+    - st-law-minor-trespass
+    - st-law-minor-intoxication
+    - st-law-minor-theft
+    - st-law-minor-disrespect
+    - st-law-minor-false-testimony
+    - st-law-major-disorderly-conduct
+    - st-law-major-subterfuge
+    - st-law-major-neglect
+    - st-law-major-assault
+    - st-law-major-prevarication
+    - st-law-major-manslaughter
+    - st-law-major-armed-assault
+    - st-law-major-illegal-confinement
+    - st-law-major-animal-cruelty
+    - st-law-major-abuse
+    - st-law-major-unauthorized-deployment
+    - st-law-capital-jailbreak
+    - st-law-capital-attempted-murder
+    - st-law-capital-murder
+    - st-law-capital-sedition
+    - st-law-capital-desertion
+    - st-law-capital-crimes-against-life
+    - st-law-optional-resisting-arrest-minor
+    - st-law-optional-resisting-arrest-major
+    - st-law-optional-aiding
+    - st-law-optional-confinement-misconduct-minor
+    - st-law-optional-confinement-misconduct-major
+    - st-law-precautionary-insanity
+    - st-law-precautionary-prisoner-of-war
+    - st-law-precautionary-discretionary-detainment
+
+- type: rmcMarineLaw
+  id: st-law-variable-property-damage-minor
+  category: Variable
+  name: stories-law-variable-property-damage-minor-name
+  description: stories-law-variable-property-damage-minor-desc
+  punishment: Brig
+  brigTime: 7.5
+  conditions: stories-law-variable-property-damage-minor-conditions
+
+- type: rmcMarineLaw
+  id: st-law-variable-property-damage-major
+  category: Variable
+  name: stories-law-variable-property-damage-major-name
+  description: stories-law-variable-property-damage-major-desc
+  punishment: Brig
+  brigTime: 10
+  bypassBrigLimit: true
+  conditions: stories-law-variable-property-damage-major-conditions
+
+- type: rmcMarineLaw
+  id: st-law-variable-insubordination-minor
+  category: Variable
+  name: stories-law-variable-insubordination-minor-name
+  description: stories-law-variable-insubordination-minor-desc
+  punishment: Brig
+  brigTime: 7.5
+  conditions: stories-law-variable-insubordination-minor-conditions
+
+- type: rmcMarineLaw
+  id: st-law-variable-insubordination-major
+  category: Variable
+  name: stories-law-variable-insubordination-major-name
+  description: stories-law-variable-insubordination-major-desc
+  punishment: Brig
+  brigTime: 15
+  bypassBrigLimit: true
+  conditions: stories-law-variable-insubordination-major-conditions
+
+- type: rmcMarineLaw
+  id: st-law-variable-interference-minor
+  category: Variable
+  name: stories-law-variable-interference-minor-name
+  description: stories-law-variable-interference-minor-desc
+  punishment: Brig
+  brigTime: 7.5
+  conditions: stories-law-variable-interference-minor-conditions
+
+- type: rmcMarineLaw
+  id: st-law-variable-interference-major
+  category: Variable
+  name: stories-law-variable-interference-major-name
+  description: stories-law-variable-interference-major-desc
+  punishment: Brig
+  brigTime: 15
+  bypassBrigLimit: true
+  conditions: stories-law-variable-interference-major-conditions
+
+- type: rmcMarineLaw
+  id: st-law-variable-listening-devices-minor
+  category: Variable
+  name: stories-law-variable-listening-devices-minor-name
+  description: stories-law-variable-listening-devices-minor-desc
+  punishment: Brig
+  brigTime: 7.5
+  conditions: stories-law-variable-listening-devices-minor-conditions
+
+- type: rmcMarineLaw
+  id: st-law-variable-listening-devices-major
+  category: Variable
+  name: stories-law-variable-listening-devices-major-name
+  description: stories-law-variable-listening-devices-major-desc
+  punishment: Brig
+  brigTime: 15
+  bypassBrigLimit: true
+  conditions: stories-law-variable-listening-devices-major-conditions
+
+- type: rmcMarineLaw
+  id: st-law-minor-procedure
+  category: Minor
+  name: stories-law-minor-procedure-name
+  description: stories-law-minor-procedure-desc
+  punishment: Brig
+  brigTime: 10
+  specialPunishment: stories-law-minor-procedure-punishment
+
+- type: rmcMarineLaw
+  id: st-law-minor-smoking
+  category: Minor
+  name: stories-law-minor-smoking-name
+  description: stories-law-minor-smoking-desc
+  punishment: Brig
+  brigTime: 10
+
+- type: rmcMarineLaw
+  id: st-law-minor-hooliganism
+  category: Minor
+  name: stories-law-minor-hooliganism-name
+  description: stories-law-minor-hooliganism-desc
+  punishment: NJP
+
+- type: rmcMarineLaw
+  id: st-law-minor-trespass
+  category: Minor
+  name: stories-law-minor-trespass-name
+  description: stories-law-minor-trespass-desc
+  punishment: Brig
+  brigTime: 7.5
+  specialPunishment: stories-law-minor-trespass-punishment
+
+- type: rmcMarineLaw
+  id: st-law-minor-intoxication
+  category: Minor
+  name: stories-law-minor-intoxication-name
+  description: stories-law-minor-intoxication-desc
+  punishment: Brig
+  brigTime: 10
+  specialPunishment: stories-law-minor-intoxication-punishment
+
+- type: rmcMarineLaw
+  id: st-law-minor-theft
+  category: Minor
+  name: stories-law-minor-theft-name
+  description: stories-law-minor-theft-desc
+  punishment: Brig
+  brigTime: 10
+  specialPunishment: stories-law-minor-theft-punishment
+
+- type: rmcMarineLaw
+  id: st-law-minor-disrespect
+  category: Minor
+  name: stories-law-minor-disrespect-name
+  description: stories-law-minor-disrespect-desc
+  punishment: Brig
+  brigTime: 10
+
+- type: rmcMarineLaw
+  id: st-law-minor-false-testimony
+  category: Minor
+  name: stories-law-minor-false-testimony-name
+  description: stories-law-minor-false-testimony-desc
+  punishment: Brig
+  brigTime: 5
+
+- type: rmcMarineLaw
+  id: st-law-major-disorderly-conduct
+  category: Major
+  name: stories-law-major-disorderly-conduct-name
+  description: stories-law-major-disorderly-conduct-desc
+  punishment: Brig
+  brigTime: 10
+  bypassBrigLimit: true
+
+- type: rmcMarineLaw
+  id: st-law-major-subterfuge
+  category: Major
+  name: stories-law-major-subterfuge-name
+  description: stories-law-major-subterfuge-desc
+  punishment: Brig
+  brigTime: 15
+  bypassBrigLimit: true
+  specialPunishment: stories-law-major-subterfuge-punishment
+
+- type: rmcMarineLaw
+  id: st-law-major-neglect
+  category: Major
+  name: stories-law-major-neglect-name
+  description: stories-law-major-neglect-desc
+  punishment: Brig
+  brigTime: 15
+  bypassBrigLimit: true
+
+- type: rmcMarineLaw
+  id: st-law-major-assault
+  category: Major
+  name: stories-law-major-assault-name
+  description: stories-law-major-assault-desc
+  punishment: Brig
+  brigTime: 15
+  bypassBrigLimit: true
+
+- type: rmcMarineLaw
+  id: st-law-major-prevarication
+  category: Major
+  name: stories-law-major-prevarication-name
+  description: stories-law-major-prevarication-desc
+  punishment: Brig
+  brigTime: 20
+  bypassBrigLimit: true
+
+- type: rmcMarineLaw
+  id: st-law-major-manslaughter
+  category: Major
+  name: stories-law-major-manslaughter-name
+  description: stories-law-major-manslaughter-desc
+  punishment: Brig
+  brigTime: 20
+  bypassBrigLimit: true
+  specialPunishment: stories-law-major-manslaughter-punishment
+
+- type: rmcMarineLaw
+  id: st-law-major-armed-assault
+  category: Major
+  name: stories-law-major-armed-assault-name
+  description: stories-law-major-armed-assault-desc
+  punishment: Brig
+  brigTime: 20
+  bypassBrigLimit: true
+
+- type: rmcMarineLaw
+  id: st-law-major-illegal-confinement
+  category: Major
+  name: stories-law-major-illegal-confinement-name
+  description: stories-law-major-illegal-confinement-desc
+  punishment: Brig
+  brigTime: 20
+  bypassBrigLimit: true
+
+- type: rmcMarineLaw
+  id: st-law-major-animal-cruelty
+  category: Major
+  name: stories-law-major-animal-cruelty-name
+  description: stories-law-major-animal-cruelty-desc
+  punishment: Brig
+  brigTime: 30
+  bypassBrigLimit: true
+
+- type: rmcMarineLaw
+  id: st-law-major-abuse
+  category: Major
+  name: stories-law-major-abuse-name
+  description: stories-law-major-abuse-desc
+  punishment: Brig
+  brigTime: 20
+  bypassBrigLimit: true
+
+- type: rmcMarineLaw
+  id: st-law-major-unauthorized-deployment
+  category: Major
+  name: stories-law-major-unauthorized-deployment-name
+  description: stories-law-major-unauthorized-deployment-desc
+  punishment: Brig
+  brigTime: 10
+  bypassBrigLimit: true
+
+- type: rmcMarineLaw
+  id: st-law-capital-jailbreak
+  category: Capital
+  name: stories-law-capital-jailbreak-name
+  description: stories-law-capital-jailbreak-desc
+  punishment: Capital
+  specialPunishment: stories-law-catalogue-capital
+
+- type: rmcMarineLaw
+  id: st-law-capital-attempted-murder
+  category: Capital
+  name: stories-law-capital-attempted-murder-name
+  description: stories-law-capital-attempted-murder-desc
+  punishment: Capital
+  specialPunishment: stories-law-catalogue-capital
+
+- type: rmcMarineLaw
+  id: st-law-capital-murder
+  category: Capital
+  name: stories-law-capital-murder-name
+  description: stories-law-capital-murder-desc
+  punishment: Capital
+  specialPunishment: stories-law-catalogue-capital
+
+- type: rmcMarineLaw
+  id: st-law-capital-sedition
+  category: Capital
+  name: stories-law-capital-sedition-name
+  description: stories-law-capital-sedition-desc
+  punishment: Capital
+  specialPunishment: stories-law-catalogue-capital
+
+- type: rmcMarineLaw
+  id: st-law-capital-desertion
+  category: Capital
+  name: stories-law-capital-desertion-name
+  description: stories-law-capital-desertion-desc
+  punishment: Capital
+  specialPunishment: stories-law-catalogue-capital
+
+- type: rmcMarineLaw
+  id: st-law-capital-crimes-against-life
+  category: Capital
+  name: stories-law-capital-crimes-against-life-name
+  description: stories-law-capital-crimes-against-life-desc
+  punishment: Capital
+  specialPunishment: stories-law-catalogue-capital
+
+- type: rmcMarineLaw
+  id: st-law-optional-resisting-arrest-minor
+  category: Optional
+  name: stories-law-optional-resisting-arrest-minor-name
+  description: stories-law-optional-resisting-arrest-minor-desc
+  punishment: Brig
+  brigTime: 5
+  conditions: stories-law-optional-resisting-arrest-minor-conditions
+
+- type: rmcMarineLaw
+  id: st-law-optional-resisting-arrest-major
+  category: Optional
+  name: stories-law-optional-resisting-arrest-major-name
+  description: stories-law-optional-resisting-arrest-major-desc
+  punishment: Brig
+  brigTime: 10
+  conditions: stories-law-optional-resisting-arrest-major-conditions
+
+- type: rmcMarineLaw
+  id: st-law-optional-aiding
+  category: Optional
+  name: stories-law-optional-aiding-name
+  description: stories-law-optional-aiding-desc
+  punishment: SameAsCrime
+
+- type: rmcMarineLaw
+  id: st-law-optional-confinement-misconduct-minor
+  category: Optional
+  name: stories-law-optional-confinement-misconduct-minor-name
+  description: stories-law-optional-confinement-misconduct-minor-desc
+  punishment: Brig
+  brigTime: 7.5
+  extendsSentence: true
+  conditions: stories-law-optional-confinement-misconduct-minor-conditions
+
+- type: rmcMarineLaw
+  id: st-law-optional-confinement-misconduct-major
+  category: Optional
+  name: stories-law-optional-confinement-misconduct-major-name
+  description: stories-law-optional-confinement-misconduct-major-desc
+  punishment: Brig
+  brigTime: 15
+  extendsSentence: true
+  conditions: stories-law-optional-confinement-misconduct-major-conditions
+
+- type: rmcMarineLaw
+  id: st-law-precautionary-insanity
+  category: Precautionary
+  name: stories-law-precautionary-insanity-name
+  description: stories-law-precautionary-insanity-desc
+  punishment: Permanent
+
+- type: rmcMarineLaw
+  id: st-law-precautionary-prisoner-of-war
+  category: Precautionary
+  name: stories-law-precautionary-prisoner-of-war-name
+  description: stories-law-precautionary-prisoner-of-war-desc
+  punishment: Permanent
+
+- type: rmcMarineLaw
+  id: st-law-precautionary-discretionary-detainment
+  category: Precautionary
+  name: stories-law-precautionary-discretionary-detainment-name
+  description: stories-law-precautionary-discretionary-detainment-desc
+  punishment: Permanent

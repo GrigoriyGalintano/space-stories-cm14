@@ -1,10 +1,10 @@
-using System.Globalization;
 using System.Numerics;
 using Content.Client._RMC14.UserInterface.Crt;
 using Content.Shared._RMC14.MilitaryPolice;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
 
 namespace Content.Client._RMC14.MilitaryPolice;
@@ -14,6 +14,8 @@ namespace Content.Client._RMC14.MilitaryPolice;
 /// </summary>
 public abstract class RMCPoliceWindow : DefaultWindow
 {
+    [Dependency] protected readonly IComponentFactory ComponentFactory = default!;
+
     protected readonly BoxContainer Toolbar = Vertical();
     protected readonly BoxContainer Left = Vertical();
     protected readonly BoxContainer Right = Vertical();
@@ -163,20 +165,23 @@ public abstract class RMCPoliceWindow : DefaultWindow
         editor.OpenCentered();
     }
 
-    protected static string Sentence(RMCIncidentReport report, IPrototypeManager prototypes)
+    protected static string Sentence(RMCIncidentReport report, IPrototypeManager prototypes, IComponentFactory factory)
     {
-        var sentence = report.CalculateSentence(prototypes);
-        return sentence >= RMCIncidentReport.PermanentSentence
-            ? Loc.GetString("rmc-police-permanent")
-            : Loc.GetString("rmc-police-minutes", ("minutes", sentence.ToString("0.##", CultureInfo.InvariantCulture)));
+        if (report.FinalSentence is { } issued)
+            return issued.GetDescription();
+        return report.TryCalculateSentence(prototypes, factory, out var sentence)
+            ? sentence.GetDescription() : Loc.GetString("rmc-police-punishment-None");
     }
 
     protected static void IncidentDetails(BoxContainer container, RMCIncidentReport report,
-        IPrototypeManager prototypes)
+        IPrototypeManager prototypes, IComponentFactory factory)
     {
         container.AddChild(Text(Loc.GetString("rmc-police-suspect-value", ("name", report.Suspect))));
         container.AddChild(Text(Loc.GetString("rmc-police-sentence-value",
-            ("sentence", Sentence(report, prototypes))), RMCCrtTone.Warning));
+            ("sentence", Sentence(report, prototypes, factory))), RMCCrtTone.Warning));
+        if (prototypes.TryIndex(report.LawCatalogue, out var catalogue))
+            container.AddChild(Text(Loc.GetString("rmc-police-law-catalogue-value",
+                ("catalogue", catalogue.Name)), RMCCrtTone.Muted));
         container.AddChild(new RMCCrtSeparator());
         container.AddChild(Heading("rmc-police-summary"));
         container.AddChild(Text(string.IsNullOrWhiteSpace(report.Summary)
@@ -184,9 +189,14 @@ public abstract class RMCPoliceWindow : DefaultWindow
         container.AddChild(Heading("rmc-police-incident-charges"));
         foreach (var charge in report.Charges)
         {
-            if (prototypes.TryIndex(charge, out var law))
+            if (prototypes.TryIndex(charge.Law, out var law))
             {
                 container.AddChild(Text($"• {Loc.GetString(law.Name)}"));
+                container.AddChild(Text(RMCMarineSentence.DescribePunishment(law.Punishment, law.BrigTime),
+                    RMCCrtTone.Warning));
+                if (charge.RelatedCrime is { } related && prototypes.TryIndex(related, out var relatedLaw))
+                    container.AddChild(Text(Loc.GetString("rmc-police-related-crime-value",
+                        ("crime", Loc.GetString(relatedLaw.Name))), RMCCrtTone.Muted));
                 if (law.SpecialPunishment is { } punishment)
                     container.AddChild(Text(Loc.GetString(punishment), RMCCrtTone.Warning));
                 if (law.Conditions is { } conditions)

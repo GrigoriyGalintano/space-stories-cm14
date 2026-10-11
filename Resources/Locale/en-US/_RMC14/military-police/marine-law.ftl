@@ -1,174 +1,152 @@
-# Ported from CM-SS13: https://github.com/cmss13-devs/cmss13/tree/ae42879bbb47e8440e40ac18ba43ca28434db003/code/modules/law/laws
+# Marine law from the corresponding in-game guidebook.
+ent-RMCMarineLaw = RMC14 Marine Law
+rmc-law-catalogue-sentencing = Sentences are added together. Ordinary brig time is limited to 30 minutes; offences committed in confinement can extend it. Capital and precautionary sanctions are separate from timed imprisonment.
+rmc-law-catalogue-minor = Minor crimes may instead be punished with an NJP or a warning.
+rmc-law-catalogue-capital = Permanent confinement and demotion, or execution and ID termination.
+rmc-law-catalogue-precautionary = These charges allow indefinite confinement.
 
-rmc-law-capital-attempted-murder = Attempted Murder
-rmc-law-capital-attempted-murder-description = Attempting to murder a person but failing to do so. If the evidence shows that the arrested person was clearly trying to kill someone with ill intent but failed in the action itself.
-rmc-law-capital-attempted-murder-punishment = Demotion or Execution and ID Termination
+rmc-law-variable-property-damage-minor-name = Damage to UNMC Property - minor
+rmc-law-variable-property-damage-minor-desc = Damaging the warship or making any unauthorized modifications to it as outlined in Standard Operating Procedure. Materials for repairs should be taken from maintenance storages.
+rmc-law-variable-property-damage-minor-conditions = Breaking a window, damaging a wall, etc. Return the warship to it's exact previous state, or serve 7.5 minutes if not possible.
 
-rmc-law-capital-murder = Murder or Unauthorized Execution
-rmc-law-capital-murder-description = Killing someone with malicious intent. This includes Synthetic units. Executions are only authorized as outlined in the Execution Procedure.
-rmc-law-capital-murder-punishment = Demotion or Execution and ID Termination
+rmc-law-variable-property-damage-major-name = Damage to UNMC Property - major
+rmc-law-variable-property-damage-major-desc = Damaging the warship or making any unauthorized modifications to it as outlined in Standard Operating Procedure. Materials for repairs should be taken from maintenance storages.
+rmc-law-variable-property-damage-major-conditions = Breaking the law in a major manner includes breaking /dismantling walls or several windows. 10 minutes.
 
-rmc-law-capital-desertion = Desertion
-rmc-law-capital-desertion-description = Refusing to carry out the duties essential to one’s post or abandoning post unauthorized, without intent to return. (Retreating from the planet when the FOB is breached is not Desertion, refusing to return when ordered is).
-rmc-law-capital-desertion-punishment = Demotion or Execution and ID Termination
+rmc-law-variable-insubordination-minor-name = Insubordination - minor
+rmc-law-variable-insubordination-minor-desc = Failing to follow a lawful order from a superior person of rank or position, while under their command. This does not apply to orders made to a person with intent to arrest, which instead would be Resisting Arrest
+rmc-law-variable-insubordination-minor-conditions = Failing to follow an order which is not personally directed. 7.5 minutes.
 
-rmc-law-capital-sedition = Sedition
-rmc-law-capital-sedition-description = To engage in actions or refuse to follow orders as to overthrow or usurp the legitimate command structure.
-rmc-law-capital-sedition-punishment = Demotion or Execution and ID Termination
+rmc-law-variable-insubordination-major-name = Insubordination - major
+rmc-law-variable-insubordination-major-desc = Failing to follow a lawful order from a superior person of rank or position, while under their command. This does not apply to orders made to a person with intent to arrest, which instead would be Resisting Arrest
+rmc-law-variable-insubordination-major-conditions = Failing to follow an order personally directed at a person in question using either their name or clearly communicating its meant for them. 15 minutes.
 
-rmc-law-capital-jailbreak-escape = Jailbreak/Escape
-rmc-law-capital-jailbreak-escape-description = To escape, assist in an escape, attempt escape, or be willfully and knowingly broken out.
-rmc-law-capital-jailbreak-escape-punishment = Demotion or Execution and ID Termination
+rmc-law-variable-interference-minor-name = Interference - minor
+rmc-law-variable-interference-minor-desc = Interfering in a legal arrest being performed.
+rmc-law-variable-interference-minor-conditions = Interfering without ill intent, such as blocking the way or helping someone up. 7.5 minutes.
 
-rmc-law-capital-crimes-against-humanity = Crimes against Humanity
-rmc-law-capital-crimes-against-humanity-description = To engage in actions that violate human rights or otherwise are heinous acts against humans. Examples are torture, cannibalism and forced infection with Xenomorph larva.
-rmc-law-capital-crimes-against-humanity-punishment = Demotion or Execution and ID Termination
+rmc-law-variable-interference-major-name = Interference - major
+rmc-law-variable-interference-major-desc = Interfering in a legal arrest being performed.
+rmc-law-variable-interference-major-conditions = Interfering with ill intent or in a clear way to hinder the arrest being performed. 15 minutes.
 
-rmc-law-civilian-terror-association = Terror Association
-rmc-law-civilian-terror-association-description = Being a member of, or providing aid to a member of, a terrorist organisation.
-rmc-law-civilian-terror-association-conditions = Not applicable if the defendant has engaged in terror attacks. Not applicable for execution on its own.
+rmc-law-variable-listening-devices-minor-name = Illegal use of Listening Devices - minor
+rmc-law-variable-listening-devices-minor-desc = The unauthorized use of listening devices in violation of Standard Operating Procedures.
+rmc-law-variable-listening-devices-minor-conditions = Illegally placing a listening device in a public area such as the gym. 7.5 minutes.
 
-rmc-law-civilian-terrorism = Terrorism
-rmc-law-civilian-terrorism-description = Conducting terror attacks against the United Americas or its allies.
-rmc-law-civilian-terrorism-conditions = Not applicable if the defendant has not engaged in terror attacks.
+rmc-law-variable-listening-devices-major-name = Illegal use of Listening Devices - major
+rmc-law-variable-listening-devices-major-desc = The unauthorized use of listening devices in violation of Standard Operating Procedures.
+rmc-law-variable-listening-devices-major-conditions = Illegally placing a listening device in a secure area, or area with privacy shutters, such as CIC or the CL's office. If the listening device is also tied to a foreign government or terror organisation this is additionally considered Subterfuge. 15 minutes.
 
-rmc-law-civilian-minor-civil-insubordination = Minor Civil Insubordination
-rmc-law-civilian-minor-civil-insubordination-description = Failing to follow a lawful order from a member of the department (if any) to which you have been assigned. Additionally applicable for being disrespectful to the Commander or Duty Officer.
-rmc-law-civilian-minor-civil-insubordination-conditions = Only Applicable to Non-USCM personnel.
+rmc-law-variable-resisting-arrest-minor-name = Resisting Arrest - minor
+rmc-law-variable-resisting-arrest-minor-desc = To resist or refuse to comply with a lawful arrest, detainment, search, or NJP.
+rmc-law-variable-resisting-arrest-minor-conditions = Refusing to comply. 5 minutes.
 
-rmc-law-civilian-major-civil-insubordination = Major Civil Insubordination
-rmc-law-civilian-major-civil-insubordination-description = Failing to follow a lawful order from the Commander or Duty Officer (or assigned department head, if any) during an active Military Operation.
-rmc-law-civilian-major-civil-insubordination-conditions = Only Applicable to Non-USCM personnel.
+rmc-law-variable-resisting-arrest-major-name = Resisting Arrest - major
+rmc-law-variable-resisting-arrest-major-desc = To resist or refuse to comply with a lawful arrest, detainment, search, or NJP.
+rmc-law-variable-resisting-arrest-major-conditions = Resisting by fleeing or using force. 10 minutes.
 
-rmc-law-civilian-black-marketeering = Blackmarketeering
-rmc-law-civilian-black-marketeering-description = Illegally procuring or selling restricted products, excluding firearms or explosives.
-rmc-law-civilian-black-marketeering-punishment = Confiscation of Contraband
-rmc-law-civilian-black-marketeering-conditions = Enforced by Civil Authorities such as the CMB.
+rmc-law-variable-aiding-name = Aiding and Abetting
+rmc-law-variable-aiding-desc = Assisting others in committing a crime, directly or indirectly, or encouraging them to commit one. Any person Aiding and Abetting is required to be told the crimes of the person they aided.
 
-rmc-law-civilian-arms-dealing = Arms Dealing
-rmc-law-civilian-arms-dealing-description = Illegally procuring or selling firearms or explosives.
-rmc-law-civilian-arms-dealing-punishment = Confiscation of Contraband
-rmc-law-civilian-arms-dealing-conditions = Enforced by Civil Authorities such as the CMB.
+rmc-law-variable-confinement-misconduct-minor-name = Disorderly Conduct in Confinement - minor
+rmc-law-variable-confinement-misconduct-minor-desc = To cause disruption in a significant manner while in Brig and under arrest. This can be added on to any charge.
+rmc-law-variable-confinement-misconduct-minor-conditions = Breaking a Minor Law while under arrest or in Prison. 7.5 minutes.
 
-rmc-law-major-damage-to-government-property = Damage to Government Property
-rmc-law-major-damage-to-government-property-description = Damaging the ship or making any unauthorized modifications to it as outlined in Standard Operating Procedure on a major level, such as destroying/dismantling multiple walls or windows.
-rmc-law-major-damage-to-government-property-punishment = Reparation
+rmc-law-variable-confinement-misconduct-major-name = Disorderly Conduct in Confinement - major
+rmc-law-variable-confinement-misconduct-major-desc = To cause disruption in a significant manner while in Brig and under arrest. This can be added on to any charge.
+rmc-law-variable-confinement-misconduct-major-conditions = Breaking a Major Law while under arrest or in Prison. 15 minutes.
 
-rmc-law-major-disorderly-conduct = Disorderly Conduct
-rmc-law-major-disorderly-conduct-description = Directly and intentionally disrupting primary operations of the ship. Fighting in the RO line, disrupting the briefing.
+rmc-law-variable-public-mischief-minor-name = Intentional Public Mischief - minor
+rmc-law-variable-public-mischief-minor-desc = Making a false statement that accuses someone of having committed an offence. Doing anything intended to cause someone to be suspected of having committed an offence that the person has not committed. To divert suspicion from themselves, reporting that an offence has been committed when it has not been committed. False statements relating to investigations are considered False Testimony.
+rmc-law-variable-public-mischief-minor-conditions = Relating to a minor crime. 7.5 minutes.
 
-rmc-law-major-assault = Assault
-rmc-law-major-assault-description = To threaten or use physical force against someone with ill intent, but without intent to kill.
+rmc-law-variable-public-mischief-major-name = Intentional Public Mischief - major
+rmc-law-variable-public-mischief-major-desc = Making a false statement that accuses someone of having committed an offence. Doing anything intended to cause someone to be suspected of having committed an offence that the person has not committed. To divert suspicion from themselves, reporting that an offence has been committed when it has not been committed. False statements relating to investigations are considered False Testimony.
+rmc-law-variable-public-mischief-major-conditions = Relating to a major crime, or anything above this. 15 minutes.
 
-rmc-law-major-contraband = Contraband
-rmc-law-major-contraband-description = Possessing, or distributing controlled substances or unauthorized items or weapons as defined in Standard Operating Procedure or impairing, intoxicating or addictive drugs such as Mindbreaker, this does not include custom mixes or dosages of medicinal drugs.
-rmc-law-major-contraband-punishment = Confiscation of Contraband
+rmc-law-minor-hooliganism-name = Hooliganism
+rmc-law-minor-hooliganism-desc = Behavior that is generally disruptive to the warship and crew that classifies as low-level shenanigans not deserving of more severe punishment. Things such as excessive window knocking, force-feeding other marines or failing to conduct oneself properly during the briefing, such as climbing the Briefing overview. This can escalate to Disorderly Conduct.
 
-rmc-law-major-insubordination = Insubordination
-rmc-law-major-insubordination-description = Failing to follow a lawful order from a superior that is personally directed at you.
+rmc-law-minor-disrespect-name = Disrespecting a Superior
+rmc-law-minor-disrespect-desc = Using offensive names or being directly disrespectful to someone of a higher rank or position.
 
-rmc-law-major-interference = Interference
-rmc-law-major-interference-description = Interfering in a legal arrest being performed with ill intent. Clearly trying to hinder the arrest being performed.
+rmc-law-minor-false-testimony-name = False Testimony
+rmc-law-minor-false-testimony-desc = To intentionally provide false information during a criminal investigation with the intent to disrupt said investigation.
 
-rmc-law-major-neglect-of-duty = Neglect of duty
-rmc-law-major-neglect-of-duty-description = Failure to perform one’s role to an acceptable standard. For example, a Commanding Officer failing to properly organize and ensure their personnel are given orders, failing to follow proper procedure in detriment of one’s duties, or ship crew leaving the ship without authorization from the Commanding Officer or their Department Head. Any officer who commits a crime may be charged with Neglect of Duty in addition to the appropriate crimes.
+rmc-law-minor-trespass-name = Trespassing
+rmc-law-minor-trespass-desc = Unauthorized access of an area which a person does not normally have access to or without command/superior approval.
+rmc-law-minor-trespass-punishment = Escort out of the area and optionally 7.5 minutes.
 
-rmc-law-major-listening-bugs = Unauthorized use of a Listening Device
-rmc-law-major-listening-bugs-description = Using a listening device against SOP in a secure area such as the CIC. Use of listening devices tied to foreign governments or terror organisations is also considered subterfuge.
-rmc-law-major-listening-bugs-punishment = Listening Device Confiscation
+rmc-law-minor-procedure-name = Failure to Follow Procedure
+rmc-law-minor-procedure-desc = Failing to follow the regulations found in the Standard Operating Procedure.
+rmc-law-minor-procedure-punishment = 10 Minutes, equipment confiscation where relevant.
 
-rmc-law-major-subterfuge = Subterfuge
-rmc-law-major-subterfuge-description = Carrying out objectives or being tied to material that describe planned actions that go against the USCM. Strong proof is required that the individual is working against USCM. Use of listening devices tied to foreign governments or terror organisations in secure areas is also considered subterfuge.
-rmc-law-major-subterfuge-punishment = Termination of ID/Discharge to planet
+rmc-law-minor-smoking-name = Smoking in Medical Areas
+rmc-law-minor-smoking-desc = Smoking in areas designated for use by medical personnel, such as the entire medbay and surgical rooms.
 
-rmc-law-major-assault-with-a-deadly-weapon = Assault with a deadly weapon
-rmc-law-major-assault-with-a-deadly-weapon-description = To threaten or use physical force against someone with ill intent and with a lethal weapon such as a sidearm, blade, or rifle.
+rmc-law-minor-intoxication-name = Intoxication
+rmc-law-minor-intoxication-desc = During active duty, to consume alcohol or other substances such as hallucinogenic drugs that cause impairment of speech or mind of some form.
+rmc-law-minor-intoxication-punishment = 10 minutes, extended until the person is no longer impaired.
 
-rmc-law-major-illegal-confinement = Illegal Confinement
-rmc-law-major-illegal-confinement-description = Unlawfully detaining a person against their will. Includes, kidnapping, hostage taking and confining people in cells without charging them for a crime. Does not apply to Prisoners of War.
+rmc-law-minor-theft-name = Theft
+rmc-law-minor-theft-desc = To take items or property from another person or entity without their express permission. To retain possession of items that have been taken without permission or were knowingly not legal to be provided. A chance to return the item(s) or property should be given first. Removal of vendors from department areas without permission.
+rmc-law-minor-theft-punishment = 10 minutes, and the item(s) returned to the owner.
 
-rmc-law-major-manslaughter = Manslaughter
-rmc-law-major-manslaughter-description = Killing someone without malicious intent. Manslaughter may be applied if someone dies as a result of a fight where the intent was not to kill.
-rmc-law-major-manslaughter-punishment = Demotion
+rmc-law-major-unauthorized-deployment-name = Unauthorised Deployment
+rmc-law-major-unauthorized-deployment-desc = To deploy into the area of operations without permission of the relevant head of department or Commander, whilst still performing assigned duties, such as a doctor performing surgery. Deploying without intent to perform assigned duties is Desertion. - The relevant Head of Department or the Commander where appropriate may retroactively authorize deployment and negate the crime. The Commander may overrule the decision. - The relevant Head of Department or the Commander may designate an alternate person to deploy to replace an unauthorized person as soon as possible.
 
-rmc-law-major-prevarication = Prevarication
-rmc-law-major-prevarication-description = To intentionally order the arrest of a person on false charges who is then found to be innocent, or to apply an improper or abusive NJP. This includes intentionally arresting a person on false charges, on one's own initiative without orders.
+rmc-law-major-disorderly-conduct-name = Disorderly Conduct
+rmc-law-major-disorderly-conduct-desc = Directly and intentionally disrupting primary operations of the warship. Fighting in the requisitions line, extensively or repeatedly disrupting the briefing.
 
-rmc-law-major-sexual-harrasment = Sexual Harrasment
-rmc-law-major-sexual-harrasment-description = Unwelcome sexual advances, verbal or physical conduct of a sexual nature. Creating an intimidating, hostile or offensive work environment as a result of the harassment.
+rmc-law-major-subterfuge-name = Subterfuge
+rmc-law-major-subterfuge-desc = Taking action, or being tied to material that describes planned actions that go against the UNMC. Strong proof is required that the individual is working against the UNMC.
+rmc-law-major-subterfuge-punishment = 15 Minutes, removal of ID, and discharge to planet.
 
-rmc-law-major-animal-cruelty = Animal Cruelty
-rmc-law-major-animal-cruelty-description = Injuring or killing any domestic animal or wild life with malicious intent. Research monkeys used for chemical research, scientific purposes or hostile wildlife are exempt.
+rmc-law-major-neglect-name = Neglect of Duty
+rmc-law-major-neglect-desc = Failure to perform one’s role to an acceptable standard. A Commander failing to properly organize and ensure their personnel are given orders. Failing to perform one's duties or follow proper procedure in detriment of one's duties.
 
-rmc-law-major-misuse-of-authority = Misuse of Authority
-rmc-law-major-misuse-of-authority-description = The exercising of power to a malicious extent by Military Police or deputized personnel acting as an MP; examples include beating a downed prisoner, excessive use of harmful or non-lethal force, or other abusive actions that led to the harm of a person in custody. Detained suspects should not have more force used on them than necessary in order to pacify them. Force may be used against retaliating or escaping parties only to the point where they are sufficiently pacified.
+rmc-law-major-assault-name = Assault
+rmc-law-major-assault-desc = To threaten or use physical force against someone with ill intent, but without intent to kill. To threaten murder.
 
-rmc-law-major-unauthorized-deployment = Unauthorized Deployment
-rmc-law-major-unauthorized-deployment-description = To deploy into the area of operations without permission of the relevant head of department or Commander where appropriate whilst still performing assigned duties. (i.e. a doctor deploying without permission, with the intentions to perform field surgery.) Deploying without intent to perform assigned duties remains desertion.
+rmc-law-major-prevarication-name = Prevarication
+rmc-law-major-prevarication-desc = To intentionally arrest a person on false charges, on ones own initiative. To apply an improper or abusive NJP.
 
-rmc-law-minor-contraband = Contraband
-rmc-law-minor-contraband-description = Possessing items or weapons from the Area of Operations not authorized by someone with the rank of SSGT or higher.
-rmc-law-minor-contraband-punishment = Contraband Confiscation
+rmc-law-major-illegal-confinement-name = Illegal Confinement
+rmc-law-major-illegal-confinement-desc = Unlawfully detaining a person against their will, such as Kidnapping, and hostage-taking.
 
-rmc-law-minor-damage-to-government-property = Damage to Government Property
-rmc-law-minor-damage-to-government-property-description = Damaging the ship or making any unauthorized modifications to it as outlined in Standard Operating Procedure on a minor level, such as breaking a window or damaging a wall.
-rmc-law-minor-damage-to-government-property-punishment = Reparation
+rmc-law-major-abuse-name = Misuse of Authority
+rmc-law-major-abuse-desc = The exercising of power to a malicious extent by MP. Excessive use of harmful or non-lethal force, or other abusive actions that led to the harm of a person in custody. Detained suspects should not have more force used on them than necessary in order to pacify them and ensure they do not escape during processing.
 
-rmc-law-minor-insubordination = Insubordination
-rmc-law-minor-insubordination-description = Failing to follow a lawful order from a superior which is not personally directed at you. Additionally, disrespecting someone of higher rank or position that is not an officer.
+rmc-law-major-manslaughter-name = Manslaughter
+rmc-law-major-manslaughter-desc = Killing someone without malicious intent. Manslaughter may be applied if someone dies as a result of a fight where the intent was not to kill. This also includes failing to revive someone without a reasonable attempt, not executed by the execution procedure.
+rmc-law-major-manslaughter-punishment = 20 Minutes, and/or demotion.
 
-rmc-law-minor-interference = Interference
-rmc-law-minor-interference-description = Interfering in an arrest without ill intent to interfere against a legal arrest, such as blocking the way or helping someone up.
+rmc-law-major-animal-cruelty-name = Cruelty to Animals
+rmc-law-major-animal-cruelty-desc = Injuring or killing any domestic animal or wild life with malicious intent. Research monkeys used for chemical research, scientific purposes or hostile wildlife are exempt.
 
-rmc-law-minor-trespassing = Trespassing
-rmc-law-minor-trespassing-description = Unauthorized access of an area which a person does not have access to or without approval from someone with access.
-rmc-law-minor-trespassing-punishment = Escort Out
+rmc-law-capital-jailbreak-name = Jailbreak/Escape
+rmc-law-capital-jailbreak-desc = To escape, assist in an escape, attempt escape, or be willfully and knowingly broken out from a cell.
 
-rmc-law-minor-listening-bugs = Unauthorized use of a Listening Device
-rmc-law-minor-listening-bugs-description = Using a listening device against SOP in a public area such as the gym.
-rmc-law-minor-listening-bugs-punishment = Listening Device Confiscation
+rmc-law-capital-attempted-murder-name = Attempted Murder
+rmc-law-capital-attempted-murder-desc = Attempting to murder a person but failing to do so. Applies if the evidence shows that the arrested person was clearly trying to kill someone with ill intent but failed in the action itself.
 
-rmc-law-minor-disrespect = Disrespecting a Superior Officer
-rmc-law-minor-disrespect-description = Using offensive names or being directly disrespectful to someone of a Commissioned Officer of higher rank or position.
+rmc-law-capital-murder-name = Murder/Unauthorized Execution
+rmc-law-capital-murder-desc = Killing someone with malicious intent. This includes Synthetic units. The charge applies even if the victim is later revived. Refusing or preventing to revive anyone not executed through provided execution procedures.
 
-rmc-law-minor-failure-to-follow-procedure = Failure to Follow Procedure
-rmc-law-minor-failure-to-follow-procedure-description = Failing to follow the regulations found in the Standard Operating Procedure.
-rmc-law-minor-failure-to-follow-procedure-punishment = Equipment Confiscation
+rmc-law-capital-sedition-name = Sedition
+rmc-law-capital-sedition-desc = To engage in actions or refuse to follow orders, in a way intended to overthrow or usurp the legitimate command structure. Creating a code Red threat to the warship. Proclaiming allegiance to, or acting on behalf of, the supposed CLF is an act of sedition against the UN. In the event of a failed mutiny, the Commander may decide to deny treatment or revival of mutineers that have not surrendered, citing sedition by mutiny as the reason.
 
-rmc-law-minor-intoxication = Intoxication
-rmc-law-minor-intoxication-description = To consume alcohol or other substances such as alcohol or hallucinogenic drugs resulting in impaired job performance.
+rmc-law-capital-desertion-name = Desertion
+rmc-law-capital-desertion-desc = Refusing to carry out the duties essential to one’s post or abandoning post unauthorized, without intent to return. (Retreating from the planet when the FOB is breached is not Desertion, refusing to return when ordered is).
 
-rmc-law-minor-theft = Theft
-rmc-law-minor-theft-description = To take items (or property) from another person or entity without their express permission, or to retain possession of items that have been taken without permission. This includes the removal of vendors from department areas without permission.
-rmc-law-minor-theft-punishment = Return of Stolen Item
+rmc-law-capital-crimes-against-life-name = Crimes against Interstellar Life
+rmc-law-capital-crimes-against-life-desc = To engage in actions that violate the rights of interstellar life or otherwise are heinous acts against interstellar life. Torture, cannibalism and forced infection of any kind.
 
-rmc-law-minor-false-testimony = False Testimony
-rmc-law-minor-false-testimony-description = To intentionally and willingly lie to an MP, or deputized officer, during a legal investigation with the intent to disrupt said investigation.
+rmc-law-precautionary-insanity-name = Insanity
+rmc-law-precautionary-insanity-desc = Declared by the Chief Medical Officer or a synthetic, acting in such a manner which makes the offender not sound clear of mind. The subject, once cleared to be of sound mind, may be released from this particular charge. In the absence of the above, the Commander or Chief MP can appoint an Officer of the medical department to perform an evaluation in their stead. If this is done, the appointed should receive an explanation on what an Insanity charge entails. In cases of verified suicide or attempted suicide, insanity may be applied without evaluation. The subject may appeal this, including to any medical personnel.
 
-rmc-law-optional-minor-unruly = Minor Disorderly Conduct in Confinement
-rmc-law-optional-minor-unruly-description = To cause disruption in a minor manner while in the Brig and under arrest. Disruption is considered breaking a Minor Law. This can be added on to any charge.
+rmc-law-precautionary-prisoner-of-war-name = Prisoner of War
+rmc-law-precautionary-prisoner-of-war-desc = Being a hostile member of a legitimate and recognised nation, or any person recognised to be part of, or otherwise bearing the colors or insignia of the alleged "CLF" threat. Prisoners of war cannot be executed. See Third-Parties for more information and exceptions.
 
-rmc-law-optional-aiding = Aiding and Abetting
-rmc-law-optional-aiding-description = Assisting others in committing a crime, directly or indirectly, or encouraging them to commit one.
-rmc-law-optional-aiding-punishment = Same as accused
-
-rmc-law-optional-resisting-arrest = Resisting Arrest
-rmc-law-optional-resisting-arrest-description = To resist a lawful arrest by a Military Police officer.
-
-rmc-law-optional-resisting-search = Resisting Search
-rmc-law-optional-resisting-search-description = To resist a lawful search by a Military Police officer.
-
-rmc-law-optional-major-unruly = Major Disorderly Conduct in Confinement
-rmc-law-optional-major-unruly-description = To cause disruption in a major manner while in the Brig and under arrest. Disruption is considered breaking a Major Law. This can be added on to any charge.
-
-rmc-law-precautionary-discretionary-arrest = Discretionary Detainment
-rmc-law-precautionary-discretionary-arrest-description = A discretionary charge used by Commanding Officers to detain personnel for any reason, for the safety and benefit of the operation or security. The duration of this charge is variable and may be pardoned/lifted at any time by the Commanding Officer.
-rmc-law-precautionary-discretionary-arrest-conditions = Not inclusive for execution criteria. May only be appealed to the Acting Commander or Provost/USCM HC.
-
-rmc-law-precautionary-insanity = Insanity
-rmc-law-precautionary-insanity-description = Acting in such a manner which makes the offender not sound clear of mind. The subject, once cleared to be of sound mind, may be released from this particular charge. Excepting in cases of Suicide/Attempted Suicide, only the CMO/Synthetic may declare someone insane.
-rmc-law-precautionary-insanity-conditions = Not inclusive for execution criteria.
-
-rmc-law-precautionary-prisoner-of-war = Prisoner of War
-rmc-law-precautionary-prisoner-of-war-description = Being a member of a legitimate and recognised faction currently hostile to the USCM.
-rmc-law-precautionary-prisoner-of-war-conditions = Execution is forbidden barring exceptional circumstances.
+rmc-law-precautionary-discretionary-detainment-name = Discretionary Detainment
+rmc-law-precautionary-discretionary-detainment-desc = A discretionary charge used by Commanding Officer to detain personnel for any reason, for the safety and benefit of the operation or security. This is only appealable to the Commanding Officer, or the Provost Marshal Office, and may be lifted at any time by the Commanding Officer.

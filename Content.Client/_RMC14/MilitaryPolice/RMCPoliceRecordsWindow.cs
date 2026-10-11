@@ -302,12 +302,12 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
             var section = new RMCCrtCollapsibleSection
             {
                 Title = Loc.GetString("rmc-police-history-entry", ("number", i + 1),
-                    ("sentence", Sentence(incident, _prototypes))),
+                    ("sentence", Sentence(incident, _prototypes, ComponentFactory))),
                 Expanded = _expandedIncidents.TryGetValue(key, out var expanded)
                     ? expanded : i == security.Incidents.Count - 1,
             };
             section.OnToggled += expanded => _expandedIncidents[key] = expanded;
-            IncidentDetails(section.Body, incident, _prototypes);
+            IncidentDetails(section.Body, incident, _prototypes, ComponentFactory);
             Right.AddChild(section);
         }
     }

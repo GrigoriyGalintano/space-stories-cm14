@@ -1,4 +1,5 @@
 using Content.Shared.StationRecords;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._RMC14.MilitaryPolice;
@@ -16,7 +17,8 @@ public sealed class RMCPoliceBuiState(
     RMCIncidentReport? report,
     uint revision,
     bool scannerConnected,
-    List<RMCIncidentEntry> fingerprints) : BoundUserInterfaceState
+    List<RMCIncidentEntry> fingerprints,
+    EntProtoId<RMCMarineLawCatalogueComponent> lawCatalogue) : BoundUserInterfaceState
 {
     public readonly bool Connected = connected;
     public readonly List<RMCPoliceRecordView> Records = records;
@@ -24,6 +26,7 @@ public sealed class RMCPoliceBuiState(
     public readonly uint Revision = revision;
     public readonly bool ScannerConnected = scannerConnected;
     public readonly List<RMCIncidentEntry> Fingerprints = fingerprints;
+    public readonly EntProtoId<RMCMarineLawCatalogueComponent> LawCatalogue = lawCatalogue;
 }
 
 [Serializable, NetSerializable]
@@ -71,6 +74,7 @@ public enum RMCSentencingAction : byte
     Summary,
     AddCharge,
     RemoveCharge,
+    RelatedCrime,
     AddWitness,
     EditWitness,
     RemoveWitness,

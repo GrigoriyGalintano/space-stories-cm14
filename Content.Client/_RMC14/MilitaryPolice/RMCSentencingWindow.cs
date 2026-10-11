@@ -1,7 +1,9 @@
 using System.Linq;
 using Content.Client._RMC14.UserInterface.Crt;
+using Content.Client.Guidebook;
 using Content.Shared._RMC14.MilitaryPolice;
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
 
 namespace Content.Client._RMC14.MilitaryPolice;
@@ -9,11 +11,15 @@ namespace Content.Client._RMC14.MilitaryPolice;
 public sealed class RMCSentencingWindow : RMCPoliceWindow
 {
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
+    [Dependency] private readonly IEntitySystemManager _systems = default!;
 
     public event Action<RMCSentencingMsg>? Message;
     private readonly RMCCrtLineEdit _search = new();
     private readonly RMCCrtOptionButton _category = new();
     private readonly BoxContainer _catalogue = Vertical();
+    private readonly RMCCrtLabel _catalogueName = Text(string.Empty, RMCCrtTone.Muted);
+    private readonly RMCCrtLabel _sectionNotes = Text(string.Empty, RMCCrtTone.Muted);
+    private readonly RMCCrtLabel _sentencingNotes = Text(string.Empty, RMCCrtTone.Muted);
     private readonly RMCCrtActionButton _new;
     private readonly RMCCrtActionButton _scrap;
     private readonly RMCCrtActionButton _export;
@@ -24,6 +30,17 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
     {
         IoCManager.InjectDependencies(this);
         Toolbar.AddChild(Heading("rmc-police-jas"));
+        var catalogueHeader = Horizontal();
+        catalogueHeader.AddChild(_catalogueName);
+        var guide = Button("rmc-police-open-law-guide", () =>
+        {
+            if (_state != null && _prototypes.TryIndex(_state.LawCatalogue, out var prototype) &&
+                prototype.TryGetComponent(out RMCMarineLawCatalogueComponent? catalogue, ComponentFactory))
+                _systems.GetEntitySystem<GuidebookSystem>().OpenHelp([catalogue.Guide]);
+        });
+        guide.HorizontalExpand = false;
+        catalogueHeader.AddChild(guide);
+        Toolbar.AddChild(catalogueHeader);
         var actions = Horizontal();
         _new = Button("rmc-police-new-report", () => Send(RMCSentencingAction.New), RMCCrtIcons.IdCard);
         _scrap = Button("rmc-police-scrap-report", () =>
@@ -43,23 +60,39 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
         _search.PlaceHolder = Loc.GetString("rmc-police-search-laws");
         _search.OnTextChanged += _ => PopulateCatalogue();
         Right.AddChild(_search);
-        foreach (var category in Enum.GetValues<RMCMarineLawCategory>())
-            _category.AddItem(Loc.GetString($"rmc-police-law-category-{category}"), (int) category);
         _category.OnItemSelected += _ => PopulateCatalogue();
         Right.AddChild(_category);
+        Right.AddChild(_sectionNotes);
+        Right.AddChild(_sentencingNotes);
         Right.AddChild(_catalogue);
-        PopulateCatalogue();
     }
 
     public void Update(RMCPoliceBuiState state)
     {
+        if (_state == null || _state.LawCatalogue != state.LawCatalogue)
+        {
+            _category.Clear();
+            _expandedLaws.Clear();
+            if (_prototypes.TryIndex(state.LawCatalogue, out var prototype) &&
+                prototype.TryGetComponent(out RMCMarineLawCatalogueComponent? catalogue, ComponentFactory))
+            {
+                _catalogueName.Text = prototype.Name;
+                foreach (var category in catalogue.Laws.Select(id => _prototypes.Index(id).Category)
+                             .Distinct().OrderBy(category => category))
+                    _category.AddItem(Loc.GetString($"rmc-police-law-category-{category}"), (int) category);
+            }
+            else
+            {
+                _catalogueName.Text = Loc.GetString("rmc-police-law-catalogue-unavailable");
+            }
+        }
         _state = state;
         Connection.Text = state.Connected ? string.Empty : Loc.GetString("rmc-police-disconnected");
         Connection.Visible = !state.Connected;
         _new.Disabled = state.Report != null;
         _scrap.Disabled = state.Report == null;
         _export.Disabled = state.Report == null || string.IsNullOrWhiteSpace(state.Report.Suspect) ||
-                           state.Report.CalculateSentence(_prototypes) <= 0;
+                           !state.Report.TryCalculateSentence(_prototypes, ComponentFactory, out _);
         PopulateReport();
         PopulateCatalogue();
     }
@@ -94,8 +127,8 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
                 ? Loc.GetString("rmc-police-unknown") : report.Suspect))));
         Left.AddChild(Button("rmc-police-scan-suspect", () => Send(RMCSentencingAction.Suspect),
             RMCCrtIcons.IdCard));
-        Left.AddChild(Text(Loc.GetString("rmc-police-sentence-value", ("sentence", Sentence(report, _prototypes))),
-            RMCCrtTone.Warning));
+        Left.AddChild(Text(Loc.GetString("rmc-police-sentence-value",
+            ("sentence", Sentence(report, _prototypes, ComponentFactory))), RMCCrtTone.Warning));
         Left.AddChild(new RMCCrtSeparator { Margin = new Thickness(0, 6) });
         var summary = Horizontal();
         summary.AddChild(Heading("rmc-police-summary"));
@@ -112,7 +145,8 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
         for (var i = 0; i < report.Charges.Count; i++)
         {
             var index = i;
-            if (!_prototypes.TryIndex(report.Charges[i], out var law))
+            var charge = report.Charges[i];
+            if (!_prototypes.TryIndex(charge.Law, out var law))
                 continue;
             var content = Vertical();
             content.Margin = new Thickness(0, 4);
@@ -125,7 +159,32 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
             remove.ToolTip = Loc.GetString("rmc-police-remove-charge");
             header.AddChild(remove);
             content.AddChild(header);
-            content.AddChild(Text(Loc.GetString("rmc-police-minutes", ("minutes", law.BrigTime)), RMCCrtTone.Warning));
+            content.AddChild(Text(RMCMarineSentence.DescribePunishment(law.Punishment, law.BrigTime),
+                RMCCrtTone.Warning));
+            if (law.Punishment == RMCMarineLawPunishment.SameAsCrime &&
+                _prototypes.TryIndex(report.LawCatalogue, out var prototype) &&
+                prototype.TryGetComponent(out RMCMarineLawCatalogueComponent? catalogue, ComponentFactory))
+            {
+                var related = new RMCCrtOptionButton();
+                related.AddItem(Loc.GetString("rmc-police-select-related-crime"), -1);
+                var choices = catalogue.Laws.Select(id => _prototypes.Index(id))
+                    .Where(candidate => candidate.Punishment != RMCMarineLawPunishment.SameAsCrime)
+                    .OrderBy(candidate => Loc.GetString(candidate.Name)).ToArray();
+                for (var j = 0; j < choices.Length; j++)
+                {
+                    var choice = choices[j];
+                    related.AddItem($"{Loc.GetString(choice.Name)} — " +
+                                    RMCMarineSentence.DescribePunishment(choice.Punishment, choice.BrigTime), j);
+                    if (charge.RelatedCrime == choice.ID)
+                        related.SelectId(j);
+                }
+                related.OnItemSelected += choice =>
+                {
+                    if (choice >= 0 && choice < choices.Length)
+                        Send(RMCSentencingAction.RelatedCrime, choices[choice].ID, index);
+                };
+                content.AddChild(related);
+            }
             if (law.SpecialPunishment is { } punishment)
                 content.AddChild(Text(Loc.GetString(punishment), RMCCrtTone.Warning));
             if (law.Conditions is { } conditions)
@@ -181,16 +240,23 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
     private void PopulateCatalogue()
     {
         _catalogue.DisposeAllChildren();
-        var laws = _prototypes.EnumeratePrototypes<RMCMarineLawPrototype>()
+        if (_state == null || !_prototypes.TryIndex(_state.LawCatalogue, out var prototype) ||
+            !prototype.TryGetComponent(out RMCMarineLawCatalogueComponent? catalogue, ComponentFactory))
+            return;
+        var laws = catalogue.Laws.Select(id => _prototypes.Index(id))
             .Where(law => (int) law.Category == _category.SelectedId)
             .Where(law => $"{Loc.GetString(law.Name)} {Loc.GetString(law.Description)}"
                 .Contains(_search.Text, StringComparison.OrdinalIgnoreCase))
             .OrderBy(law => Loc.GetString(law.Name));
+        _sectionNotes.Text = catalogue.SectionNotes.TryGetValue((RMCMarineLawCategory) _category.SelectedId, out var note)
+            ? Loc.GetString(note) : string.Empty;
+        _sectionNotes.Visible = !string.IsNullOrEmpty(_sectionNotes.Text);
+        _sentencingNotes.Text = Loc.GetString(catalogue.SentencingNotes);
         foreach (var law in laws)
         {
             var section = new RMCCrtCollapsibleSection
             {
-                Title = $"{Loc.GetString(law.Name)} — {Loc.GetString("rmc-police-minutes", ("minutes", law.BrigTime))}",
+                Title = $"{Loc.GetString(law.Name)} — {RMCMarineSentence.DescribePunishment(law.Punishment, law.BrigTime)}",
                 Expanded = _expandedLaws.Contains(law.ID),
             };
             section.OnToggled += expanded =>
@@ -213,7 +279,7 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
     private static void LawDetails(BoxContainer content, RMCMarineLawPrototype law)
     {
         content.AddChild(Text(Loc.GetString(law.Description)));
-        content.AddChild(Text(Loc.GetString("rmc-police-minutes", ("minutes", law.BrigTime)), RMCCrtTone.Warning));
+        content.AddChild(Text(RMCMarineSentence.DescribePunishment(law.Punishment, law.BrigTime), RMCCrtTone.Warning));
         if (law.SpecialPunishment is { } punishment)
             content.AddChild(Text(Loc.GetString(punishment), RMCCrtTone.Warning));
         if (law.Conditions is { } conditions)

@@ -118,14 +118,13 @@ rmc-police-incident-report = Incident report
 rmc-police-report-help = Create a report or use an original encoded incident report on the console to import it. Register a suspect from a held ID or a person you are pulling. Hold a witness's ID to register them, or an object to catalogue evidence.
 rmc-police-report-changed = Another officer changed this report. Review the updated report and try again.
 rmc-police-report-in-progress = A report is already in progress.
-rmc-police-report-incomplete = Identify the suspect and add a charge with a nonzero sentence before exporting.
+rmc-police-report-incomplete = Identify the suspect, add at least one charge and select an underlying offence for any aiding and abetting charge before exporting.
 rmc-police-original-only = Only original encoded incident reports can be imported. Copies are invalid.
 rmc-police-hold-id = Hold the person's ID in your active hand.
 rmc-police-hold-evidence = Hold the evidence in your active hand.
 rmc-police-suspect-value = Suspect: {$name}
 rmc-police-scan-suspect = Register suspect from held ID or pulled person
 rmc-police-sentence-value = Sentence: {$sentence}
-rmc-police-permanent = PERMANENT CONFINEMENT
 rmc-police-minutes = {$minutes} minutes
 rmc-police-summary = Incident summary
 rmc-police-edit-summary = Edit summary
@@ -141,21 +140,32 @@ rmc-police-edit-notes = Edit notes
 rmc-police-remove-entry = Remove entry
 rmc-police-law-catalogue = Law catalogue
 rmc-police-search-laws = Search laws...
-rmc-police-law-category-Minor = Minor laws
-rmc-police-law-category-Major = Major laws
-rmc-police-law-category-Capital = Capital laws
-rmc-police-law-category-Optional = Optional laws
+rmc-police-law-category-Minor = Minor crimes
+rmc-police-law-category-Major = Major crimes
+rmc-police-law-category-Capital = Capital crimes
+rmc-police-law-category-Optional = Optional crimes
 rmc-police-law-category-Precautionary = Precautionary charges
-rmc-police-law-category-Civilian = Civilian laws
 rmc-police-incident-print =
     INCIDENT REPORT
     Suspect: {$name}
     Sentence: {$sentence}
     Summary: {$summary}
-    Charges:
 rmc-police-mark-insubordination = Report this marine for insubordination
 rmc-police-insubordination-charge = Insubordination.
 rmc-police-insubordination-reported = Overwatch: Your overwatch officer has reported you for insubordination.
 rmc-police-insubordination-confirmed = Insubordination reported. Arrest status recorded in the personnel file.
 rmc-police-insubordination-incarcerated = This marine is already incarcerated. Their record has not been changed.
 rmc-police-insubordination-already-wanted = This marine is already marked for arrest for insubordination.
+rmc-police-law-category-Variable = Variable crimes
+rmc-police-punishment-None = Incomplete sentence
+rmc-police-punishment-NJP = Non-judicial punishment (NJP)
+rmc-police-punishment-Permanent = Indefinite confinement
+rmc-police-punishment-Capital = Permanent confinement or execution
+rmc-police-punishment-SameAsCrime = Same punishment as the underlying offence
+rmc-police-sentence-with-njp = {$sentence}; NJP
+rmc-police-select-related-crime = Select the underlying offence...
+rmc-police-related-crime-value = Underlying offence: {$crime}
+rmc-police-law-catalogue-value = Applicable law: {$catalogue}
+rmc-police-law-catalogue-unavailable = Law catalogue unavailable
+rmc-police-open-law-guide = Law guide
+rmc-police-report-wrong-catalogue = This report does not match the applicable law catalogue or contains invalid charges.

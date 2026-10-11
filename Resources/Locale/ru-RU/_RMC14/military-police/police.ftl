@@ -118,14 +118,13 @@ rmc-police-incident-report = Отчёт о происшествии
 rmc-police-report-help = Создайте отчёт или примените к консоли оригинал закодированного отчёта для импорта. Зарегистрируйте подозреваемого по ID в руке или тяните его за собой. Для регистрации свидетеля держите его ID, а для добавления улики — сам предмет.
 rmc-police-report-changed = Другой офицер изменил отчёт. Проверьте обновлённые данные и повторите действие.
 rmc-police-report-in-progress = Работа над отчётом уже идёт.
-rmc-police-report-incomplete = Укажите подозреваемого и добавьте обвинение с ненулевым сроком перед экспортом.
+rmc-police-report-incomplete = Укажите подозреваемого, добавьте хотя бы одно обвинение и выберите основное преступление для каждого обвинения в пособничестве перед экспортом.
 rmc-police-original-only = Импортировать можно только оригиналы закодированных отчётов. Копии недействительны.
 rmc-police-hold-id = Держите ID этого человека в активной руке.
 rmc-police-hold-evidence = Держите улику в активной руке.
 rmc-police-suspect-value = Подозреваемый: {$name}
 rmc-police-scan-suspect = Зарегистрировать по ID или тому, кого тянете
 rmc-police-sentence-value = Приговор: {$sentence}
-rmc-police-permanent = ПОЖИЗНЕННОЕ ЗАКЛЮЧЕНИЕ
 rmc-police-minutes = {$minutes} мин.
 rmc-police-summary = Описание происшествия
 rmc-police-edit-summary = Изменить описание
@@ -141,21 +140,32 @@ rmc-police-edit-notes = Изменить примечания
 rmc-police-remove-entry = Удалить запись
 rmc-police-law-catalogue = Каталог законов
 rmc-police-search-laws = Поиск законов...
-rmc-police-law-category-Minor = Незначительные нарушения
-rmc-police-law-category-Major = Серьёзные нарушения
+rmc-police-law-category-Minor = Мелкие преступления
+rmc-police-law-category-Major = Тяжкие преступления
 rmc-police-law-category-Capital = Особо тяжкие преступления
-rmc-police-law-category-Optional = Дополнительные обвинения
-rmc-police-law-category-Precautionary = Превентивные меры
-rmc-police-law-category-Civilian = Гражданские законы
+rmc-police-law-category-Optional = Факультативные преступления
+rmc-police-law-category-Precautionary = Меры предосторожности
 rmc-police-incident-print =
     ОТЧЁТ О ПРОИСШЕСТВИИ
     Подозреваемый: {$name}
     Приговор: {$sentence}
     Описание: {$summary}
-    Обвинения:
 rmc-police-mark-insubordination = Сообщить о неповиновении этого морпеха
 rmc-police-insubordination-charge = Неповиновение.
 rmc-police-insubordination-reported = Overwatch: офицер наблюдения сообщил о вашем неповиновении.
 rmc-police-insubordination-confirmed = Сообщение о неповиновении принято. В личном деле установлен статус «Арестовать».
 rmc-police-insubordination-incarcerated = Морпех уже находится в заключении. Его запись не изменена.
 rmc-police-insubordination-already-wanted = Морпех уже объявлен в розыск за неповиновение.
+rmc-police-law-category-Variable = Переменные преступления
+rmc-police-punishment-None = Приговор не определён
+rmc-police-punishment-NJP = Дисциплинарное взыскание без суда (ДВС)
+rmc-police-punishment-Permanent = Бессрочное содержание под стражей
+rmc-police-punishment-Capital = Пожизненное заключение или казнь
+rmc-police-punishment-SameAsCrime = То же наказание, что за основное преступление
+rmc-police-sentence-with-njp = {$sentence}; ДВС
+rmc-police-select-related-crime = Выберите основное преступление...
+rmc-police-related-crime-value = Основное преступление: {$crime}
+rmc-police-law-catalogue-value = Применяемый закон: {$catalogue}
+rmc-police-law-catalogue-unavailable = Каталог законов недоступен
+rmc-police-open-law-guide = Руководство по законам
+rmc-police-report-wrong-catalogue = Отчёт не соответствует действующему каталогу законов или содержит недопустимые обвинения.

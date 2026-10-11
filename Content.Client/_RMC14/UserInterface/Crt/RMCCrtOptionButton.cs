@@ -92,6 +92,15 @@ public sealed class RMCCrtOptionButton : Container, IRMCCrtThemedControl
             item.Button.Selected = item.Id == id;
     }
 
+    public void Clear()
+    {
+        _popup.Close();
+        _options.DisposeAllChildren();
+        _items.Clear();
+        _button.Text = string.Empty;
+        SelectedId = 0;
+    }
+
     void IRMCCrtThemedControl.ApplyCrtTheme(RMCCrtThemeContext context)
     {
         _context = context;

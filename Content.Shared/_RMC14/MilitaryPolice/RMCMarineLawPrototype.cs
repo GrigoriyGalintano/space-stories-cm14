@@ -6,16 +6,27 @@ namespace Content.Shared._RMC14.MilitaryPolice;
 [Serializable, NetSerializable]
 public enum RMCMarineLawCategory : byte
 {
+    Variable,
     Minor,
     Major,
     Capital,
     Optional,
     Precautionary,
-    Civilian,
+}
+
+[Serializable, NetSerializable]
+public enum RMCMarineLawPunishment : byte
+{
+    None,
+    Brig,
+    NJP,
+    Permanent,
+    Capital,
+    SameAsCrime,
 }
 
 /// <summary>
-/// A charge from CM-SS13's law catalogue. Optional charges add to the highest ordinary sentence.
+/// An offence and its sanction from a marine law guidebook. Variable offences have separate severity variants.
 /// </summary>
 [Prototype("rmcMarineLaw")]
 public sealed partial class RMCMarineLawPrototype : IPrototype
@@ -33,7 +44,18 @@ public sealed partial class RMCMarineLawPrototype : IPrototype
     public RMCMarineLawCategory Category;
 
     [DataField(required: true)]
+    public RMCMarineLawPunishment Punishment;
+
+    [DataField]
     public float BrigTime;
+
+    /// <summary>Additional time for offences committed in confinement, applied after the ordinary brig limit.</summary>
+    [DataField]
+    public bool ExtendsSentence;
+
+    /// <summary>Whether this offence permits exceeding the catalogue's ordinary brig limit.</summary>
+    [DataField]
+    public bool BypassBrigLimit;
 
     [DataField]
     public LocId? SpecialPunishment;
