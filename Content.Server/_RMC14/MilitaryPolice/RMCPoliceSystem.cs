@@ -23,6 +23,7 @@ using Content.Shared.Database;
 using Content.Shared.Destructible;
 using Content.Shared.Forensics.Components;
 using Content.Shared.GameTicking;
+using Content.Shared.Ghost;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.IdentityManagement;
 using Content.Shared.IdentityManagement.Components;
@@ -84,6 +85,8 @@ public sealed class RMCPoliceSystem : EntitySystem
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     private TimeSpan _nextHudRefresh;
     private EntProtoId<RMCMarineLawCatalogueComponent> _lawCatalogue;
+
+    public EntProtoId<RMCMarineLawCatalogueComponent> LawCatalogue => _lawCatalogue;
 
     public override void Initialize()
     {
@@ -216,9 +219,10 @@ public sealed class RMCPoliceSystem : EntitySystem
 
     private bool CanUse(EntityUid console, EntityUid user)
     {
+        var canGhostInteract = TryComp<GhostComponent>(user, out var ghost) && ghost.CanGhostInteract;
         return !(CompOrNull<DestructibleComponent>(console)?.IsBroken ?? false) &&
                _access.IsAllowed(user, console) && _power.IsPowered(console) &&
-               _mobState.IsAlive(user) && _actionBlocker.CanInteract(user, console) &&
+               (canGhostInteract || _mobState.IsAlive(user)) && _actionBlocker.CanInteract(user, console) &&
                _interaction.InRangeUnobstructed(user, console);
     }
 
@@ -790,7 +794,9 @@ public sealed class RMCPoliceSystem : EntitySystem
                 return;
             }
             ent.Comp.Report = paper.Report.Clone();
+            ent.Comp.Report.Id = Guid.NewGuid();
             ent.Comp.Report.FinalSentence = null;
+            ent.Comp.Report.Detention = null;
             ent.Comp.Revision++;
             LogChange(args.User, ent, $"imported incident report for {paper.Report.Suspect}");
             QueueDel(args.Used);
@@ -851,15 +857,15 @@ public sealed class RMCPoliceSystem : EntitySystem
         var time = (report.FinalSentence ?? calculated).GetDescription();
         var content = new StringBuilder(Loc.GetString("rmc-police-incident-print",
             ("name", report.Suspect), ("sentence", time), ("summary", report.Summary)));
-        if (_prototypes.TryIndex(report.LawCatalogue, out var catalogue))
-            content.AppendLine(Loc.GetString("rmc-police-law-catalogue-value", ("catalogue", catalogue.Name)));
+        if (report.Detention is { } detention)
+            content.AppendLine(detention.GetDescription());
         content.AppendLine().AppendLine(Loc.GetString("rmc-police-incident-charges"));
         foreach (var charge in report.Charges)
         {
             if (!_prototypes.TryIndex(charge.Law, out var law))
                 continue;
             content.AppendLine().AppendLine(Loc.GetString(law.Name));
-            content.AppendLine(RMCMarineSentence.DescribePunishment(law.Punishment, law.BrigTime));
+            content.AppendLine(RMCMarineSentence.DescribePunishmentField(law.Punishment, law.BrigTime));
             if (charge.RelatedCrime is { } related && _prototypes.TryIndex(related, out var relatedLaw))
                 content.AppendLine(Loc.GetString("rmc-police-related-crime-value", ("crime", Loc.GetString(relatedLaw.Name))));
             if (law.SpecialPunishment is { } punishment)
@@ -874,6 +880,27 @@ public sealed class RMCPoliceSystem : EntitySystem
         foreach (var evidence in report.Evidence)
             content.AppendLine(evidence.Name).AppendLine(evidence.Notes);
         return content.ToString();
+    }
+
+    public void SynchronizeIncidentReport(Entity<RMCIncidentReportPaperComponent> paper)
+    {
+        if (paper.Comp.Report is not { } report)
+            return;
+
+        _paper.SetContent(paper, FormattedMessage.EscapeText(FormatIncident(report)));
+        if (report.RecordId is not { } id || report.RecordStation is not { } station ||
+            !TryGetEntity(station, out var stationUid))
+            return;
+
+        var key = new StationRecordKey(id, stationUid.Value);
+        if (!_records.TryGetRecord<RMCPoliceRecord>(key, out var record))
+            return;
+
+        var incident = record.Incidents.FirstOrDefault(entry => entry.Id == report.Id);
+        if (incident == null)
+            return;
+        incident.Detention = report.Detention;
+        _records.Synchronize(key);
     }
 
     private void OnInsubordination(Entity<OverwatchConsoleComponent> ent, ref RMCOverwatchInsubordinationMsg args)

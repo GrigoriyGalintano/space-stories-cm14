@@ -13,7 +13,7 @@ rmc-police-register-short = Зарегистрировать
 rmc-police-remove-short = Убрать
 rmc-police-no-comments = Комментариев нет.
 rmc-police-no-incidents = Происшествий не зарегистрировано.
-rmc-police-history-entry = Происшествие №{$number} — {$sentence}
+rmc-police-history-entry = Происшествие №{$number}
 rmc-police-incident-charges = Обвинения
 rmc-police-no-laws = Подходящих статей нет.
 rmc-police-save = Сохранить
@@ -124,7 +124,9 @@ rmc-police-hold-id = Держите ID этого человека в актив
 rmc-police-hold-evidence = Держите улику в активной руке.
 rmc-police-suspect-value = Подозреваемый: {$name}
 rmc-police-scan-suspect = Зарегистрировать по ID или тому, кого тянете
-rmc-police-sentence-value = Приговор: {$sentence}
+rmc-police-sentence-value = Итоговый приговор: {$sentence}
+rmc-police-brig-time-value = Срок в бриге: {$punishment}
+rmc-police-punishment-value = Наказание: {$punishment}
 rmc-police-minutes = {$minutes} мин.
 rmc-police-summary = Описание происшествия
 rmc-police-edit-summary = Изменить описание
@@ -148,7 +150,7 @@ rmc-police-law-category-Precautionary = Меры предосторожност�
 rmc-police-incident-print =
     ОТЧЁТ О ПРОИСШЕСТВИИ
     Подозреваемый: {$name}
-    Приговор: {$sentence}
+    Итоговый приговор: {$sentence}
     Описание: {$summary}
 rmc-police-mark-insubordination = Сообщить о неповиновении этого морпеха
 rmc-police-insubordination-charge = Неповиновение.
@@ -157,7 +159,7 @@ rmc-police-insubordination-confirmed = Сообщение о неповинов�
 rmc-police-insubordination-incarcerated = Морпех уже находится в заключении. Его запись не изменена.
 rmc-police-insubordination-already-wanted = Морпех уже объявлен в розыск за неповиновение.
 rmc-police-law-category-Variable = Переменные преступления
-rmc-police-punishment-None = Приговор не определён
+rmc-police-punishment-None = Не определён
 rmc-police-punishment-NJP = Дисциплинарное взыскание без суда (ДВС)
 rmc-police-punishment-Permanent = Бессрочное содержание под стражей
 rmc-police-punishment-Capital = Пожизненное заключение или казнь
@@ -165,7 +167,6 @@ rmc-police-punishment-SameAsCrime = То же наказание, что за о
 rmc-police-sentence-with-njp = {$sentence}; ДВС
 rmc-police-select-related-crime = Выберите основное преступление...
 rmc-police-related-crime-value = Основное преступление: {$crime}
-rmc-police-law-catalogue-value = Применяемый закон: {$catalogue}
 rmc-police-law-catalogue-unavailable = Каталог законов недоступен
 rmc-police-open-law-guide = Руководство по законам
 rmc-police-report-wrong-catalogue = Отчёт не соответствует действующему каталогу законов или содержит недопустимые обвинения.

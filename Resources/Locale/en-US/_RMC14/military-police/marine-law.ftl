@@ -7,62 +7,62 @@ rmc-law-catalogue-precautionary = These charges allow indefinite confinement.
 
 rmc-law-variable-property-damage-minor-name = Damage to UNMC Property - minor
 rmc-law-variable-property-damage-minor-desc = Damaging the warship or making any unauthorized modifications to it as outlined in Standard Operating Procedure. Materials for repairs should be taken from maintenance storages.
-rmc-law-variable-property-damage-minor-conditions = Breaking a window, damaging a wall, etc. Return the warship to it's exact previous state, or serve 7.5 minutes if not possible.
+rmc-law-variable-property-damage-minor-conditions = Breaking a window, damaging a wall, etc. Restore the warship to its previous state. Brig confinement applies if restoration is not possible.
 
 rmc-law-variable-property-damage-major-name = Damage to UNMC Property - major
 rmc-law-variable-property-damage-major-desc = Damaging the warship or making any unauthorized modifications to it as outlined in Standard Operating Procedure. Materials for repairs should be taken from maintenance storages.
-rmc-law-variable-property-damage-major-conditions = Breaking the law in a major manner includes breaking /dismantling walls or several windows. 10 minutes.
+rmc-law-variable-property-damage-major-conditions = Breaking the law in a major manner includes breaking /dismantling walls or several windows.
 
 rmc-law-variable-insubordination-minor-name = Insubordination - minor
 rmc-law-variable-insubordination-minor-desc = Failing to follow a lawful order from a superior person of rank or position, while under their command. This does not apply to orders made to a person with intent to arrest, which instead would be Resisting Arrest
-rmc-law-variable-insubordination-minor-conditions = Failing to follow an order which is not personally directed. 7.5 minutes.
+rmc-law-variable-insubordination-minor-conditions = Failing to follow an order which is not personally directed.
 
 rmc-law-variable-insubordination-major-name = Insubordination - major
 rmc-law-variable-insubordination-major-desc = Failing to follow a lawful order from a superior person of rank or position, while under their command. This does not apply to orders made to a person with intent to arrest, which instead would be Resisting Arrest
-rmc-law-variable-insubordination-major-conditions = Failing to follow an order personally directed at a person in question using either their name or clearly communicating its meant for them. 15 minutes.
+rmc-law-variable-insubordination-major-conditions = Failing to follow an order personally directed at a person in question using either their name or clearly communicating its meant for them.
 
 rmc-law-variable-interference-minor-name = Interference - minor
 rmc-law-variable-interference-minor-desc = Interfering in a legal arrest being performed.
-rmc-law-variable-interference-minor-conditions = Interfering without ill intent, such as blocking the way or helping someone up. 7.5 minutes.
+rmc-law-variable-interference-minor-conditions = Interfering without ill intent, such as blocking the way or helping someone up.
 
 rmc-law-variable-interference-major-name = Interference - major
 rmc-law-variable-interference-major-desc = Interfering in a legal arrest being performed.
-rmc-law-variable-interference-major-conditions = Interfering with ill intent or in a clear way to hinder the arrest being performed. 15 minutes.
+rmc-law-variable-interference-major-conditions = Interfering with ill intent or in a clear way to hinder the arrest being performed.
 
 rmc-law-variable-listening-devices-minor-name = Illegal use of Listening Devices - minor
 rmc-law-variable-listening-devices-minor-desc = The unauthorized use of listening devices in violation of Standard Operating Procedures.
-rmc-law-variable-listening-devices-minor-conditions = Illegally placing a listening device in a public area such as the gym. 7.5 minutes.
+rmc-law-variable-listening-devices-minor-conditions = Illegally placing a listening device in a public area such as the gym.
 
 rmc-law-variable-listening-devices-major-name = Illegal use of Listening Devices - major
 rmc-law-variable-listening-devices-major-desc = The unauthorized use of listening devices in violation of Standard Operating Procedures.
-rmc-law-variable-listening-devices-major-conditions = Illegally placing a listening device in a secure area, or area with privacy shutters, such as CIC or the CL's office. If the listening device is also tied to a foreign government or terror organisation this is additionally considered Subterfuge. 15 minutes.
+rmc-law-variable-listening-devices-major-conditions = Illegally placing a listening device in a secure area, or area with privacy shutters, such as CIC or the CL's office. If the listening device is also tied to a foreign government or terror organisation this is additionally considered Subterfuge.
 
 rmc-law-variable-resisting-arrest-minor-name = Resisting Arrest - minor
 rmc-law-variable-resisting-arrest-minor-desc = To resist or refuse to comply with a lawful arrest, detainment, search, or NJP.
-rmc-law-variable-resisting-arrest-minor-conditions = Refusing to comply. 5 minutes.
+rmc-law-variable-resisting-arrest-minor-conditions = Refusing to comply.
 
 rmc-law-variable-resisting-arrest-major-name = Resisting Arrest - major
 rmc-law-variable-resisting-arrest-major-desc = To resist or refuse to comply with a lawful arrest, detainment, search, or NJP.
-rmc-law-variable-resisting-arrest-major-conditions = Resisting by fleeing or using force. 10 minutes.
+rmc-law-variable-resisting-arrest-major-conditions = Resisting by fleeing or using force.
 
 rmc-law-variable-aiding-name = Aiding and Abetting
 rmc-law-variable-aiding-desc = Assisting others in committing a crime, directly or indirectly, or encouraging them to commit one. Any person Aiding and Abetting is required to be told the crimes of the person they aided.
 
 rmc-law-variable-confinement-misconduct-minor-name = Disorderly Conduct in Confinement - minor
 rmc-law-variable-confinement-misconduct-minor-desc = To cause disruption in a significant manner while in Brig and under arrest. This can be added on to any charge.
-rmc-law-variable-confinement-misconduct-minor-conditions = Breaking a Minor Law while under arrest or in Prison. 7.5 minutes.
+rmc-law-variable-confinement-misconduct-minor-conditions = Breaking a Minor Law while under arrest or in Prison.
 
 rmc-law-variable-confinement-misconduct-major-name = Disorderly Conduct in Confinement - major
 rmc-law-variable-confinement-misconduct-major-desc = To cause disruption in a significant manner while in Brig and under arrest. This can be added on to any charge.
-rmc-law-variable-confinement-misconduct-major-conditions = Breaking a Major Law while under arrest or in Prison. 15 minutes.
+rmc-law-variable-confinement-misconduct-major-conditions = Breaking a Major Law while under arrest or in Prison.
 
 rmc-law-variable-public-mischief-minor-name = Intentional Public Mischief - minor
 rmc-law-variable-public-mischief-minor-desc = Making a false statement that accuses someone of having committed an offence. Doing anything intended to cause someone to be suspected of having committed an offence that the person has not committed. To divert suspicion from themselves, reporting that an offence has been committed when it has not been committed. False statements relating to investigations are considered False Testimony.
-rmc-law-variable-public-mischief-minor-conditions = Relating to a minor crime. 7.5 minutes.
+rmc-law-variable-public-mischief-minor-conditions = Relating to a minor crime.
 
 rmc-law-variable-public-mischief-major-name = Intentional Public Mischief - major
 rmc-law-variable-public-mischief-major-desc = Making a false statement that accuses someone of having committed an offence. Doing anything intended to cause someone to be suspected of having committed an offence that the person has not committed. To divert suspicion from themselves, reporting that an offence has been committed when it has not been committed. False statements relating to investigations are considered False Testimony.
-rmc-law-variable-public-mischief-major-conditions = Relating to a major crime, or anything above this. 15 minutes.
+rmc-law-variable-public-mischief-major-conditions = Relating to a major crime, or anything above this.
 
 rmc-law-minor-hooliganism-name = Hooliganism
 rmc-law-minor-hooliganism-desc = Behavior that is generally disruptive to the warship and crew that classifies as low-level shenanigans not deserving of more severe punishment. Things such as excessive window knocking, force-feeding other marines or failing to conduct oneself properly during the briefing, such as climbing the Briefing overview. This can escalate to Disorderly Conduct.
@@ -75,22 +75,22 @@ rmc-law-minor-false-testimony-desc = To intentionally provide false information 
 
 rmc-law-minor-trespass-name = Trespassing
 rmc-law-minor-trespass-desc = Unauthorized access of an area which a person does not normally have access to or without command/superior approval.
-rmc-law-minor-trespass-punishment = Escort out of the area and optionally 7.5 minutes.
+rmc-law-minor-trespass-punishment = Escort out of the area. Brig confinement is optional.
 
 rmc-law-minor-procedure-name = Failure to Follow Procedure
 rmc-law-minor-procedure-desc = Failing to follow the regulations found in the Standard Operating Procedure.
-rmc-law-minor-procedure-punishment = 10 Minutes, equipment confiscation where relevant.
+rmc-law-minor-procedure-punishment = Equipment confiscation where relevant.
 
 rmc-law-minor-smoking-name = Smoking in Medical Areas
 rmc-law-minor-smoking-desc = Smoking in areas designated for use by medical personnel, such as the entire medbay and surgical rooms.
 
 rmc-law-minor-intoxication-name = Intoxication
 rmc-law-minor-intoxication-desc = During active duty, to consume alcohol or other substances such as hallucinogenic drugs that cause impairment of speech or mind of some form.
-rmc-law-minor-intoxication-punishment = 10 minutes, extended until the person is no longer impaired.
+rmc-law-minor-intoxication-punishment = Confinement is extended until the person is no longer impaired.
 
 rmc-law-minor-theft-name = Theft
 rmc-law-minor-theft-desc = To take items or property from another person or entity without their express permission. To retain possession of items that have been taken without permission or were knowingly not legal to be provided. A chance to return the item(s) or property should be given first. Removal of vendors from department areas without permission.
-rmc-law-minor-theft-punishment = 10 minutes, and the item(s) returned to the owner.
+rmc-law-minor-theft-punishment = Return the items to their owner.
 
 rmc-law-major-unauthorized-deployment-name = Unauthorised Deployment
 rmc-law-major-unauthorized-deployment-desc = To deploy into the area of operations without permission of the relevant head of department or Commander, whilst still performing assigned duties, such as a doctor performing surgery. Deploying without intent to perform assigned duties is Desertion. - The relevant Head of Department or the Commander where appropriate may retroactively authorize deployment and negate the crime. The Commander may overrule the decision. - The relevant Head of Department or the Commander may designate an alternate person to deploy to replace an unauthorized person as soon as possible.
@@ -100,7 +100,7 @@ rmc-law-major-disorderly-conduct-desc = Directly and intentionally disrupting pr
 
 rmc-law-major-subterfuge-name = Subterfuge
 rmc-law-major-subterfuge-desc = Taking action, or being tied to material that describes planned actions that go against the UNMC. Strong proof is required that the individual is working against the UNMC.
-rmc-law-major-subterfuge-punishment = 15 Minutes, removal of ID, and discharge to planet.
+rmc-law-major-subterfuge-punishment = Removal of ID and discharge to the planet.
 
 rmc-law-major-neglect-name = Neglect of Duty
 rmc-law-major-neglect-desc = Failure to perform one’s role to an acceptable standard. A Commander failing to properly organize and ensure their personnel are given orders. Failing to perform one's duties or follow proper procedure in detriment of one's duties.
@@ -119,7 +119,7 @@ rmc-law-major-abuse-desc = The exercising of power to a malicious extent by MP. 
 
 rmc-law-major-manslaughter-name = Manslaughter
 rmc-law-major-manslaughter-desc = Killing someone without malicious intent. Manslaughter may be applied if someone dies as a result of a fight where the intent was not to kill. This also includes failing to revive someone without a reasonable attempt, not executed by the execution procedure.
-rmc-law-major-manslaughter-punishment = 20 Minutes, and/or demotion.
+rmc-law-major-manslaughter-punishment = Demotion may be applied instead of or in addition to confinement.
 
 rmc-law-major-animal-cruelty-name = Cruelty to Animals
 rmc-law-major-animal-cruelty-desc = Injuring or killing any domestic animal or wild life with malicious intent. Research monkeys used for chemical research, scientific purposes or hostile wildlife are exempt.

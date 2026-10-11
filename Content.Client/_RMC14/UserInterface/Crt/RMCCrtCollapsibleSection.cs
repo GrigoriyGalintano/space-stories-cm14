@@ -7,6 +7,13 @@ namespace Content.Client._RMC14.UserInterface.Crt;
 /// </summary>
 public sealed class RMCCrtCollapsibleSection : BoxContainer
 {
+    public readonly RMCCrtLabel Summary = new()
+    {
+        TextFontSize = 10,
+        HorizontalExpand = true,
+        Margin = new Thickness(18, 0, 4, 4),
+        Visible = false,
+    };
     public readonly BoxContainer Body = new()
     {
         Orientation = LayoutOrientation.Vertical,
@@ -58,6 +65,7 @@ public sealed class RMCCrtCollapsibleSection : BoxContainer
         HorizontalExpand = true;
         _header.Background.ScanlineOpacity = 0.08f;
         AddChild(_header);
+        AddChild(Summary);
         AddChild(Body);
         _header.OnPressed += _ => Expanded = !Expanded;
         UpdateHeader();

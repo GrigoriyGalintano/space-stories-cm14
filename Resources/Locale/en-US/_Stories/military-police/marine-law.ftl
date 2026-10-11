@@ -7,39 +7,39 @@ stories-law-catalogue-precautionary = These charges allow indefinite confinement
 
 stories-law-variable-property-damage-minor-name = Damage to USCM Property - minor
 stories-law-variable-property-damage-minor-desc = Damaging the warship or making any unauthorized modifications to it as outlined in Standard Operating Procedure. Materials for repairs should be taken from maintenance storages.
-stories-law-variable-property-damage-minor-conditions = Breaking a window, damaging a wall, etc. Return the warship to it's exact previous state, or serve 7.5 minutes if not possible.
+stories-law-variable-property-damage-minor-conditions = Breaking a window, damaging a wall, etc. Restore the warship to its previous state. Brig confinement applies if restoration is not possible.
 
 stories-law-variable-property-damage-major-name = Damage to USCM Property - major
 stories-law-variable-property-damage-major-desc = Damaging the warship or making any unauthorized modifications to it as outlined in Standard Operating Procedure. Materials for repairs should be taken from maintenance storages.
-stories-law-variable-property-damage-major-conditions = Breaking the law in a major manner includes breaking /dismantling walls or several windows. 10 minutes.
+stories-law-variable-property-damage-major-conditions = Breaking the law in a major manner includes breaking /dismantling walls or several windows.
 
 stories-law-variable-insubordination-minor-name = Insubordination - minor
 stories-law-variable-insubordination-minor-desc = Failure to follow a lawful order from someone of higher rank or position, or disrespect towards a superior who is not an officer. Disrespect towards a superior officer is a minor crime.
-stories-law-variable-insubordination-minor-conditions = An order not personally directed, or disrespect towards a superior who is not an officer. 7.5 minutes.
+stories-law-variable-insubordination-minor-conditions = An order not personally directed, or disrespect towards a superior who is not an officer.
 
 stories-law-variable-insubordination-major-name = Insubordination - major
 stories-law-variable-insubordination-major-desc = Failure to follow a lawful order from someone of higher rank or position, or disrespect towards a superior who is not an officer. Disrespect towards a superior officer is a minor crime.
-stories-law-variable-insubordination-major-conditions = An order personally directed using the person's name or clearly communicating that it is meant for them. 15 minutes.
+stories-law-variable-insubordination-major-conditions = An order personally directed using the person's name or clearly communicating that it is meant for them.
 
 stories-law-variable-interference-minor-name = Interference - minor
 stories-law-variable-interference-minor-desc = Interfering in a legal arrest being performed.
-stories-law-variable-interference-minor-conditions = Interfering without ill intent, such as blocking the way or helping someone up. 7.5 minutes.
+stories-law-variable-interference-minor-conditions = Interfering without ill intent, such as blocking the way or helping someone up.
 
 stories-law-variable-interference-major-name = Interference - major
 stories-law-variable-interference-major-desc = Interfering in a legal arrest being performed.
-stories-law-variable-interference-major-conditions = Interfering with ill intent or in a clear way to hinder the arrest being performed. 15 minutes.
+stories-law-variable-interference-major-conditions = Interfering with ill intent or in a clear way to hinder the arrest being performed.
 
 stories-law-variable-listening-devices-minor-name = Illegal use of Listening Devices - minor
 stories-law-variable-listening-devices-minor-desc = The unauthorized use of listening devices in violation of Standard Operating Procedures.
-stories-law-variable-listening-devices-minor-conditions = Illegally placing a listening device in a public area such as the gym. 7.5 minutes.
+stories-law-variable-listening-devices-minor-conditions = Illegally placing a listening device in a public area such as the gym.
 
 stories-law-variable-listening-devices-major-name = Illegal use of Listening Devices - major
 stories-law-variable-listening-devices-major-desc = The unauthorized use of listening devices in violation of Standard Operating Procedures.
-stories-law-variable-listening-devices-major-conditions = Illegally placing a listening device in a secure area, or area with privacy shutters, such as CIC or the CL's office. If the listening device is also tied to a foreign government or terror organisation this is additionally considered Subterfuge. 15 minutes.
+stories-law-variable-listening-devices-major-conditions = Illegally placing a listening device in a secure area, or area with privacy shutters, such as CIC or the CL's office. If the listening device is also tied to a foreign government or terror organisation this is additionally considered Subterfuge.
 
 stories-law-minor-procedure-name = Failure to Follow Procedure
 stories-law-minor-procedure-desc = Failing to follow the regulations found in the Standard Operating Procedure.
-stories-law-minor-procedure-punishment = 10 Minutes, equipment confiscation where relevant.
+stories-law-minor-procedure-punishment = Equipment confiscation where relevant.
 
 stories-law-minor-smoking-name = Smoking in Medical Areas
 stories-law-minor-smoking-desc = Smoking in areas designated for use by medical personnel, such as the entire medbay and surgical rooms.
@@ -49,15 +49,15 @@ stories-law-minor-hooliganism-desc = Behavior that is generally disruptive to th
 
 stories-law-minor-trespass-name = Trespassing
 stories-law-minor-trespass-desc = Unauthorized access of an area which a person does not normally have access to or without command/superior approval.
-stories-law-minor-trespass-punishment = Escort out of the area and optionally 7.5 minutes.
+stories-law-minor-trespass-punishment = Escort out of the area. Brig confinement is optional.
 
 stories-law-minor-intoxication-name = Intoxication
 stories-law-minor-intoxication-desc = Consuming alcohol or other substances, such as hallucinogenic drugs, which impair the performance of official duties.
-stories-law-minor-intoxication-punishment = 10 minutes, extended until the person is no longer impaired.
+stories-law-minor-intoxication-punishment = Confinement is extended until the person is no longer impaired.
 
 stories-law-minor-theft-name = Theft
 stories-law-minor-theft-desc = Taking items or property from another person or entity without their express permission, or retaining items taken without permission. Includes removing vendors from departmental areas without permission.
-stories-law-minor-theft-punishment = 10 minutes and return of the items to their owner.
+stories-law-minor-theft-punishment = Return the items to their owner.
 
 stories-law-minor-disrespect-name = Disrespecting a Superior Officer
 stories-law-minor-disrespect-desc = Using offensive language or being directly disrespectful to an officer of higher rank or position.
@@ -70,7 +70,7 @@ stories-law-major-disorderly-conduct-desc = Directly and intentionally disruptin
 
 stories-law-major-subterfuge-name = Subterfuge
 stories-law-major-subterfuge-desc = Taking action or being tied to material describing planned actions against the USCM. Strong evidence is required that the person is working against the USCM. Major illegal listening device charges additionally count as subterfuge when the device is associated with a foreign government or terrorist organization.
-stories-law-major-subterfuge-punishment = 15 minutes, removal of ID and discharge to the planet.
+stories-law-major-subterfuge-punishment = Removal of ID and discharge to the planet.
 
 stories-law-major-neglect-name = Neglect of Duty
 stories-law-major-neglect-desc = Failure to perform one's role to an acceptable standard. Examples include a commander failing to organize personnel and ensure they receive orders, failing to follow proper procedures to the detriment of one's duties, or shipboard crew leaving the ship or their post without permission from the commander or head of department.
@@ -83,7 +83,7 @@ stories-law-major-prevarication-desc = Intentionally ordering an arrest on false
 
 stories-law-major-manslaughter-name = Manslaughter
 stories-law-major-manslaughter-desc = Killing someone without malicious intent. Manslaughter may be applied if someone dies as a result of a fight where the intent was not to kill. This also includes failing to revive someone without a reasonable attempt, not executed by the execution procedure.
-stories-law-major-manslaughter-punishment = 20 Minutes, and/or demotion.
+stories-law-major-manslaughter-punishment = Demotion may be applied instead of or in addition to confinement.
 
 stories-law-major-armed-assault-name = Assault with a Deadly Weapon
 stories-law-major-armed-assault-desc = Threatening or using physical force with ill intent and a deadly weapon, such as a sidearm, blade or rifle, but without attempting to kill the victim.
@@ -120,22 +120,22 @@ stories-law-capital-crimes-against-life-desc = Actions violating the rights of s
 
 stories-law-optional-resisting-arrest-minor-name = Resisting Arrest - minor
 stories-law-optional-resisting-arrest-minor-desc = Resistance to a lawful arrest or search performed by military police.
-stories-law-optional-resisting-arrest-minor-conditions = Refusing to comply with a lawful search or arrest. 5 minutes.
+stories-law-optional-resisting-arrest-minor-conditions = Refusing to comply with a lawful search or arrest.
 
 stories-law-optional-resisting-arrest-major-name = Resisting Arrest - major
 stories-law-optional-resisting-arrest-major-desc = Resistance to a lawful arrest or search performed by military police.
-stories-law-optional-resisting-arrest-major-conditions = Resisting a lawful military police arrest by fleeing or using force. 10 minutes.
+stories-law-optional-resisting-arrest-major-conditions = Resisting a lawful military police arrest by fleeing or using force.
 
 stories-law-optional-aiding-name = Aiding and Abetting
 stories-law-optional-aiding-desc = Assisting others in committing a crime, directly or indirectly, or encouraging them to commit one. Any person Aiding and Abetting is required to be told the crimes of the person they aided.
 
 stories-law-optional-confinement-misconduct-minor-name = Disorderly Conduct in Confinement - minor
 stories-law-optional-confinement-misconduct-minor-desc = To cause disruption in a significant manner while in Brig and under arrest. This can be added on to any charge.
-stories-law-optional-confinement-misconduct-minor-conditions = Breaking a Minor Law while under arrest or in Prison. 7.5 minutes.
+stories-law-optional-confinement-misconduct-minor-conditions = Breaking a Minor Law while under arrest or in Prison.
 
 stories-law-optional-confinement-misconduct-major-name = Disorderly Conduct in Confinement - major
 stories-law-optional-confinement-misconduct-major-desc = To cause disruption in a significant manner while in Brig and under arrest. This can be added on to any charge.
-stories-law-optional-confinement-misconduct-major-conditions = Breaking a Major Law while under arrest or in Prison. 15 minutes.
+stories-law-optional-confinement-misconduct-major-conditions = Breaking a Major Law while under arrest or in Prison.
 
 stories-law-precautionary-insanity-name = Insanity
 stories-law-precautionary-insanity-desc = Declared by the chief medical officer or a synthetic where the offender appears unsound of mind. The subject may be released from this charge once found sound of mind. In the absence of these specialists, the commander or chief military police officer may appoint a medical officer to perform an evaluation. Confirmed suicide or attempted suicide is an exception allowing the charge without evaluation; the subject may appeal or consult any medical personnel.

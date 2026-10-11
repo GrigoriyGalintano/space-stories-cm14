@@ -10,11 +10,17 @@ public sealed partial class RMCIncidentReport
     public const int MaxEntries = 32;
 
     [DataField]
+    public Guid Id = Guid.NewGuid();
+
+    [DataField]
     public EntProtoId<RMCMarineLawCatalogueComponent> LawCatalogue = "RMCMarineLaw";
 
     /// <summary>The issued sentence is retained independently of subsequent changes to the law prototypes.</summary>
     [DataField]
     public RMCMarineSentence? FinalSentence;
+
+    [DataField]
+    public RMCBrigSentence? Detention;
 
     [DataField]
     public string Suspect = string.Empty;
@@ -100,8 +106,10 @@ public sealed partial class RMCIncidentReport
     {
         return new RMCIncidentReport
         {
+            Id = Id,
             LawCatalogue = LawCatalogue,
             FinalSentence = FinalSentence,
+            Detention = Detention,
             Suspect = Suspect,
             RecordId = RecordId,
             RecordStation = RecordStation,
@@ -138,6 +146,13 @@ public partial struct RMCMarineSentence
         return punishment == RMCMarineLawPunishment.Brig
             ? Loc.GetString("rmc-police-minutes", ("minutes", brigTime.ToString("0.##", CultureInfo.InvariantCulture)))
             : Loc.GetString($"rmc-police-punishment-{punishment}");
+    }
+
+    public static string DescribePunishmentField(RMCMarineLawPunishment punishment, float brigTime)
+    {
+        return Loc.GetString(punishment == RMCMarineLawPunishment.Brig
+                ? "rmc-police-brig-time-value" : "rmc-police-punishment-value",
+            ("punishment", DescribePunishment(punishment, brigTime)));
     }
 }
 

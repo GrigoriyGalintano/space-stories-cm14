@@ -301,13 +301,16 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
             var key = (_selected!.Value, i);
             var section = new RMCCrtCollapsibleSection
             {
-                Title = Loc.GetString("rmc-police-history-entry", ("number", i + 1),
-                    ("sentence", Sentence(incident, _prototypes, ComponentFactory))),
+                Title = Loc.GetString("rmc-police-history-entry", ("number", i + 1)),
                 Expanded = _expandedIncidents.TryGetValue(key, out var expanded)
                     ? expanded : i == security.Incidents.Count - 1,
             };
+            section.Summary.Text = Loc.GetString("rmc-police-sentence-value",
+                ("sentence", Sentence(incident, _prototypes, ComponentFactory)));
+            section.Summary.Tone = RMCCrtTone.Warning;
+            section.Summary.Visible = true;
             section.OnToggled += expanded => _expandedIncidents[key] = expanded;
-            IncidentDetails(section.Body, incident, _prototypes, ComponentFactory);
+            IncidentDetails(section.Body, incident, _prototypes, ComponentFactory, includeSentence: false);
             Right.AddChild(section);
         }
     }

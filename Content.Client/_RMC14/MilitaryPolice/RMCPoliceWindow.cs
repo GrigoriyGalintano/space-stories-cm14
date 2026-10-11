@@ -174,14 +174,14 @@ public abstract class RMCPoliceWindow : DefaultWindow
     }
 
     protected static void IncidentDetails(BoxContainer container, RMCIncidentReport report,
-        IPrototypeManager prototypes, IComponentFactory factory)
+        IPrototypeManager prototypes, IComponentFactory factory, bool includeSentence = true)
     {
         container.AddChild(Text(Loc.GetString("rmc-police-suspect-value", ("name", report.Suspect))));
-        container.AddChild(Text(Loc.GetString("rmc-police-sentence-value",
-            ("sentence", Sentence(report, prototypes, factory))), RMCCrtTone.Warning));
-        if (prototypes.TryIndex(report.LawCatalogue, out var catalogue))
-            container.AddChild(Text(Loc.GetString("rmc-police-law-catalogue-value",
-                ("catalogue", catalogue.Name)), RMCCrtTone.Muted));
+        if (includeSentence)
+            container.AddChild(Text(Loc.GetString("rmc-police-sentence-value",
+                ("sentence", Sentence(report, prototypes, factory))), RMCCrtTone.Warning));
+        if (report.Detention is { } detention)
+            container.AddChild(Text(detention.GetDescription(), RMCCrtTone.Warning));
         container.AddChild(new RMCCrtSeparator());
         container.AddChild(Heading("rmc-police-summary"));
         container.AddChild(Text(string.IsNullOrWhiteSpace(report.Summary)
@@ -192,7 +192,7 @@ public abstract class RMCPoliceWindow : DefaultWindow
             if (prototypes.TryIndex(charge.Law, out var law))
             {
                 container.AddChild(Text($"• {Loc.GetString(law.Name)}"));
-                container.AddChild(Text(RMCMarineSentence.DescribePunishment(law.Punishment, law.BrigTime),
+                container.AddChild(Text(RMCMarineSentence.DescribePunishmentField(law.Punishment, law.BrigTime),
                     RMCCrtTone.Warning));
                 if (charge.RelatedCrime is { } related && prototypes.TryIndex(related, out var relatedLaw))
                     container.AddChild(Text(Loc.GetString("rmc-police-related-crime-value",

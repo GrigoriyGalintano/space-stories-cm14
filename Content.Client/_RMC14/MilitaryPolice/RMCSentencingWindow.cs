@@ -36,7 +36,7 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
         {
             if (_state != null && _prototypes.TryIndex(_state.LawCatalogue, out var prototype) &&
                 prototype.TryGetComponent(out RMCMarineLawCatalogueComponent? catalogue, ComponentFactory))
-                _systems.GetEntitySystem<GuidebookSystem>().OpenHelp([catalogue.Guide]);
+                _systems.GetEntitySystem<GuidebookSystem>().OpenHelp(new() { catalogue.Guide });
         });
         guide.HorizontalExpand = false;
         catalogueHeader.AddChild(guide);
@@ -159,7 +159,7 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
             remove.ToolTip = Loc.GetString("rmc-police-remove-charge");
             header.AddChild(remove);
             content.AddChild(header);
-            content.AddChild(Text(RMCMarineSentence.DescribePunishment(law.Punishment, law.BrigTime),
+            content.AddChild(Text(RMCMarineSentence.DescribePunishmentField(law.Punishment, law.BrigTime),
                 RMCCrtTone.Warning));
             if (law.Punishment == RMCMarineLawPunishment.SameAsCrime &&
                 _prototypes.TryIndex(report.LawCatalogue, out var prototype) &&
@@ -173,8 +173,8 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
                 for (var j = 0; j < choices.Length; j++)
                 {
                     var choice = choices[j];
-                    related.AddItem($"{Loc.GetString(choice.Name)} — " +
-                                    RMCMarineSentence.DescribePunishment(choice.Punishment, choice.BrigTime), j);
+                    related.AddItem($"{Loc.GetString(choice.Name)}: " +
+                                    RMCMarineSentence.DescribePunishmentField(choice.Punishment, choice.BrigTime), j);
                     if (charge.RelatedCrime == choice.ID)
                         related.SelectId(j);
                 }
@@ -256,9 +256,12 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
         {
             var section = new RMCCrtCollapsibleSection
             {
-                Title = $"{Loc.GetString(law.Name)} — {RMCMarineSentence.DescribePunishment(law.Punishment, law.BrigTime)}",
+                Title = Loc.GetString(law.Name),
                 Expanded = _expandedLaws.Contains(law.ID),
             };
+            section.Summary.Text = RMCMarineSentence.DescribePunishmentField(law.Punishment, law.BrigTime);
+            section.Summary.Tone = RMCCrtTone.Warning;
+            section.Summary.Visible = true;
             section.OnToggled += expanded =>
             {
                 if (expanded)
@@ -279,7 +282,6 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
     private static void LawDetails(BoxContainer content, RMCMarineLawPrototype law)
     {
         content.AddChild(Text(Loc.GetString(law.Description)));
-        content.AddChild(Text(RMCMarineSentence.DescribePunishment(law.Punishment, law.BrigTime), RMCCrtTone.Warning));
         if (law.SpecialPunishment is { } punishment)
             content.AddChild(Text(Loc.GetString(punishment), RMCCrtTone.Warning));
         if (law.Conditions is { } conditions)

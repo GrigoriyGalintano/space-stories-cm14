@@ -13,6 +13,7 @@ using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
 using Robust.Client.ResourceManagement;
+using Robust.Client.Utility;
 using Robust.Shared.Utility;
 using SixLabors.ImageSharp.PixelFormats;
 using Image = SixLabors.ImageSharp.Image;
@@ -143,6 +144,7 @@ public sealed class MarineSystem : SharedMarineSystem
         var path = new ResPath("/Textures") / specifier.RsiPath.ToRelativePath() / (specifier.RsiState + ".png");
         using var stream = _resources.ContentFileRead(path);
         using var image = Image.Load<Rgba32>(stream);
+        var pixels = image.GetPixelSpan();
         var left = texture.Width;
         var top = texture.Height;
         var right = 0;
@@ -151,7 +153,7 @@ public sealed class MarineSystem : SharedMarineSystem
         {
             for (var x = 0; x < texture.Width; x++)
             {
-                if (image[x, y].A == 0)
+                if (pixels[y * image.Width + x].A == 0)
                     continue;
                 left = Math.Min(left, x);
                 top = Math.Min(top, y);

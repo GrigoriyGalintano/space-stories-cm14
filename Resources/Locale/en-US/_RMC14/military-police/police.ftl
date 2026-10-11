@@ -13,7 +13,7 @@ rmc-police-register-short = Register
 rmc-police-remove-short = Remove
 rmc-police-no-comments = No comments.
 rmc-police-no-incidents = No incidents recorded.
-rmc-police-history-entry = Incident #{$number} — {$sentence}
+rmc-police-history-entry = Incident #{$number}
 rmc-police-incident-charges = Charges
 rmc-police-no-laws = No matching laws.
 rmc-police-save = Save
@@ -124,7 +124,9 @@ rmc-police-hold-id = Hold the person's ID in your active hand.
 rmc-police-hold-evidence = Hold the evidence in your active hand.
 rmc-police-suspect-value = Suspect: {$name}
 rmc-police-scan-suspect = Register suspect from held ID or pulled person
-rmc-police-sentence-value = Sentence: {$sentence}
+rmc-police-sentence-value = Total sentence: {$sentence}
+rmc-police-brig-time-value = Brig time: {$punishment}
+rmc-police-punishment-value = Punishment: {$punishment}
 rmc-police-minutes = {$minutes} minutes
 rmc-police-summary = Incident summary
 rmc-police-edit-summary = Edit summary
@@ -148,7 +150,7 @@ rmc-police-law-category-Precautionary = Precautionary charges
 rmc-police-incident-print =
     INCIDENT REPORT
     Suspect: {$name}
-    Sentence: {$sentence}
+    Total sentence: {$sentence}
     Summary: {$summary}
 rmc-police-mark-insubordination = Report this marine for insubordination
 rmc-police-insubordination-charge = Insubordination.
@@ -157,7 +159,7 @@ rmc-police-insubordination-confirmed = Insubordination reported. Arrest status r
 rmc-police-insubordination-incarcerated = This marine is already incarcerated. Their record has not been changed.
 rmc-police-insubordination-already-wanted = This marine is already marked for arrest for insubordination.
 rmc-police-law-category-Variable = Variable crimes
-rmc-police-punishment-None = Incomplete sentence
+rmc-police-punishment-None = Not determined
 rmc-police-punishment-NJP = Non-judicial punishment (NJP)
 rmc-police-punishment-Permanent = Indefinite confinement
 rmc-police-punishment-Capital = Permanent confinement or execution
@@ -165,7 +167,6 @@ rmc-police-punishment-SameAsCrime = Same punishment as the underlying offence
 rmc-police-sentence-with-njp = {$sentence}; NJP
 rmc-police-select-related-crime = Select the underlying offence...
 rmc-police-related-crime-value = Underlying offence: {$crime}
-rmc-police-law-catalogue-value = Applicable law: {$catalogue}
 rmc-police-law-catalogue-unavailable = Law catalogue unavailable
 rmc-police-open-law-guide = Law guide
 rmc-police-report-wrong-catalogue = This report does not match the applicable law catalogue or contains invalid charges.
