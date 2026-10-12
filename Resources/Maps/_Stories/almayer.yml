@@ -33450,12 +33450,18 @@ entities:
     - type: Transform
       pos: 74.5,113.5
       parent: 1
+    - type: AccessReader
+      access:
+      - - CMAccessCE
   - uid: 161
     components:
     - type: Transform
       rot: -1.5707963267948966 rad
       pos: 70.5,114.5
       parent: 1
+    - type: AccessReader
+      access:
+      - - CMAccessCE
   - uid: 162
     components:
     - type: Transform
@@ -62715,13 +62721,6 @@ entities:
     - type: Transform
       pos: -62.5,109.5
       parent: 1
-  - uid: 22312
-    components:
-    - type: Transform
-      pos: -59.5,123.5
-      parent: 1
-    - type: FaxMachine
-      name: Командующий Офицер
   - uid: 28318
     components:
     - type: Transform
@@ -62730,6 +62729,15 @@ entities:
       parent: 1
     - type: Physics
       bodyType: Dynamic
+- proto: RMCFaxCommandingOfficer
+  entities:
+  - uid: 22312
+    components:
+    - type: Transform
+      pos: -59.5,123.5
+      parent: 1
+    - type: FaxMachine
+      name: Командующий Офицер
 - proto: CMFilingCabinet
   entities:
   - uid: 5200
@@ -63410,6 +63418,12 @@ entities:
     - type: Transform
       pos: 44.27624,91.07771
       parent: 1
+  - uid: 19573
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -68.562294,81.71304
+      parent: 1
 - proto: CMFolderBlackEmpty
   entities:
   - uid: 5317
@@ -63435,6 +63449,16 @@ entities:
     - type: Transform
       pos: -107.5,-1.5
       parent: 1
+  - uid: 22059
+    components:
+    - type: Transform
+      pos: -59.434784,120.704666
+      parent: 1
+  - uid: 22060
+    components:
+    - type: Transform
+      pos: -59.486866,120.485916
+      parent: 1
 - proto: CMFolderRed
   entities:
   - uid: 5320
@@ -63451,6 +63475,11 @@ entities:
     components:
     - type: Transform
       pos: -111.5,-1.5
+      parent: 1
+  - uid: 19677
+    components:
+    - type: Transform
+      pos: -69.32182,87.58238
       parent: 1
 - proto: CMFolderRedEmpty
   entities:
@@ -117174,11 +117203,6 @@ entities:
     - type: Transform
       pos: -71.5,129.5
       parent: 1
-  - uid: 4936
-    components:
-    - type: Transform
-      pos: -66.5,75.5
-      parent: 1
   - uid: 4985
     components:
     - type: Transform
@@ -117194,45 +117218,15 @@ entities:
     - type: Transform
       pos: -65.5,129.5
       parent: 1
-  - uid: 5224
-    components:
-    - type: Transform
-      pos: -70.5,75.5
-      parent: 1
   - uid: 5311
     components:
     - type: Transform
       pos: -70.5,129.5
       parent: 1
-  - uid: 5995
-    components:
-    - type: Transform
-      pos: -67.5,75.5
-      parent: 1
-  - uid: 5996
-    components:
-    - type: Transform
-      pos: -65.5,75.5
-      parent: 1
-  - uid: 6009
-    components:
-    - type: Transform
-      pos: -61.5,75.5
-      parent: 1
-  - uid: 6062
-    components:
-    - type: Transform
-      pos: -62.5,75.5
-      parent: 1
   - uid: 6350
     components:
     - type: Transform
       pos: -61.5,129.5
-      parent: 1
-  - uid: 6358
-    components:
-    - type: Transform
-      pos: -71.5,75.5
       parent: 1
   - uid: 10036
     components:
@@ -117243,11 +117237,6 @@ entities:
     components:
     - type: Transform
       pos: -66.5,129.5
-      parent: 1
-  - uid: 10038
-    components:
-    - type: Transform
-      pos: -69.5,75.5
       parent: 1
   - uid: 10742
     components:
@@ -119234,11 +119223,6 @@ entities:
     - type: Transform
       pos: -65.5,89.5
       parent: 1
-  - uid: 27010
-    components:
-    - type: Transform
-      pos: -63.5,75.5
-      parent: 1
   - uid: 29379
     components:
     - type: Transform
@@ -119276,6 +119260,51 @@ entities:
       parent: 1
 - proto: CMWindowReinforcedAlmayerHull
   entities:
+  - uid: 10038
+    components:
+    - type: Transform
+      pos: -69.5,75.5
+      parent: 1
+  - uid: 6358
+    components:
+    - type: Transform
+      pos: -71.5,75.5
+      parent: 1
+  - uid: 5224
+    components:
+    - type: Transform
+      pos: -70.5,75.5
+      parent: 1
+  - uid: 5995
+    components:
+    - type: Transform
+      pos: -67.5,75.5
+      parent: 1
+  - uid: 4936
+    components:
+    - type: Transform
+      pos: -66.5,75.5
+      parent: 1
+  - uid: 5996
+    components:
+    - type: Transform
+      pos: -65.5,75.5
+      parent: 1
+  - uid: 27010
+    components:
+    - type: Transform
+      pos: -63.5,75.5
+      parent: 1
+  - uid: 6062
+    components:
+    - type: Transform
+      pos: -62.5,75.5
+      parent: 1
+  - uid: 6009
+    components:
+    - type: Transform
+      pos: -61.5,75.5
+      parent: 1
   - uid: 15367
     components:
     - type: Transform
@@ -136224,6 +136253,16 @@ entities:
       parent: 1
 - proto: RMCArmoryLockerRedM54CMK1AP
   entities:
+  - uid: 16222
+    components:
+    - type: Transform
+      pos: -68.5,94.5
+      parent: 1
+  - uid: 16223
+    components:
+    - type: Transform
+      pos: -67.5,94.5
+      parent: 1
   - uid: 16237
     components:
     - type: Transform
@@ -136251,16 +136290,6 @@ entities:
       parent: 1
 - proto: RMCArmoryLockerRedM63Filled
   entities:
-  - uid: 16222
-    components:
-    - type: Transform
-      pos: -68.5,94.5
-      parent: 1
-  - uid: 16223
-    components:
-    - type: Transform
-      pos: -67.5,94.5
-      parent: 1
   - uid: 18166
     components:
     - type: Transform
@@ -172609,16 +172638,6 @@ entities:
     - type: Physics
       canCollide: True
       bodyType: Dynamic
-  - uid: 28999
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -65.5,91.5
-      parent: 1
-    - type: VentCrawlable
-      travelDirection: Lateral
-    - type: AtmosPipeColor
-      color: '#0000FFFF'
   - uid: 29000
     components:
     - type: Transform
@@ -176629,29 +176648,6 @@ entities:
     missingComponents:
     - Damageable
     - DisassembleOnAltVerb
-- proto: RMCIntelFolder
-  entities:
-  - uid: 19573
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -68.562294,81.71304
-      parent: 1
-  - uid: 19677
-    components:
-    - type: Transform
-      pos: -69.32182,87.58238
-      parent: 1
-  - uid: 22059
-    components:
-    - type: Transform
-      pos: -59.434784,120.704666
-      parent: 1
-  - uid: 22060
-    components:
-    - type: Transform
-      pos: -59.486866,120.485916
-      parent: 1
 - proto: RMCJacketWindbreakerBrown
   entities:
   - uid: 23755
