@@ -3,7 +3,7 @@ using Robust.Shared.GameStates;
 namespace Content.Shared._RMC14.MilitaryPolice;
 
 /// <summary>
-/// Status resolved from the worn ID's station record, rather than the wearer's displayed name.
+/// Status resolved from the person's linked record, with the worn ID as a fallback for legacy records.
 /// </summary>
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class RMCPoliceStatusComponent : Component

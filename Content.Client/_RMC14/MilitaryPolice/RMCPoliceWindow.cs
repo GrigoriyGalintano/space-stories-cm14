@@ -16,43 +16,24 @@ public abstract class RMCPoliceWindow : DefaultWindow
 {
     [Dependency] protected readonly IComponentFactory ComponentFactory = default!;
 
-    protected readonly BoxContainer Toolbar = Vertical();
-    protected readonly BoxContainer Left = Vertical();
-    protected readonly BoxContainer Right = Vertical();
-    protected readonly RMCCrtLabel Connection = new() { Tone = RMCCrtTone.Warning, TextFontSize = 10 };
+    protected readonly BoxContainer Toolbar;
+    protected readonly BoxContainer Left;
+    protected readonly BoxContainer Right;
+    protected readonly RMCCrtLabel Connection;
     private DefaultWindow? _editor;
 
     protected RMCPoliceWindow(LocId title)
     {
         Title = Loc.GetString(title);
-        MinSize = new Vector2(720, 440);
+        MinSize = new Vector2(600, 400);
         SetSize = new Vector2(1060, 660);
 
-        var theme = new RMCCrtThemeScope
-        {
-            Palette = RMCCrtPalettePreset.Red,
-            Effects = RMCCrtEffects.HorizontalScanlines,
-            ScanlineOpacity = 0.1f,
-        };
-        Contents.AddChild(theme);
-        var layout = Vertical();
-        layout.Margin = new Thickness(10);
-        theme.AddChild(layout);
-        layout.AddChild(Toolbar);
-        layout.AddChild(Connection);
-        Connection.Visible = false;
-        layout.AddChild(new RMCCrtSeparator { Margin = new Thickness(0, 2) });
-
-        var columns = new RMCCrtTwoColumnContainer { VerticalExpand = true, HorizontalExpand = true };
-        layout.AddChild(columns);
-        columns.AddChild(ScrollPanel(Left));
-        columns.AddChild(new RMCCrtSeparator
-        {
-            Orientation = RMCCrtSeparatorOrientation.Vertical,
-            MinWidth = 1,
-            MaxWidth = 1,
-        });
-        columns.AddChild(ScrollPanel(Right));
+        var layout = new RMCPoliceLayout();
+        Toolbar = layout.Toolbar;
+        Left = layout.Left;
+        Right = layout.Right;
+        Connection = layout.Connection;
+        Contents.AddChild(layout);
         OnClose += () =>
         {
             _editor?.Close();
@@ -73,22 +54,6 @@ public abstract class RMCPoliceWindow : DefaultWindow
         SeparationOverride = 6,
         HorizontalExpand = true,
     };
-
-    private static RMCCrtPanel ScrollPanel(Control content)
-    {
-        var scroll = new ScrollContainer { HScrollEnabled = false, HorizontalExpand = true, VerticalExpand = true };
-        content.Margin = new Thickness(8);
-        scroll.AddChild(content);
-        var panel = new RMCCrtPanel
-        {
-            Variant = RMCCrtPanelVariant.Transparent,
-            BorderThickness = 0,
-            HorizontalExpand = true,
-            VerticalExpand = true,
-        };
-        panel.AddChild(scroll);
-        return panel;
-    }
 
     protected static RMCCrtLabel Heading(LocId key) => new()
     {
@@ -191,18 +156,18 @@ public abstract class RMCPoliceWindow : DefaultWindow
         container.AddChild(Heading("rmc-police-incident-charges"));
         foreach (var charge in report.Charges)
         {
-            if (prototypes.TryIndex(charge.Law, out var law))
+            if (RMCMarineLaw.TryGet(prototypes, factory, charge.Law, out var law))
             {
-                container.AddChild(Text($"• {Loc.GetString(law.Name)}"));
+                container.AddChild(Text($"• {law.Name}"));
                 var details = forCell
-                    ? Text(Loc.GetString(law.Description), RMCCrtTone.Muted)
+                    ? Text(law.Description, RMCCrtTone.Muted)
                     : Text(RMCMarineSentence.DescribePunishmentField(law.Punishment, law.BrigTime), RMCCrtTone.Warning);
                 if (forCell)
                     details.Margin = new Thickness(12, 0, 0, 4);
                 container.AddChild(details);
-                if (charge.RelatedCrime is { } related && prototypes.TryIndex(related, out var relatedLaw))
+                if (charge.RelatedCrime is { } related && RMCMarineLaw.TryGet(prototypes, factory, related, out var relatedLaw))
                     container.AddChild(Text(Loc.GetString("rmc-police-related-crime-value",
-                        ("crime", Loc.GetString(relatedLaw.Name))), RMCCrtTone.Muted));
+                        ("crime", relatedLaw.Name)), RMCCrtTone.Muted));
                 if (law.SpecialPunishment is { } punishment)
                     container.AddChild(Text(Loc.GetString(punishment), RMCCrtTone.Warning));
                 if (law.Conditions is { } conditions)

@@ -23,13 +23,12 @@ public sealed class RMCPoliceConsoleBui(EntityUid owner, Enum uiKey) : BoundUser
             _records = this.CreateWindow<RMCPoliceRecordsWindow>();
             _records.Message += SendMessage;
         }
-        if (State is RMCPoliceBuiState state)
-            UpdateState(state);
+        Refresh();
     }
 
-    protected override void UpdateState(BoundUserInterfaceState state)
+    public void Refresh()
     {
-        if (state is not RMCPoliceBuiState police)
+        if (!EntMan.TryGetComponent(Owner, out RMCPoliceUiComponent? component) || component.Data is not { } police)
             return;
         _records?.Update(police);
         _sentencing?.Update(police);

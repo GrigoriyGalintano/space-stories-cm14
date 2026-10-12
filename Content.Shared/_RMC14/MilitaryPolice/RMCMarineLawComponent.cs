@@ -1,4 +1,3 @@
-using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._RMC14.MilitaryPolice;
@@ -28,18 +27,9 @@ public enum RMCMarineLawPunishment : byte
 /// <summary>
 /// An offence and its sanction from a marine law guidebook. Variable offences have separate severity variants.
 /// </summary>
-[Prototype("rmcMarineLaw")]
-public sealed partial class RMCMarineLawPrototype : IPrototype
+[RegisterComponent]
+public sealed partial class RMCMarineLawComponent : Component
 {
-    [IdDataField]
-    public string ID { get; private set; } = default!;
-
-    [DataField(required: true)]
-    public LocId Name;
-
-    [DataField(required: true)]
-    public LocId Description;
-
     [DataField(required: true)]
     public RMCMarineLawCategory Category;
 

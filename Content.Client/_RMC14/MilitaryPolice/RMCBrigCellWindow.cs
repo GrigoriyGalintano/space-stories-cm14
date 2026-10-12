@@ -17,13 +17,14 @@ public sealed class RMCBrigCellWindow : RMCPoliceWindow
     public event Action<RMCBrigCellMsg>? Message;
     public Func<bool>? CanPardon;
 
-    private RMCBrigCellBuiState? _state;
+    private RMCBrigCellUiData? _state;
     private RMCCrtLabel? _timer;
     private RMCCrtLabel? _served;
     private RMCCrtLabel? _finish;
     private readonly RMCCrtActionButton _doors;
     private bool _canPardon;
     private TimeSpan _nextPermissionRefresh;
+    private float _timerRefreshAccumulator;
 
     public RMCBrigCellWindow() : base("rmc-brig-title")
     {
@@ -32,7 +33,7 @@ public sealed class RMCBrigCellWindow : RMCPoliceWindow
         Toolbar.AddChild(_doors);
     }
 
-    public void Update(RMCBrigCellBuiState state, bool canPardon)
+    public void Update(RMCBrigCellUiData state, bool canPardon)
     {
         _state = state;
         _doors.Text = Loc.GetString(state.DoorsOpen ? "rmc-brig-close-doors" : "rmc-brig-open-doors");
@@ -119,6 +120,10 @@ public sealed class RMCBrigCellWindow : RMCPoliceWindow
     protected override void FrameUpdate(FrameEventArgs args)
     {
         base.FrameUpdate(args);
+        _timerRefreshAccumulator += args.DeltaSeconds;
+        if (_timerRefreshAccumulator < 0.25f)
+            return;
+        _timerRefreshAccumulator = 0;
         UpdateTimer();
         if (_state == null || CanPardon == null || _timing.CurTime < _nextPermissionRefresh)
             return;

@@ -13,7 +13,7 @@ public sealed partial class RMCMarineLawCatalogueComponent : Component
     public ProtoId<GuideEntryPrototype> Guide;
 
     [DataField(required: true)]
-    public List<ProtoId<RMCMarineLawPrototype>> Laws = new();
+    public List<EntProtoId<RMCMarineLawComponent>> Laws = new();
 
     [DataField]
     public float MaxBrigTime = 30;

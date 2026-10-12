@@ -22,13 +22,13 @@ public sealed class RMCBrigCellBui(EntityUid owner, Enum uiKey) : BoundUserInter
         _window = this.CreateWindow<RMCBrigCellWindow>();
         _window.Message += SendMessage;
         _window.CanPardon = CanPardon;
-        if (State is RMCBrigCellBuiState state)
-            UpdateState(state);
+        Refresh();
     }
 
-    protected override void UpdateState(BoundUserInterfaceState state)
+    public void Refresh()
     {
-        if (state is not RMCBrigCellBuiState cell || _window == null)
+        if (_window == null || !EntMan.TryGetComponent(Owner, out RMCBrigCellUiComponent? component) ||
+            component.Data is not { } cell)
             return;
         _window.Update(cell, CanPardon());
     }
@@ -40,7 +40,7 @@ public sealed class RMCBrigCellBui(EntityUid owner, Enum uiKey) : BoundUserInter
             !EntMan.System<AccessReaderSystem>().FindAccessTags(actor).Any(controller.PardonAccess.Contains))
             return false;
 
-        if (State is not RMCBrigCellBuiState state)
+        if (!EntMan.TryGetComponent(Owner, out RMCBrigCellUiComponent? component) || component.Data is not { } state)
             return true;
         var report = state.Reports.FirstOrDefault(view => view.Paper == state.ViewedReport)?.Report;
         if (report?.RecordId is { } id && report.RecordStation is { } station &&

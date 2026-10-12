@@ -11,14 +11,14 @@ public enum RMCPoliceUiKey : byte
 }
 
 [Serializable, NetSerializable]
-public sealed class RMCPoliceBuiState(
+public sealed class RMCPoliceUiData(
     bool connected,
     List<RMCPoliceRecordView> records,
     RMCIncidentReport? report,
     uint revision,
     bool scannerConnected,
     List<RMCIncidentEntry> fingerprints,
-    EntProtoId<RMCMarineLawCatalogueComponent> lawCatalogue) : BoundUserInterfaceState
+    EntProtoId<RMCMarineLawCatalogueComponent> lawCatalogue)
 {
     public readonly bool Connected = connected;
     public readonly List<RMCPoliceRecordView> Records = records;

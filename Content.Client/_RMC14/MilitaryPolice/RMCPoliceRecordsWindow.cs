@@ -25,7 +25,7 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
     private readonly RMCCrtOptionButton _sort = new();
     private readonly BoxContainer _list = Vertical();
     private readonly Dictionary<(uint Record, int Incident), bool> _expandedIncidents = new();
-    private RMCPoliceBuiState? _state;
+    private RMCPoliceUiData? _state;
     private uint? _selected;
     private bool _scanner;
     private EntityUid? _portrait;
@@ -76,7 +76,7 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
         OnClose += DeletePortrait;
     }
 
-    public void Update(RMCPoliceBuiState state)
+    public void Update(RMCPoliceUiData state)
     {
         _state = state;
         Connection.Text = state.Connected ? string.Empty : Loc.GetString("rmc-police-disconnected");
@@ -451,5 +451,13 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
         if (_portrait is { } portrait)
             _entities.DeleteEntity(portrait);
         _portrait = null;
+    }
+
+    [Obsolete("Controls should only be removed from UI tree instead of being disposed")]
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+            DeletePortrait();
+        base.Dispose(disposing);
     }
 }

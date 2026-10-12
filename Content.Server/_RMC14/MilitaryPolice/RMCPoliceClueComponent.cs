@@ -9,6 +9,12 @@ public sealed partial class RMCPoliceClueComponent : Component
     [DataField]
     public RMCPoliceClue Clue = new();
 
+    [DataField]
+    public TimeSpan Lifetime = TimeSpan.FromMinutes(10);
+
+    [DataField]
+    public TimeSpan RevealDuration = TimeSpan.FromMinutes(1);
+
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     public TimeSpan RevealedUntil;
 }

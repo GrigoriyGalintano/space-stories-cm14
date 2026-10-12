@@ -9,6 +9,7 @@ public sealed class RMCPoliceClueVisibilitySystem : EntitySystem
 
     public override void Initialize()
     {
+        base.Initialize();
         SubscribeLocalEvent<RMCPoliceClueVisibilityComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<RMCPoliceClueVisibilityComponent, AfterAutoHandleStateEvent>(OnState);
     }
@@ -17,5 +18,14 @@ public sealed class RMCPoliceClueVisibilitySystem : EntitySystem
         => _sprite.SetVisible(ent.Owner, ent.Comp.Revealed);
 
     private void OnState(Entity<RMCPoliceClueVisibilityComponent> ent, ref AfterAutoHandleStateEvent args)
-        => _sprite.SetVisible(ent.Owner, ent.Comp.Revealed);
+    {
+        try
+        {
+            _sprite.SetVisible(ent.Owner, ent.Comp.Revealed);
+        }
+        catch (Exception exception)
+        {
+            Log.Error($"Error updating forensic clue visibility on {ToPrettyString(ent)}: {exception}");
+        }
+    }
 }

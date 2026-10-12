@@ -12,7 +12,7 @@ public enum RMCBrigCellUiKey : byte
 public sealed record RMCBrigReportView(NetEntity Paper, RMCIncidentReport Report);
 
 [Serializable, NetSerializable]
-public sealed class RMCBrigCellBuiState(
+public sealed class RMCBrigCellUiData(
     string cellName,
     List<RMCBrigReportView> reports,
     NetEntity? viewedReport,
@@ -21,7 +21,7 @@ public sealed class RMCBrigCellBuiState(
     uint revision,
     bool doorsOpen,
     bool canToggleDoors,
-    TimeSpan startedAt = default) : BoundUserInterfaceState
+    TimeSpan startedAt = default)
 {
     public readonly string CellName = cellName;
     public readonly List<RMCBrigReportView> Reports = reports;

@@ -56,14 +56,14 @@ public sealed partial class RMCIncidentReport
         var bypassLimit = false;
         foreach (var charge in Charges)
         {
-            if (!catalogue.Laws.Contains(charge.Law) || !prototypes.TryIndex(charge.Law, out var law))
+            if (!catalogue.Laws.Contains(charge.Law) || !RMCMarineLaw.TryGet(prototypes, factory, charge.Law, out var law))
                 return false;
 
             var punishment = law;
             if (law.Punishment == RMCMarineLawPunishment.SameAsCrime)
             {
                 if (charge.RelatedCrime is not { } related || !catalogue.Laws.Contains(related) ||
-                    !prototypes.TryIndex(related, out punishment) ||
+                    !RMCMarineLaw.TryGet(prototypes, factory, related, out punishment) ||
                     punishment.Punishment == RMCMarineLawPunishment.SameAsCrime)
                     return false;
             }
@@ -160,14 +160,14 @@ public partial struct RMCMarineSentence
 public sealed partial class RMCIncidentCharge
 {
     [DataField(required: true)]
-    public ProtoId<RMCMarineLawPrototype> Law;
+    public EntProtoId<RMCMarineLawComponent> Law;
 
     [DataField]
-    public ProtoId<RMCMarineLawPrototype>? RelatedCrime;
+    public EntProtoId<RMCMarineLawComponent>? RelatedCrime;
 
     public RMCIncidentCharge() { }
 
-    public RMCIncidentCharge(ProtoId<RMCMarineLawPrototype> law, ProtoId<RMCMarineLawPrototype>? relatedCrime = null)
+    public RMCIncidentCharge(EntProtoId<RMCMarineLawComponent> law, EntProtoId<RMCMarineLawComponent>? relatedCrime = null)
     {
         Law = law;
         RelatedCrime = relatedCrime;

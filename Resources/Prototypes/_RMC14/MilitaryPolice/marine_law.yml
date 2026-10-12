@@ -57,354 +57,396 @@
     - rmc-law-precautionary-prisoner-of-war
     - rmc-law-precautionary-discretionary-detainment
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-variable-property-damage-minor
-  category: Variable
-  name: rmc-law-variable-property-damage-minor-name
-  description: rmc-law-variable-property-damage-minor-desc
-  punishment: Brig
-  brigTime: 7.5
-  conditions: rmc-law-variable-property-damage-minor-conditions
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Variable
+    punishment: Brig
+    brigTime: 7.5
+    conditions: rmc-law-variable-property-damage-minor-conditions
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-variable-property-damage-major
-  category: Variable
-  name: rmc-law-variable-property-damage-major-name
-  description: rmc-law-variable-property-damage-major-desc
-  punishment: Brig
-  brigTime: 10
-  conditions: rmc-law-variable-property-damage-major-conditions
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Variable
+    punishment: Brig
+    brigTime: 10
+    conditions: rmc-law-variable-property-damage-major-conditions
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-variable-insubordination-minor
-  category: Variable
-  name: rmc-law-variable-insubordination-minor-name
-  description: rmc-law-variable-insubordination-minor-desc
-  punishment: Brig
-  brigTime: 7.5
-  conditions: rmc-law-variable-insubordination-minor-conditions
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Variable
+    punishment: Brig
+    brigTime: 7.5
+    conditions: rmc-law-variable-insubordination-minor-conditions
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-variable-insubordination-major
-  category: Variable
-  name: rmc-law-variable-insubordination-major-name
-  description: rmc-law-variable-insubordination-major-desc
-  punishment: Brig
-  brigTime: 15
-  conditions: rmc-law-variable-insubordination-major-conditions
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Variable
+    punishment: Brig
+    brigTime: 15
+    conditions: rmc-law-variable-insubordination-major-conditions
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-variable-interference-minor
-  category: Variable
-  name: rmc-law-variable-interference-minor-name
-  description: rmc-law-variable-interference-minor-desc
-  punishment: Brig
-  brigTime: 7.5
-  conditions: rmc-law-variable-interference-minor-conditions
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Variable
+    punishment: Brig
+    brigTime: 7.5
+    conditions: rmc-law-variable-interference-minor-conditions
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-variable-interference-major
-  category: Variable
-  name: rmc-law-variable-interference-major-name
-  description: rmc-law-variable-interference-major-desc
-  punishment: Brig
-  brigTime: 15
-  conditions: rmc-law-variable-interference-major-conditions
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Variable
+    punishment: Brig
+    brigTime: 15
+    conditions: rmc-law-variable-interference-major-conditions
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-variable-listening-devices-minor
-  category: Variable
-  name: rmc-law-variable-listening-devices-minor-name
-  description: rmc-law-variable-listening-devices-minor-desc
-  punishment: Brig
-  brigTime: 7.5
-  conditions: rmc-law-variable-listening-devices-minor-conditions
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Variable
+    punishment: Brig
+    brigTime: 7.5
+    conditions: rmc-law-variable-listening-devices-minor-conditions
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-variable-listening-devices-major
-  category: Variable
-  name: rmc-law-variable-listening-devices-major-name
-  description: rmc-law-variable-listening-devices-major-desc
-  punishment: Brig
-  brigTime: 15
-  conditions: rmc-law-variable-listening-devices-major-conditions
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Variable
+    punishment: Brig
+    brigTime: 15
+    conditions: rmc-law-variable-listening-devices-major-conditions
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-variable-resisting-arrest-minor
-  category: Variable
-  name: rmc-law-variable-resisting-arrest-minor-name
-  description: rmc-law-variable-resisting-arrest-minor-desc
-  punishment: Brig
-  brigTime: 5
-  conditions: rmc-law-variable-resisting-arrest-minor-conditions
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Variable
+    punishment: Brig
+    brigTime: 5
+    conditions: rmc-law-variable-resisting-arrest-minor-conditions
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-variable-resisting-arrest-major
-  category: Variable
-  name: rmc-law-variable-resisting-arrest-major-name
-  description: rmc-law-variable-resisting-arrest-major-desc
-  punishment: Brig
-  brigTime: 10
-  conditions: rmc-law-variable-resisting-arrest-major-conditions
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Variable
+    punishment: Brig
+    brigTime: 10
+    conditions: rmc-law-variable-resisting-arrest-major-conditions
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-variable-aiding
-  category: Variable
-  name: rmc-law-variable-aiding-name
-  description: rmc-law-variable-aiding-desc
-  punishment: SameAsCrime
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Variable
+    punishment: SameAsCrime
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-variable-confinement-misconduct-minor
-  category: Variable
-  name: rmc-law-variable-confinement-misconduct-minor-name
-  description: rmc-law-variable-confinement-misconduct-minor-desc
-  punishment: Brig
-  brigTime: 7.5
-  extendsSentence: true
-  conditions: rmc-law-variable-confinement-misconduct-minor-conditions
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Variable
+    punishment: Brig
+    brigTime: 7.5
+    extendsSentence: true
+    conditions: rmc-law-variable-confinement-misconduct-minor-conditions
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-variable-confinement-misconduct-major
-  category: Variable
-  name: rmc-law-variable-confinement-misconduct-major-name
-  description: rmc-law-variable-confinement-misconduct-major-desc
-  punishment: Brig
-  brigTime: 15
-  extendsSentence: true
-  conditions: rmc-law-variable-confinement-misconduct-major-conditions
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Variable
+    punishment: Brig
+    brigTime: 15
+    extendsSentence: true
+    conditions: rmc-law-variable-confinement-misconduct-major-conditions
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-variable-public-mischief-minor
-  category: Variable
-  name: rmc-law-variable-public-mischief-minor-name
-  description: rmc-law-variable-public-mischief-minor-desc
-  punishment: Brig
-  brigTime: 7.5
-  conditions: rmc-law-variable-public-mischief-minor-conditions
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Variable
+    punishment: Brig
+    brigTime: 7.5
+    conditions: rmc-law-variable-public-mischief-minor-conditions
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-variable-public-mischief-major
-  category: Variable
-  name: rmc-law-variable-public-mischief-major-name
-  description: rmc-law-variable-public-mischief-major-desc
-  punishment: Brig
-  brigTime: 15
-  conditions: rmc-law-variable-public-mischief-major-conditions
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Variable
+    punishment: Brig
+    brigTime: 15
+    conditions: rmc-law-variable-public-mischief-major-conditions
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-minor-hooliganism
-  category: Minor
-  name: rmc-law-minor-hooliganism-name
-  description: rmc-law-minor-hooliganism-desc
-  punishment: NJP
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Minor
+    punishment: NJP
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-minor-disrespect
-  category: Minor
-  name: rmc-law-minor-disrespect-name
-  description: rmc-law-minor-disrespect-desc
-  punishment: NJP
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Minor
+    punishment: NJP
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-minor-false-testimony
-  category: Minor
-  name: rmc-law-minor-false-testimony-name
-  description: rmc-law-minor-false-testimony-desc
-  punishment: Brig
-  brigTime: 5
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Minor
+    punishment: Brig
+    brigTime: 5
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-minor-trespass
-  category: Minor
-  name: rmc-law-minor-trespass-name
-  description: rmc-law-minor-trespass-desc
-  punishment: Brig
-  brigTime: 7.5
-  specialPunishment: rmc-law-minor-trespass-punishment
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Minor
+    punishment: Brig
+    brigTime: 7.5
+    specialPunishment: rmc-law-minor-trespass-punishment
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-minor-procedure
-  category: Minor
-  name: rmc-law-minor-procedure-name
-  description: rmc-law-minor-procedure-desc
-  punishment: Brig
-  brigTime: 10
-  specialPunishment: rmc-law-minor-procedure-punishment
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Minor
+    punishment: Brig
+    brigTime: 10
+    specialPunishment: rmc-law-minor-procedure-punishment
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-minor-smoking
-  category: Minor
-  name: rmc-law-minor-smoking-name
-  description: rmc-law-minor-smoking-desc
-  punishment: Brig
-  brigTime: 10
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Minor
+    punishment: Brig
+    brigTime: 10
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-minor-intoxication
-  category: Minor
-  name: rmc-law-minor-intoxication-name
-  description: rmc-law-minor-intoxication-desc
-  punishment: Brig
-  brigTime: 10
-  specialPunishment: rmc-law-minor-intoxication-punishment
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Minor
+    punishment: Brig
+    brigTime: 10
+    specialPunishment: rmc-law-minor-intoxication-punishment
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-minor-theft
-  category: Minor
-  name: rmc-law-minor-theft-name
-  description: rmc-law-minor-theft-desc
-  punishment: Brig
-  brigTime: 10
-  specialPunishment: rmc-law-minor-theft-punishment
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Minor
+    punishment: Brig
+    brigTime: 10
+    specialPunishment: rmc-law-minor-theft-punishment
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-major-unauthorized-deployment
-  category: Major
-  name: rmc-law-major-unauthorized-deployment-name
-  description: rmc-law-major-unauthorized-deployment-desc
-  punishment: Brig
-  brigTime: 10
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Major
+    punishment: Brig
+    brigTime: 10
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-major-disorderly-conduct
-  category: Major
-  name: rmc-law-major-disorderly-conduct-name
-  description: rmc-law-major-disorderly-conduct-desc
-  punishment: Brig
-  brigTime: 10
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Major
+    punishment: Brig
+    brigTime: 10
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-major-subterfuge
-  category: Major
-  name: rmc-law-major-subterfuge-name
-  description: rmc-law-major-subterfuge-desc
-  punishment: Brig
-  brigTime: 15
-  specialPunishment: rmc-law-major-subterfuge-punishment
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Major
+    punishment: Brig
+    brigTime: 15
+    specialPunishment: rmc-law-major-subterfuge-punishment
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-major-neglect
-  category: Major
-  name: rmc-law-major-neglect-name
-  description: rmc-law-major-neglect-desc
-  punishment: Brig
-  brigTime: 15
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Major
+    punishment: Brig
+    brigTime: 15
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-major-assault
-  category: Major
-  name: rmc-law-major-assault-name
-  description: rmc-law-major-assault-desc
-  punishment: Brig
-  brigTime: 15
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Major
+    punishment: Brig
+    brigTime: 15
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-major-prevarication
-  category: Major
-  name: rmc-law-major-prevarication-name
-  description: rmc-law-major-prevarication-desc
-  punishment: Brig
-  brigTime: 20
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Major
+    punishment: Brig
+    brigTime: 20
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-major-illegal-confinement
-  category: Major
-  name: rmc-law-major-illegal-confinement-name
-  description: rmc-law-major-illegal-confinement-desc
-  punishment: Brig
-  brigTime: 20
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Major
+    punishment: Brig
+    brigTime: 20
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-major-abuse
-  category: Major
-  name: rmc-law-major-abuse-name
-  description: rmc-law-major-abuse-desc
-  punishment: Brig
-  brigTime: 20
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Major
+    punishment: Brig
+    brigTime: 20
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-major-manslaughter
-  category: Major
-  name: rmc-law-major-manslaughter-name
-  description: rmc-law-major-manslaughter-desc
-  punishment: Brig
-  brigTime: 20
-  specialPunishment: rmc-law-major-manslaughter-punishment
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Major
+    punishment: Brig
+    brigTime: 20
+    specialPunishment: rmc-law-major-manslaughter-punishment
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-major-animal-cruelty
-  category: Major
-  name: rmc-law-major-animal-cruelty-name
-  description: rmc-law-major-animal-cruelty-desc
-  punishment: Brig
-  brigTime: 30
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Major
+    punishment: Brig
+    brigTime: 30
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-capital-jailbreak
-  category: Capital
-  name: rmc-law-capital-jailbreak-name
-  description: rmc-law-capital-jailbreak-desc
-  punishment: Capital
-  specialPunishment: rmc-law-catalogue-capital
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Capital
+    punishment: Capital
+    specialPunishment: rmc-law-catalogue-capital
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-capital-attempted-murder
-  category: Capital
-  name: rmc-law-capital-attempted-murder-name
-  description: rmc-law-capital-attempted-murder-desc
-  punishment: Capital
-  specialPunishment: rmc-law-catalogue-capital
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Capital
+    punishment: Capital
+    specialPunishment: rmc-law-catalogue-capital
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-capital-murder
-  category: Capital
-  name: rmc-law-capital-murder-name
-  description: rmc-law-capital-murder-desc
-  punishment: Capital
-  specialPunishment: rmc-law-catalogue-capital
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Capital
+    punishment: Capital
+    specialPunishment: rmc-law-catalogue-capital
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-capital-sedition
-  category: Capital
-  name: rmc-law-capital-sedition-name
-  description: rmc-law-capital-sedition-desc
-  punishment: Capital
-  specialPunishment: rmc-law-catalogue-capital
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Capital
+    punishment: Capital
+    specialPunishment: rmc-law-catalogue-capital
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-capital-desertion
-  category: Capital
-  name: rmc-law-capital-desertion-name
-  description: rmc-law-capital-desertion-desc
-  punishment: Capital
-  specialPunishment: rmc-law-catalogue-capital
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Capital
+    punishment: Capital
+    specialPunishment: rmc-law-catalogue-capital
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-capital-crimes-against-life
-  category: Capital
-  name: rmc-law-capital-crimes-against-life-name
-  description: rmc-law-capital-crimes-against-life-desc
-  punishment: Capital
-  specialPunishment: rmc-law-catalogue-capital
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Capital
+    punishment: Capital
+    specialPunishment: rmc-law-catalogue-capital
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-precautionary-insanity
-  category: Precautionary
-  name: rmc-law-precautionary-insanity-name
-  description: rmc-law-precautionary-insanity-desc
-  punishment: Permanent
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Precautionary
+    punishment: Permanent
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-precautionary-prisoner-of-war
-  category: Precautionary
-  name: rmc-law-precautionary-prisoner-of-war-name
-  description: rmc-law-precautionary-prisoner-of-war-desc
-  punishment: Permanent
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Precautionary
+    punishment: Permanent
 
-- type: rmcMarineLaw
+- type: entity
   id: rmc-law-precautionary-discretionary-detainment
-  category: Precautionary
-  name: rmc-law-precautionary-discretionary-detainment-name
-  description: rmc-law-precautionary-discretionary-detainment-desc
-  punishment: Permanent
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Precautionary
+    punishment: Permanent

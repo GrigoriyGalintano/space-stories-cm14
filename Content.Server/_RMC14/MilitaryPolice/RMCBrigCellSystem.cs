@@ -12,18 +12,22 @@ using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
 using Content.Shared.Destructible;
 using Content.Shared.DeviceLinking;
+using Content.Shared.DeviceLinking.Events;
 using Content.Shared.Doors.Components;
 using Content.Shared.Doors;
 using Content.Shared.Ghost;
+using Content.Shared.GameTicking;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Paper;
 using Content.Shared.Popups;
+using Content.Shared.Power;
 using Content.Shared.TextScreen;
 using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
 using Robust.Shared.Containers;
+using Robust.Shared.GameStates;
 using Robust.Shared.Timing;
 
 namespace Content.Server._RMC14.MilitaryPolice;
@@ -50,8 +54,12 @@ public sealed class RMCBrigCellSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
 
+    private readonly HashSet<EntityUid> _refreshQueue = new();
+
     public override void Initialize()
     {
+        base.Initialize();
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
         SubscribeLocalEvent<RMCBrigCellComponent, ComponentInit>(OnInit);
         SubscribeLocalEvent<RMCBrigCellComponent, ComponentShutdown>(OnShutdown);
         SubscribeLocalEvent<RMCBrigCellComponent, EntityUnpausedEvent>(OnUnpaused);
@@ -61,11 +69,36 @@ public sealed class RMCBrigCellSystem : EntitySystem
         SubscribeLocalEvent<RMCBrigCellComponent, ActivatableUIOpenAttemptEvent>(OnOpenAttempt);
         SubscribeLocalEvent<RMCBrigCellComponent, BoundUserInterfaceMessageAttempt>(OnMessageAttempt);
         SubscribeLocalEvent<RMCBrigCellComponent, BreakageEventArgs>(OnBreakage);
+        SubscribeLocalEvent<RMCBrigCellComponent, PowerChangedEvent>(OnPowerChanged);
+        SubscribeLocalEvent<RMCBrigCellComponent, NewLinkEvent>(OnNewLink);
+        SubscribeLocalEvent<RMCBrigCellComponent, PortDisconnectedEvent>(OnPortDisconnected);
+        SubscribeLocalEvent<DeviceLinkSinkComponent, DoorStateChangedEvent>(OnDoorStateChanged);
+        SubscribeLocalEvent<RMCBrigCellUiComponent, ComponentGetStateAttemptEvent>(OnUiGetStateAttempt);
         Subs.BuiEvents<RMCBrigCellComponent>(RMCBrigCellUiKey.Key, subs =>
         {
             subs.Event<BoundUIOpenedEvent>(OnOpened);
             subs.Event<RMCBrigCellMsg>(OnMessage);
         });
+    }
+
+    private void OnRoundRestartCleanup(RoundRestartCleanupEvent args) => _refreshQueue.Clear();
+
+    private void OnPowerChanged(Entity<RMCBrigCellComponent> ent, ref PowerChangedEvent args)
+        => _refreshQueue.Add(ent);
+
+    private void OnNewLink(Entity<RMCBrigCellComponent> ent, ref NewLinkEvent args)
+        => _refreshQueue.Add(ent);
+
+    private void OnPortDisconnected(Entity<RMCBrigCellComponent> ent, ref PortDisconnectedEvent args)
+        => _refreshQueue.Add(ent);
+
+    private void OnDoorStateChanged(Entity<DeviceLinkSinkComponent> ent, ref DoorStateChangedEvent args)
+    {
+        foreach (var source in ent.Comp.LinkedSources)
+        {
+            if (HasComp<RMCBrigCellComponent>(source))
+                _refreshQueue.Add(source);
+        }
     }
 
     private void OnInit(Entity<RMCBrigCellComponent> ent, ref ComponentInit args)
@@ -76,7 +109,11 @@ public sealed class RMCBrigCellSystem : EntitySystem
         Refresh(ent);
     }
 
-    private void OnShutdown(Entity<RMCBrigCellComponent> ent, ref ComponentShutdown args) => Pause(ent);
+    private void OnShutdown(Entity<RMCBrigCellComponent> ent, ref ComponentShutdown args)
+    {
+        _refreshQueue.Remove(ent);
+        Pause(ent);
+    }
 
     private void OnUnpaused(Entity<RMCBrigCellComponent> ent, ref EntityUnpausedEvent args)
     {
@@ -85,7 +122,11 @@ public sealed class RMCBrigCellSystem : EntitySystem
         Refresh(ent);
     }
 
-    private void OnBreakage(Entity<RMCBrigCellComponent> ent, ref BreakageEventArgs args) => _ui.CloseUis(ent.Owner);
+    private void OnBreakage(Entity<RMCBrigCellComponent> ent, ref BreakageEventArgs args)
+    {
+        _ui.CloseUis(ent.Owner);
+        _refreshQueue.Add(ent);
+    }
 
     private bool Operable(EntityUid uid)
     {
@@ -114,6 +155,13 @@ public sealed class RMCBrigCellSystem : EntitySystem
     }
 
     private void OnOpened(Entity<RMCBrigCellComponent> ent, ref BoundUIOpenedEvent args) => Refresh(ent);
+
+    private void OnUiGetStateAttempt(Entity<RMCBrigCellUiComponent> ent, ref ComponentGetStateAttemptEvent args)
+    {
+        if (args.Player?.AttachedEntity is not { } actor || !_ui.IsUiOpen(ent.Owner, RMCBrigCellUiKey.Key, actor) ||
+            !CanUse(ent.Owner, actor))
+            args.Cancelled = true;
+    }
 
     private void OnInteractUsing(Entity<RMCBrigCellComponent> ent, ref InteractUsingEvent args)
     {
@@ -228,6 +276,8 @@ public sealed class RMCBrigCellSystem : EntitySystem
                 ent.Comp.FinishAt = report.FinalSentence!.Value.Punishment == RMCMarineLawPunishment.Brig
                     ? _timing.CurTime + TimeSpan.FromMinutes(report.FinalSentence.Value.BrigTime) - detention.TimeServed
                     : null;
+                if (ent.Comp.FinishAt != null)
+                    EnsureComp<RMCActiveBrigCellComponent>(ent);
                 detention.Status = RMCBrigSentenceStatus.Active;
                 detention.StartedAt ??= _clock.GetWorldTime().TimeOfDay;
                 report.Detention = detention;
@@ -328,6 +378,7 @@ public sealed class RMCBrigCellSystem : EntitySystem
         }
         ent.Comp.ActiveReport = null;
         ent.Comp.FinishAt = null;
+        RemComp<RMCActiveBrigCellComponent>(ent);
     }
 
     private void Finish(Entity<RMCBrigCellComponent> ent, Entity<RMCIncidentReportPaperComponent> paper,
@@ -340,6 +391,7 @@ public sealed class RMCBrigCellSystem : EntitySystem
         report.Detention = detention;
         ent.Comp.ActiveReport = null;
         ent.Comp.FinishAt = null;
+        RemComp<RMCActiveBrigCellComponent>(ent);
         _police.SynchronizeIncidentReport(paper);
         Announce(ent, "rmc-brig-announcement-served", report);
         Changed(ent);
@@ -372,9 +424,11 @@ public sealed class RMCBrigCellSystem : EntitySystem
                     reports.Add(new RMCBrigReportView(GetNetEntity(uid), report.Clone()));
             }
         }
-        _ui.SetUiState(ent.Owner, RMCBrigCellUiKey.Key, new RMCBrigCellBuiState(CellName(ent), reports,
+        var data = EnsureComp<RMCBrigCellUiComponent>(ent);
+        data.Data = new RMCBrigCellUiData(CellName(ent), reports,
             GetNetEntity(ent.Comp.ViewedReport), GetNetEntity(ent.Comp.ActiveReport), ent.Comp.FinishAt,
-            ent.Comp.Revision, doors.DoorsOpen, doors.CanToggleDoors, ent.Comp.StartedAt));
+            ent.Comp.Revision, doors.DoorsOpen, doors.CanToggleDoors, ent.Comp.StartedAt);
+        Dirty(ent.Owner, data);
         UpdateScreen(ent);
     }
 
@@ -433,22 +487,20 @@ public sealed class RMCBrigCellSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
-        var query = EntityQueryEnumerator<RMCBrigCellComponent>();
-        while (query.MoveNext(out var uid, out var cell))
+        base.Update(frameTime);
+        foreach (var uid in _refreshQueue)
         {
-            if (IsPaused(uid))
+            if (TerminatingOrDeleted(uid) || !TryComp<RMCBrigCellComponent>(uid, out var cell))
                 continue;
-            var powered = Operable(uid);
-            if (cell.Powered != powered)
-            {
-                cell.Powered = powered;
-                Refresh((uid, cell));
-            }
-            var doors = GetLinkedDoors(uid);
-            if (cell.DoorsOpen != doors.DoorsOpen || cell.CanToggleDoors != doors.CanToggleDoors)
-                Changed((uid, cell));
+            Changed((uid, cell));
+        }
+        _refreshQueue.Clear();
+
+        var query = EntityQueryEnumerator<RMCActiveBrigCellComponent, RMCBrigCellComponent>();
+        while (query.MoveNext(out var uid, out _, out var cell))
+        {
             // As in CM, the deadline keeps running during a power outage, and is processed on restoration.
-            if (!powered || cell.FinishAt is not { } finishAt || finishAt > _timing.CurTime)
+            if (cell.FinishAt is not { } finishAt || finishAt > _timing.CurTime || !Operable(uid))
                 continue;
             if (TryReport(cell.ActiveReport, out var paper, out var report))
                 Finish((uid, cell), paper, report);

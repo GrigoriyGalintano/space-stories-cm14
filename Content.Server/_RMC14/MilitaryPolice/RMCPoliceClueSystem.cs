@@ -10,12 +10,14 @@ using Content.Shared._RMC14.MilitaryPolice;
 using Content.Shared._RMC14.Power;
 using Content.Shared._RMC14.Vendors;
 using Content.Shared.Chemistry;
+using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Damage;
 using Content.Shared.Destructible;
 using Content.Shared.DoAfter;
 using Content.Shared.Doors.Components;
 using Content.Shared.Examine;
 using Content.Shared.Forensics.Components;
+using Content.Shared.GameTicking;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Humanoid;
 using Content.Shared.Interaction;
@@ -25,6 +27,7 @@ using Content.Shared.Inventory.VirtualItem;
 using Content.Shared.Popups;
 using Content.Shared.Wires;
 using Robust.Shared.Map;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
 namespace Content.Server._RMC14.MilitaryPolice;
@@ -34,8 +37,8 @@ namespace Content.Server._RMC14.MilitaryPolice;
 /// </summary>
 public sealed class RMCPoliceClueSystem : EntitySystem
 {
-    private const int MaxClues = 256;
-    private static readonly TimeSpan ClueLifetime = TimeSpan.FromMinutes(10);
+    private static readonly EntProtoId<RMCPoliceClueComponent> CluePrototype = "RMCPoliceClue";
+    private static readonly ProtoId<ReagentPrototype> ForensicSpray = "RMCForensicSpray";
 
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
@@ -55,6 +58,8 @@ public sealed class RMCPoliceClueSystem : EntitySystem
 
     public override void Initialize()
     {
+        base.Initialize();
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
         SubscribeLocalEvent<RMCClueScannerComponent, UseInHandEvent>(OnUse);
         SubscribeLocalEvent<RMCClueScannerComponent, AfterInteractEvent>(OnAfterInteract);
         SubscribeLocalEvent<RMCClueScannerComponent, RMCPoliceScanDoAfterEvent>(OnScanFinished);
@@ -75,12 +80,18 @@ public sealed class RMCPoliceClueSystem : EntitySystem
         SubscribeLocalEvent<RMCApcComponent, RMCApcElectronicsRemovedEvent>(OnApcElectronicsRemoved);
     }
 
+    private void OnRoundRestartCleanup(RoundRestartCleanupEvent args)
+    {
+        _nextUpdate = TimeSpan.Zero;
+        _nearbyClues.Clear();
+        _tileEntities.Clear();
+    }
+
     private void OnUse(Entity<RMCClueScannerComponent> ent, ref UseInHandEvent args)
     {
         if (args.Handled)
             return;
-        args.Handled = true;
-        StartScan(ent, args.User);
+        args.Handled = StartScan(ent, args.User);
     }
 
     private void OnAfterInteract(Entity<RMCClueScannerComponent> ent, ref AfterInteractEvent args)
@@ -88,24 +99,23 @@ public sealed class RMCPoliceClueSystem : EntitySystem
         if (args.Handled || !args.CanReach || args.Target is not { } target ||
             !HasComp<RMCPoliceClueComponent>(target) && !HasComp<ForensicsComponent>(target))
             return;
-        args.Handled = true;
-        StartScan(ent, args.User, target);
+        args.Handled = StartScan(ent, args.User, target);
     }
 
-    private void StartScan(Entity<RMCClueScannerComponent> ent, EntityUid user, EntityUid? target = null)
+    private bool StartScan(Entity<RMCClueScannerComponent> ent, EntityUid user, EntityUid? target = null)
     {
         if (ent.Comp.Scanning || !_hands.IsHolding(user, ent) ||
             target is { } entity && HasComp<VirtualItemComponent>(entity))
-            return;
-        if (!_skills.HasSkill(user, "RMCSkillPolice", 2))
+            return false;
+        if (!_skills.HasSkill(user, ent.Comp.Skill, ent.Comp.RequiredSkill))
         {
             _popup.PopupEntity(Loc.GetString("rmc-police-scanner-unskilled"), ent, user);
-            return;
+            return false;
         }
-        if (ent.Comp.Clues.Count >= MaxClues)
+        if (ent.Comp.Clues.Count >= ent.Comp.MaxClues)
         {
             _popup.PopupEntity(Loc.GetString("rmc-police-scanner-full"), ent, user);
-            return;
+            return false;
         }
         var args = new DoAfterArgs(EntityManager, user, ent.Comp.ScanDuration,
             new RMCPoliceScanDoAfterEvent(), ent, target, ent)
@@ -115,10 +125,11 @@ public sealed class RMCPoliceClueSystem : EntitySystem
             NeedHand = true,
         };
         if (!_doAfter.TryStartDoAfter(args))
-            return;
+            return false;
         ent.Comp.Scanning = true;
         UpdateAppearance(ent);
         _popup.PopupEntity(Loc.GetString("rmc-police-scanner-start"), ent, user);
+        return true;
     }
 
     private void OnScanFinished(Entity<RMCClueScannerComponent> ent, ref RMCPoliceScanDoAfterEvent args)
@@ -128,7 +139,7 @@ public sealed class RMCPoliceClueSystem : EntitySystem
         args.Handled = true;
         ent.Comp.Scanning = false;
         if (args.Cancelled || !_hands.IsHolding(args.User, ent) ||
-            !_skills.HasSkill(args.User, "RMCSkillPolice", 2))
+            !_skills.HasSkill(args.User, ent.Comp.Skill, ent.Comp.RequiredSkill))
         {
             UpdateAppearance(ent);
             return;
@@ -163,7 +174,7 @@ public sealed class RMCPoliceClueSystem : EntitySystem
     private int CollectTarget(Entity<RMCClueScannerComponent> scanner, EntityUid target)
     {
         if (EntityManager.IsQueuedForDeletion(target) || HasComp<VirtualItemComponent>(target) ||
-            scanner.Comp.Clues.Count >= MaxClues)
+            scanner.Comp.Clues.Count >= scanner.Comp.MaxClues)
             return 0;
         if (TryComp<RMCPoliceClueComponent>(target, out var clue))
         {
@@ -180,7 +191,7 @@ public sealed class RMCPoliceClueSystem : EntitySystem
         var found = 0;
         foreach (var fingerprint in forensics.Fingerprints.Order())
         {
-            if (scanner.Comp.Clues.Count >= MaxClues)
+            if (scanner.Comp.Clues.Count >= scanner.Comp.MaxClues)
                 break;
             if (scanner.Comp.Clues.Any(stored => stored.Source == source && stored.Fingerprint == fingerprint))
                 continue;
@@ -241,15 +252,16 @@ public sealed class RMCPoliceClueSystem : EntitySystem
             Name = Name(user),
             Fingerprint = CompOrNull<FingerprintComponent>(user)?.Fingerprint ?? string.Empty,
             Description = Loc.GetString(description),
-            ExpiresAt = _timing.CurTime + ClueLifetime,
         };
         if (_inventory.TryGetSlotEntity(user, "id", out var worn) && _id.TryGetIdCard(worn.Value, out var card))
             clue.Rank = card.Comp.LocalizedJobTitle ?? string.Empty;
         if (CompOrNull<SquadMemberComponent>(user)?.Squad is { } squad)
             clue.Squad = Name(squad);
 
-        var uid = Spawn("RMCPoliceClue", Transform(user).Coordinates);
-        Comp<RMCPoliceClueComponent>(uid).Clue = clue;
+        var uid = Spawn(CluePrototype, Transform(user).Coordinates);
+        var component = Comp<RMCPoliceClueComponent>(uid);
+        clue.ExpiresAt = _timing.CurTime + component.Lifetime;
+        component.Clue = clue;
         return uid;
     }
 
@@ -314,14 +326,14 @@ public sealed class RMCPoliceClueSystem : EntitySystem
 
     private void OnReaction(Entity<RMCPoliceClueComponent> ent, ref ReactionEntityEvent args)
     {
-        if (args.Method == ReactionMethod.Touch && args.Reagent.ID == "RMCForensicSpray" &&
+        if (args.Method == ReactionMethod.Touch && args.Reagent.ID == ForensicSpray &&
             args.ReagentQuantity.Quantity > 0)
             Reveal(ent);
     }
 
     public void Reveal(Entity<RMCPoliceClueComponent> ent)
     {
-        ent.Comp.RevealedUntil = _timing.CurTime + TimeSpan.FromMinutes(1);
+        ent.Comp.RevealedUntil = _timing.CurTime + ent.Comp.RevealDuration;
         SetRevealed(ent, true);
     }
 

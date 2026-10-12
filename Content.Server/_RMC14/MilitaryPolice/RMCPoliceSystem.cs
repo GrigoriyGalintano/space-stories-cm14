@@ -46,6 +46,7 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Containers;
 using Robust.Shared.Enums;
+using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
@@ -55,7 +56,7 @@ namespace Content.Server._RMC14.MilitaryPolice;
 /// <summary>
 /// Security records, JAS incident reports and Overwatch's insubordination reports share station record keys.
 /// </summary>
-public sealed class RMCPoliceSystem : EntitySystem
+public sealed partial class RMCPoliceSystem : EntitySystem
 {
     private const int MaxTextLength = 4096;
     private const int MaxCommentLength = 500;
@@ -66,13 +67,13 @@ public sealed class RMCPoliceSystem : EntitySystem
     [Dependency] private readonly ISharedAdminLogManager _adminLog = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedContainerSystem _containers = default!;
     [Dependency] private readonly IConfigurationManager _config = default!;
+    [Dependency] private readonly SharedContainerSystem _containers = default!;
     [Dependency] private readonly CriminalRecordsSystem _criminal = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly IdCardSystem _id = default!;
-    [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly SharedInteractionSystem _interaction = default!;
+    [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly PaperSystem _paper = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
@@ -80,18 +81,18 @@ public sealed class RMCPoliceSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
     [Dependency] private readonly StationRecordsSystem _records = default!;
     [Dependency] private readonly RMCStationRecordsSystem _rmcRecords = default!;
-    [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly ItemSlotsSystem _slots = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly SharedGameTicker _ticker = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
-    private TimeSpan _nextHudRefresh;
     private EntProtoId<RMCMarineLawCatalogueComponent> _lawCatalogue;
 
     public EntProtoId<RMCMarineLawCatalogueComponent> LawCatalogue => _lawCatalogue;
 
     public override void Initialize()
     {
+        base.Initialize();
         _lawCatalogue = _config.GetCVar(RMCCVars.RMCMarineLawCatalogue);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
         SubscribeLocalEvent<AfterGeneralRecordCreatedEvent>(OnRecordCreated);
@@ -101,6 +102,7 @@ public sealed class RMCPoliceSystem : EntitySystem
         SubscribeLocalEvent<InventoryComponent, DidEquipEvent>(OnEquipped);
         SubscribeLocalEvent<InventoryComponent, DidUnequipEvent>(OnUnequipped);
         SubscribeLocalEvent<IdentityComponent, IdentityChangedEvent>(OnIdentityChanged);
+        SubscribeLocalEvent<RMCPoliceUiComponent, ComponentGetStateAttemptEvent>(OnUiGetStateAttempt);
         SubscribeLocalEvent<RMCPoliceConsoleComponent, ActivatableUIOpenAttemptEvent>(OnOpenAttempt);
         SubscribeLocalEvent<RMCPoliceConsoleComponent, BoundUserInterfaceMessageAttempt>(OnMessageAttempt);
         SubscribeLocalEvent<RMCPoliceConsoleComponent, InteractUsingEvent>(OnInteractUsing);
@@ -179,85 +181,6 @@ public sealed class RMCPoliceSystem : EntitySystem
         RefreshHud();
     }
 
-    public override void Update(float frameTime)
-    {
-        if (_timing.CurTime < _nextHudRefresh)
-            return;
-        _nextHudRefresh = _timing.CurTime + TimeSpan.FromSeconds(1);
-        RefreshHud();
-    }
-
-    private void OnEquipped(Entity<InventoryComponent> ent, ref DidEquipEvent args)
-    {
-        if (args.Slot == "id")
-            RefreshHud(ent);
-    }
-
-    private void OnUnequipped(Entity<InventoryComponent> ent, ref DidUnequipEvent args)
-    {
-        if (args.Slot == "id")
-            RefreshHud(ent);
-    }
-
-    private void OnIdentityChanged(Entity<IdentityComponent> ent, ref IdentityChangedEvent args) => RefreshHud(ent);
-
-    private void RefreshHud()
-    {
-        var query = EntityQueryEnumerator<InventoryComponent>();
-        while (query.MoveNext(out var uid, out _))
-            RefreshHud(uid);
-    }
-
-    private void RefreshHud(EntityUid wearer)
-    {
-        if (!TryHudKey(wearer, out var key) ||
-            !_records.TryGetRecord<RMCPoliceRecord>(key, out var record))
-        {
-            RemComp<RMCPoliceStatusComponent>(wearer);
-            return;
-        }
-
-        var status = EnsureComp<RMCPoliceStatusComponent>(wearer);
-        if (status.Status == record.Status)
-            return;
-        status.Status = record.Status;
-        Dirty(wearer, status);
-    }
-
-    private bool TryHudKey(EntityUid person, out StationRecordKey key)
-    {
-        // Use the registered identity even if the person leaves the ship or exchanges their card.
-        if (TryComp<RMCStationRecordIdentityComponent>(person, out var registered) &&
-            _rmcRecords.TryGetRecordKey(person, registered.ActiveStation, out key))
-            return true;
-        if (_rmcRecords.TryGetRecordKey(person, _station.GetOwningStation(person), out key))
-            return true;
-        if (TryWornId(person, out var card) && CompOrNull<StationRecordKeyStorageComponent>(card)?.Key is { } cardKey &&
-            _records.TryGetRecord<GeneralStationRecord>(cardKey, out _))
-        {
-            if (!_rmcRecords.TryGetRecordKey(person, cardKey.OriginStation, out key))
-                key = cardKey;
-            return true;
-        }
-        // Away from the ship, a person without an ID can still have one unambiguous personnel file.
-        if (TryComp<RMCStationRecordIdentityComponent>(person, out var identity))
-        {
-            var found = false;
-            foreach (var (station, id) in identity.Records)
-            {
-                var candidate = new StationRecordKey(id, station);
-                if (!_records.TryGetRecord<RMCPoliceRecord>(candidate, out _))
-                    continue;
-                if (found)
-                    return false;
-                key = candidate;
-                found = true;
-            }
-            return found;
-        }
-        return false;
-    }
-
     private bool CanUse(EntityUid console, EntityUid user)
     {
         var canGhostInteract = TryComp<GhostComponent>(user, out var ghost) && ghost.CanGhostInteract;
@@ -296,6 +219,14 @@ public sealed class RMCPoliceSystem : EntitySystem
     }
 
     private void OnOpened(Entity<RMCPoliceConsoleComponent> ent, ref BoundUIOpenedEvent args) => Refresh(ent);
+
+    private void OnUiGetStateAttempt(Entity<RMCPoliceUiComponent> ent, ref ComponentGetStateAttemptEvent args)
+    {
+        // The database must not be sent to nearby players who are not using the console.
+        if (args.Player?.AttachedEntity is not { } actor || !_ui.IsUiOpen(ent.Owner, RMCPoliceUiKey.Key, actor) ||
+            !CanUse(ent.Owner, actor))
+            args.Cancelled = true;
+    }
 
     private void OnContainerInserted(Entity<RMCPoliceConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)
         => Refresh(ent);
@@ -339,9 +270,10 @@ public sealed class RMCPoliceSystem : EntitySystem
             fingerprints = ClueEntries(scanner, views);
         }
 
-        _ui.SetUiState(ent.Owner, RMCPoliceUiKey.Key,
-            new RMCPoliceBuiState(station != null, views, ent.Comp.Report, ent.Comp.Revision,
-                scannerConnected, fingerprints, _lawCatalogue));
+        var data = EnsureComp<RMCPoliceUiComponent>(ent);
+        data.Data = new RMCPoliceUiData(station != null, views, ent.Comp.Report, ent.Comp.Revision,
+            scannerConnected, fingerprints, _lawCatalogue);
+        Dirty(ent.Owner, data);
     }
 
     public void RefreshScanner(EntityUid scanner)
@@ -402,226 +334,6 @@ public sealed class RMCPoliceSystem : EntitySystem
 
     private bool HighCommand(EntityUid actor) => _access.FindAccessTags(actor).Contains("CMAccessHighCommand");
 
-    private void OnRecordMessage(Entity<RMCPoliceConsoleComponent> ent, ref RMCPoliceRecordMsg args)
-    {
-        if (ent.Comp.Sentencing || !CanUse(ent, args.Actor) || args.Text.Length > MaxTextLength)
-            return;
-
-        var station = GetStation(ent);
-        if (station == null)
-        {
-            Error(args.Actor, "rmc-police-disconnected");
-            return;
-        }
-
-        if (args.Action == RMCPoliceRecordAction.CreateGeneral)
-        {
-            var key = _records.AddRecordEntry(station.Value, new GeneralStationRecord
-            {
-                Name = Loc.GetString("rmc-police-new-record-name"),
-                Age = RMCPoliceRecord.GetAgeLimits(_prototypes, null).Min,
-                JobTitle = Loc.GetString("rmc-police-unknown"),
-            });
-            _records.AddRecordEntry(key, new RMCPoliceRecord());
-            _records.AddRecordEntry(key, new CriminalRecord());
-            _records.Synchronize(key);
-            _ui.ServerSendUiMessage(ent.Owner, RMCPoliceUiKey.Key, new RMCPoliceRecordSelectedMsg(key.Id), args.Actor);
-            LogChange(args.Actor, ent, $"created personnel record {key.Id}");
-            return;
-        }
-
-        if (args.Action == RMCPoliceRecordAction.LinkPerson)
-        {
-            if (!TryRegistrationSubject(ent, args.Actor, out var person))
-            {
-                Error(args.Actor, "rmc-police-link-person-required");
-                return;
-            }
-            if (!_rmcRecords.TryRegister(station.Value, person, out var key, out var error, args.Id))
-            {
-                if (error is { } message)
-                    Error(args.Actor, message);
-                return;
-            }
-            _ui.ServerSendUiMessage(ent.Owner, RMCPoliceUiKey.Key, new RMCPoliceRecordSelectedMsg(key.Id), args.Actor);
-            LogChange(args.Actor, ent, $"registered {ToPrettyString(person)} in personnel record {key.Id}");
-            return;
-        }
-
-        if (args.Action is RMCPoliceRecordAction.PrintFingerprints or
-            RMCPoliceRecordAction.ClearFingerprints or RMCPoliceRecordAction.EjectScanner)
-        {
-            ScannerAction(ent, args);
-            return;
-        }
-
-        var recordKey = new StationRecordKey(args.Id, station.Value);
-        if (!_records.TryGetRecord<GeneralStationRecord>(recordKey, out var general))
-            return;
-
-        if (args.Action == RMCPoliceRecordAction.CreateSecurity)
-        {
-            if (!_records.TryGetRecord<RMCPoliceRecord>(recordKey, out _))
-            {
-                _records.AddRecordEntry(recordKey, new RMCPoliceRecord());
-                _records.Synchronize(recordKey);
-            }
-            return;
-        }
-
-        if (args.Action == RMCPoliceRecordAction.DeleteGeneral)
-        {
-            if (!HighCommand(args.Actor))
-            {
-                Error(args.Actor, "rmc-police-high-command-only");
-                return;
-            }
-
-            _criminal.UpdateCriminalIdentity(general.Name, SecurityStatus.None);
-            _records.RemoveRecord(recordKey);
-            LogChange(args.Actor, ent, $"deleted personnel record {general.Name} ({args.Id})");
-            return;
-        }
-
-        if (args.Action == RMCPoliceRecordAction.EditGeneral)
-        {
-            EditGeneral(ent, args, recordKey, general);
-            return;
-        }
-
-        _records.TryGetRecord<RMCPoliceRecord>(recordKey, out var security);
-        if (args.Action == RMCPoliceRecordAction.Print)
-        {
-            Print(ent, args.Actor, ent.Comp.RecordPaper, general.Name,
-                FormatRecord(general, security ?? new RMCPoliceRecord()));
-            return;
-        }
-
-        if (security == null)
-            return;
-
-        switch (args.Action)
-        {
-            case RMCPoliceRecordAction.Status:
-                if (!Enum.IsDefined(typeof(RMCPoliceStatus), (byte) args.Index) || args.Index is < 0 or > 255)
-                    return;
-                security.Status = (RMCPoliceStatus) args.Index;
-                UpdateStatus(recordKey, security, args.Actor);
-                break;
-            case RMCPoliceRecordAction.PhysicalStatus:
-                if (args.Index is < 0 or > 2)
-                    return;
-                security.PhysicalStatus = (RMCPolicePhysicalStatus) args.Index;
-                break;
-            case RMCPoliceRecordAction.MentalStatus:
-                if (args.Index is < 0 or > 3)
-                    return;
-                security.MentalStatus = (RMCPoliceMentalStatus) args.Index;
-                break;
-            case RMCPoliceRecordAction.Comment:
-                var text = args.Text.Trim();
-                if (text.Length is < 1 or > MaxCommentLength || security.Comments.Count >= MaxComments)
-                    return;
-                security.Comments.Add(new RMCPoliceComment
-                {
-                    Text = text,
-                    Author = Officer(args.Actor),
-                    CreatedAt = _ticker.RoundDuration(),
-                });
-                break;
-            case RMCPoliceRecordAction.DeleteComment:
-                if (args.Index < 0 || args.Index >= security.Comments.Count)
-                    return;
-                var comment = security.Comments[args.Index];
-                if (comment.DeletedBy != null)
-                    return;
-                comment.DeletedBy = Officer(args.Actor);
-                comment.DeletedAt = _ticker.RoundDuration();
-                break;
-            default:
-                return;
-        }
-
-        LogChange(args.Actor, ent, $"{args.Action} on record {general.Name} ({args.Id}): {args.Text} {args.Index}");
-        _records.Synchronize(recordKey);
-    }
-
-    private void EditGeneral(Entity<RMCPoliceConsoleComponent> ent, RMCPoliceRecordMsg args,
-        StationRecordKey key, GeneralStationRecord general)
-    {
-        var value = args.Text.Trim();
-        switch (args.Field)
-        {
-            case "name":
-                if (value.Length is < 1 or > 49 || value.Any(character =>
-                        !char.IsLetter(character) && character is not (' ' or '\'' or '-')))
-                {
-                    Error(args.Actor, "rmc-police-invalid-name");
-                    return;
-                }
-                _criminal.UpdateCriminalIdentity(general.Name, SecurityStatus.None);
-                general.Name = value;
-                if (_records.TryGetRecord<RMCPoliceRecord>(key, out var security))
-                    UpdateStatus(key, security, args.Actor);
-                break;
-            case "age":
-                _records.TryGetRecord<RMCPoliceRecord>(key, out var personal);
-                var limits = RMCPoliceRecord.GetAgeLimits(_prototypes, personal?.Portrait);
-                if (!int.TryParse(value, out var age) || age < limits.Min || age > limits.Max)
-                {
-                    Error(args.Actor, "rmc-police-invalid-age", ("min", limits.Min), ("max", limits.Max));
-                    return;
-                }
-                general.Age = age;
-                break;
-            case "gender":
-                if (!Enum.TryParse<Gender>(value, out var gender) || !Enum.IsDefined(gender))
-                    return;
-                general.Gender = gender;
-                break;
-            case "rank":
-                if (!HighCommand(args.Actor))
-                {
-                    Error(args.Actor, "rmc-police-high-command-only");
-                    return;
-                }
-                if (!_prototypes.TryIndex<Content.Shared.Roles.JobPrototype>(value, out var job) ||
-                    !RMCPoliceRecord.CanAssignJob(_prototypes, job))
-                    return;
-                general.JobPrototype = job.ID;
-                general.JobTitle = job.LocalizedName;
-                general.JobIcon = job.Icon;
-                break;
-            default:
-                return;
-        }
-
-        LogChange(args.Actor, ent, $"edited record {key.Id}: {args.Field} = {value}");
-        _records.Synchronize(key);
-    }
-
-    private void UpdateStatus(StationRecordKey key, RMCPoliceRecord security, EntityUid actor)
-    {
-        if (!_records.TryGetRecord<CriminalRecord>(key, out var criminal))
-        {
-            criminal = new CriminalRecord();
-            _records.AddRecordEntry(key, criminal);
-        }
-
-        var status = ToSecurityStatus(security.Status);
-        _criminal.OverwriteStatus(key, criminal, status,
-            status is SecurityStatus.Wanted or SecurityStatus.Suspected ? security.MajorCrimes : null, Officer(actor));
-    }
-
-    private static SecurityStatus ToSecurityStatus(RMCPoliceStatus status) => status switch
-    {
-        RMCPoliceStatus.Arrest => SecurityStatus.Wanted,
-        RMCPoliceStatus.Incarcerated => SecurityStatus.Detained,
-        RMCPoliceStatus.Released => SecurityStatus.Discharged,
-        RMCPoliceStatus.Suspect => SecurityStatus.Suspected,
-        _ => SecurityStatus.None,
-    };
-
     private void ScannerAction(Entity<RMCPoliceConsoleComponent> ent, RMCPoliceRecordMsg args)
     {
         if (!TryScanner(ent, out var scanner))
@@ -654,135 +366,6 @@ public sealed class RMCPoliceSystem : EntitySystem
                 break;
         }
 
-        Refresh(ent);
-    }
-
-    private void OnSentencingMessage(Entity<RMCPoliceConsoleComponent> ent, ref RMCSentencingMsg args)
-    {
-        if (!ent.Comp.Sentencing || !CanUse(ent, args.Actor) || args.Text.Length > MaxTextLength)
-            return;
-
-        if (args.Revision != ent.Comp.Revision)
-        {
-            Error(args.Actor, "rmc-police-report-changed");
-            Refresh(ent);
-            return;
-        }
-
-        if (args.Action == RMCSentencingAction.New)
-        {
-            if (ent.Comp.Report == null && _prototypes.TryIndex(_lawCatalogue, out var prototype) &&
-                prototype.TryGetComponent(out RMCMarineLawCatalogueComponent? _, EntityManager.ComponentFactory))
-                ent.Comp.Report = new RMCIncidentReport { LawCatalogue = _lawCatalogue };
-        }
-        else if (ent.Comp.Report is { } report)
-        {
-            switch (args.Action)
-            {
-                case RMCSentencingAction.Scrap:
-                    ent.Comp.Report = null;
-                    break;
-                case RMCSentencingAction.Suspect:
-                    if (TryRegistrationSubject(ent, args.Actor, out var person) &&
-                        _rmcRecords.TryGetRecordKey(person, GetStation(ent), out var personKey) &&
-                        _records.TryGetRecord<GeneralStationRecord>(personKey, out var personRecord))
-                    {
-                        report.Suspect = personRecord.Name;
-                        report.RecordId = personKey.Id;
-                        report.RecordStation = GetNetEntity(personKey.OriginStation);
-                    }
-                    else if (TrySuspectId(args.Actor, out var card, out var key))
-                    {
-                        report.Suspect = card.FullName ?? string.Empty;
-                        report.RecordId = key?.OriginStation == GetStation(ent) ? key?.Id : null;
-                        report.RecordStation = key is { } recordKey ? GetNetEntity(recordKey.OriginStation) : null;
-                    }
-                    else
-                    {
-                        Error(args.Actor, "rmc-police-hold-id");
-                        return;
-                    }
-                    break;
-                case RMCSentencingAction.Summary:
-                    report.Summary = args.Text.Trim();
-                    break;
-                case RMCSentencingAction.AddCharge:
-                    if (!_prototypes.TryIndex(report.LawCatalogue, out var cataloguePrototype) ||
-                        !cataloguePrototype.TryGetComponent(out RMCMarineLawCatalogueComponent? catalogue,
-                            EntityManager.ComponentFactory) ||
-                        !catalogue.Laws.Contains(args.Text) || !_prototypes.HasIndex<RMCMarineLawPrototype>(args.Text) ||
-                        report.Charges.Count >= RMCIncidentReport.MaxEntries)
-                        return;
-                    report.Charges.Add(new RMCIncidentCharge(args.Text));
-                    break;
-                case RMCSentencingAction.RelatedCrime:
-                    if (args.Index < 0 || args.Index >= report.Charges.Count ||
-                        !_prototypes.TryIndex(report.Charges[args.Index].Law, out var aiding) ||
-                        aiding.Punishment != RMCMarineLawPunishment.SameAsCrime ||
-                        !_prototypes.TryIndex(report.LawCatalogue, out var relatedPrototype) ||
-                        !relatedPrototype.TryGetComponent(out RMCMarineLawCatalogueComponent? relatedCatalogue,
-                            EntityManager.ComponentFactory) ||
-                        !relatedCatalogue.Laws.Contains(args.Text) ||
-                        !_prototypes.TryIndex<RMCMarineLawPrototype>(args.Text, out var related) ||
-                        related.Punishment == RMCMarineLawPunishment.SameAsCrime)
-                        return;
-                    report.Charges[args.Index].RelatedCrime = args.Text;
-                    break;
-                case RMCSentencingAction.RemoveCharge:
-                    if (args.Index < 0 || args.Index >= report.Charges.Count)
-                        return;
-                    report.Charges.RemoveAt(args.Index);
-                    break;
-                case RMCSentencingAction.AddWitness:
-                    if (!TryHeldId(args.Actor, out var witness, out _) ||
-                        string.IsNullOrWhiteSpace(witness.FullName))
-                    {
-                        Error(args.Actor, "rmc-police-hold-id");
-                        return;
-                    }
-                    if (report.Witnesses.Count >= RMCIncidentReport.MaxEntries)
-                        return;
-                    report.Witnesses.Add(new RMCIncidentEntry(witness.FullName));
-                    break;
-                case RMCSentencingAction.AddEvidence:
-                    if (!TryHeldItem(args.Actor, out var item))
-                    {
-                        Error(args.Actor, "rmc-police-hold-evidence");
-                        return;
-                    }
-                    if (report.Evidence.Count >= RMCIncidentReport.MaxEntries)
-                        return;
-                    report.Evidence.Add(new RMCIncidentEntry(Name(item.Value)));
-                    break;
-                case RMCSentencingAction.EditWitness:
-                case RMCSentencingAction.RemoveWitness:
-                case RMCSentencingAction.EditEvidence:
-                case RMCSentencingAction.RemoveEvidence:
-                    var entries = args.Action is RMCSentencingAction.EditWitness or RMCSentencingAction.RemoveWitness
-                        ? report.Witnesses : report.Evidence;
-                    if (args.Index < 0 || args.Index >= entries.Count)
-                        return;
-                    if (args.Action is RMCSentencingAction.EditWitness or RMCSentencingAction.EditEvidence)
-                        entries[args.Index].Notes = args.Text.Trim();
-                    else
-                        entries.RemoveAt(args.Index);
-                    break;
-                case RMCSentencingAction.Export:
-                    if (!Export(ent, args.Actor, report))
-                        return;
-                    ent.Comp.Report = null;
-                    break;
-                default:
-                    return;
-            }
-        }
-        else
-        {
-            return;
-        }
-
-        ent.Comp.Revision++;
-        LogChange(args.Actor, ent, $"incident report {args.Action}: {args.Text} {args.Index}");
         Refresh(ent);
     }
 
@@ -819,217 +402,4 @@ public sealed class RMCPoliceSystem : EntitySystem
         return !string.IsNullOrWhiteSpace(card.FullName);
     }
 
-    private bool Export(Entity<RMCPoliceConsoleComponent> ent, EntityUid actor, RMCIncidentReport report)
-    {
-        if (report.LawCatalogue != _lawCatalogue || string.IsNullOrWhiteSpace(report.Suspect) ||
-            !report.TryCalculateSentence(_prototypes, EntityManager.ComponentFactory, out var sentence))
-        {
-            Error(actor, "rmc-police-report-incomplete");
-            return false;
-        }
-
-        var paper = Print(ent, actor, ent.Comp.ReportPaper, report.Suspect, FormatIncident(report));
-        if (paper == null)
-            return false;
-
-        report.FinalSentence = sentence;
-        EnsureComp<RMCIncidentReportPaperComponent>(paper.Value).Report = report.Clone();
-        if (GetStation(ent) is { } station && report.RecordId is { } id &&
-            report.RecordStation == GetNetEntity(station))
-        {
-            var key = new StationRecordKey(id, station);
-            if (_records.TryGetRecord<RMCPoliceRecord>(key, out var record))
-            {
-                record.Incidents.Add(report.Clone());
-                _records.Synchronize(key);
-            }
-        }
-
-        return true;
-    }
-
-    private void OnInteractUsing(Entity<RMCPoliceConsoleComponent> ent, ref InteractUsingEvent args)
-    {
-        if (args.Handled || !ent.Comp.Sentencing || !CanUse(ent, args.User))
-            return;
-
-        if (TryComp(args.Used, out RMCIncidentReportPaperComponent? paper) && paper.Report != null)
-        {
-            args.Handled = true;
-            if (paper.Report.LawCatalogue != _lawCatalogue ||
-                !paper.Report.TryCalculateSentence(_prototypes, EntityManager.ComponentFactory, out _))
-            {
-                Error(args.User, "rmc-police-report-wrong-catalogue");
-                return;
-            }
-            if (ent.Comp.Report != null)
-            {
-                Error(args.User, "rmc-police-report-in-progress");
-                return;
-            }
-            ent.Comp.Report = paper.Report.Clone();
-            ent.Comp.Report.Id = Guid.NewGuid();
-            ent.Comp.Report.FinalSentence = null;
-            ent.Comp.Report.Detention = null;
-            ent.Comp.Revision++;
-            LogChange(args.User, ent, $"imported incident report for {paper.Report.Suspect}");
-            QueueDel(args.Used);
-            Refresh(ent);
-            _ui.TryOpenUi(ent.Owner, RMCPoliceUiKey.Key, args.User);
-        }
-        else if (HasComp<PaperComponent>(args.Used))
-        {
-            Error(args.User, "rmc-police-original-only");
-            args.Handled = true;
-        }
-    }
-
-    private EntityUid? Print(Entity<RMCPoliceConsoleComponent> ent, EntityUid actor,
-        EntProtoId prototype, string name, string content)
-    {
-        if (_timing.CurTime < ent.Comp.NextPrint)
-            return null;
-
-        ent.Comp.NextPrint = _timing.CurTime + TimeSpan.FromSeconds(1.5);
-        var paper = Spawn(prototype, Transform(ent).Coordinates);
-        _paper.SetContent(paper, FormattedMessage.EscapeText(content));
-        var metadata = MetaData(paper);
-        EntityManager.System<MetaDataSystem>().SetEntityName(paper,
-            Loc.GetString(ent.Comp.Sentencing ? "rmc-police-incident-print-title" : "rmc-police-print-title",
-                ("name", name)), metadata);
-        _audio.PlayPvs(ent.Comp.PrintSound, ent);
-        LogChange(actor, ent, $"printed {name}");
-        Refresh(ent);
-        return paper;
-    }
-
-    private string FormatRecord(GeneralStationRecord general, RMCPoliceRecord record)
-    {
-        var content = new StringBuilder(Loc.GetString("rmc-police-record-print",
-            ("name", general.Name), ("id", general.Fingerprint ?? ""),
-            ("rank", general.JobTitle), ("age", general.Age), ("squad", general.Squad ?? ""),
-            ("gender", Loc.GetString($"rmc-police-gender-{general.Gender}")),
-            ("physical", Loc.GetString($"rmc-police-physical-{record.PhysicalStatus}")),
-            ("mental", Loc.GetString($"rmc-police-mental-{record.MentalStatus}")),
-            ("status", Loc.GetString($"rmc-police-status-{record.Status}")),
-            ("crimes", record.MajorCrimes)));
-        foreach (var comment in record.Comments)
-        {
-            content.AppendLine().AppendLine(comment.Author).AppendLine(comment.CreatedAt.ToString(@"hh\:mm\:ss"));
-            content.AppendLine(comment.DeletedBy == null ? comment.Text :
-                Loc.GetString("rmc-police-comment-deleted", ("author", comment.DeletedBy),
-                    ("time", comment.DeletedAt?.ToString(@"hh\:mm\:ss") ?? "")));
-        }
-        foreach (var incident in record.Incidents)
-            content.AppendLine().AppendLine(FormatIncident(incident));
-        return content.ToString();
-    }
-
-    private string FormatIncident(RMCIncidentReport report)
-    {
-        report.TryCalculateSentence(_prototypes, EntityManager.ComponentFactory, out var calculated);
-        var time = (report.FinalSentence ?? calculated).GetDescription();
-        var content = new StringBuilder(Loc.GetString("rmc-police-incident-print",
-            ("name", report.Suspect), ("sentence", time), ("summary", report.Summary)));
-        if (report.Detention is { } detention)
-            content.AppendLine(detention.GetDescription());
-        content.AppendLine().AppendLine(Loc.GetString("rmc-police-incident-charges"));
-        foreach (var charge in report.Charges)
-        {
-            if (!_prototypes.TryIndex(charge.Law, out var law))
-                continue;
-            content.AppendLine().AppendLine(Loc.GetString(law.Name));
-            content.AppendLine(RMCMarineSentence.DescribePunishmentField(law.Punishment, law.BrigTime));
-            if (charge.RelatedCrime is { } related && _prototypes.TryIndex(related, out var relatedLaw))
-                content.AppendLine(Loc.GetString("rmc-police-related-crime-value", ("crime", Loc.GetString(relatedLaw.Name))));
-            if (law.SpecialPunishment is { } punishment)
-                content.AppendLine(Loc.GetString(punishment));
-            if (law.Conditions is { } conditions)
-                content.AppendLine(Loc.GetString(conditions));
-        }
-        content.AppendLine().AppendLine(Loc.GetString("rmc-police-witnesses"));
-        foreach (var witness in report.Witnesses)
-            content.AppendLine(witness.Name).AppendLine(witness.Notes);
-        content.AppendLine().AppendLine(Loc.GetString("rmc-police-evidence"));
-        foreach (var evidence in report.Evidence)
-            content.AppendLine(evidence.Name).AppendLine(evidence.Notes);
-        return content.ToString();
-    }
-
-    public void SynchronizeIncidentReport(Entity<RMCIncidentReportPaperComponent> paper)
-    {
-        if (paper.Comp.Report is not { } report)
-            return;
-
-        _paper.SetContent(paper, FormattedMessage.EscapeText(FormatIncident(report)));
-        if (report.RecordId is not { } id || report.RecordStation is not { } station ||
-            !TryGetEntity(station, out var stationUid))
-            return;
-
-        var key = new StationRecordKey(id, stationUid.Value);
-        if (!_records.TryGetRecord<RMCPoliceRecord>(key, out var record))
-            return;
-
-        var incident = record.Incidents.FirstOrDefault(entry => entry.Id == report.Id);
-        if (incident == null)
-            return;
-        incident.Detention = report.Detention;
-        _records.Synchronize(key);
-    }
-
-    private void OnInsubordination(Entity<OverwatchConsoleComponent> ent, ref RMCOverwatchInsubordinationMsg args)
-    {
-        if (!CanUse(ent, args.Actor) || ent.Comp.Squad is not { } selected ||
-            !TryGetEntity(args.Target, out var target) ||
-            !TryComp(target, out SquadMemberComponent? member) || member.Squad != GetEntity(selected) ||
-            !_rmcRecords.TryGetRecordKey(target.Value, GetStation(ent), out var key) ||
-            !_records.TryGetRecord<RMCPoliceRecord>(key, out var record))
-            return;
-
-        if (record.Status == RMCPoliceStatus.Incarcerated)
-        {
-            _popup.PopupEntity(Loc.GetString("rmc-police-insubordination-incarcerated"), ent, args.Actor);
-            return;
-        }
-
-        var charge = Loc.GetString("rmc-police-insubordination-charge");
-        var alreadyReported = record.MajorCrimes.Contains(charge, StringComparison.Ordinal);
-        if (alreadyReported && record.Status == RMCPoliceStatus.Arrest)
-        {
-            _popup.PopupEntity(Loc.GetString("rmc-police-insubordination-already-wanted"), ent, args.Actor);
-            return;
-        }
-
-        if (!alreadyReported)
-            record.MajorCrimes = string.IsNullOrWhiteSpace(record.MajorCrimes) ? charge : $"{record.MajorCrimes}\n{charge}";
-        record.Status = RMCPoliceStatus.Arrest;
-        UpdateStatus(key, record, args.Actor);
-        LogChange(args.Actor, ent, $"reported {ToPrettyString(target.Value):player} for insubordination");
-        _popup.PopupEntity(Loc.GetString("rmc-police-insubordination-reported"), target.Value, target.Value);
-        _popup.PopupEntity(Loc.GetString("rmc-police-insubordination-confirmed"), ent, args.Actor);
-        _records.Synchronize(key);
-    }
-
-    public bool IsReportSubject(EntityUid actor, RMCIncidentReport report)
-    {
-        if (report.RecordId is { } id && report.RecordStation is { } netStation && TryGetEntity(netStation, out var station))
-        {
-            if (_rmcRecords.TryGetRecordKey(actor, station, out var key))
-                return key.Id == id;
-        }
-
-        // Reports made from an unregistered ID still identify the subject by their recorded name.
-        return string.Equals(Name(actor), report.Suspect, StringComparison.Ordinal);
-    }
-
-    private bool TryRegistrationSubject(EntityUid console, EntityUid actor, out EntityUid person)
-    {
-        person = default;
-        if (CompOrNull<PullerComponent>(actor)?.Pulling is not { } pulled || TerminatingOrDeleted(pulled) ||
-            !_interaction.InRangeUnobstructed(actor, pulled) ||
-            !_interaction.InRangeUnobstructed(console, pulled))
-            return false;
-        person = pulled;
-        return true;
-    }
 }

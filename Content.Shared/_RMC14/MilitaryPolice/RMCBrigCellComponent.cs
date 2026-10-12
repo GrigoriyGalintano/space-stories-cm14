@@ -42,7 +42,6 @@ public sealed partial class RMCBrigCellComponent : Component
     [DataField]
     public uint Revision;
 
-    public bool? Powered;
     public bool DoorsOpen;
     public bool CanToggleDoors;
 }
