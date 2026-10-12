@@ -46,8 +46,10 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
         Toolbar.AddChild(_search);
         var actions = Horizontal();
         Toolbar.AddChild(actions);
-        actions.AddChild(Button("rmc-police-new-record", () =>
-            Message?.Invoke(new RMCPoliceRecordMsg(RMCPoliceRecordAction.CreateGeneral)), RMCCrtIcons.IdCard));
+        var create = Button("rmc-police-new-record", () =>
+            Message?.Invoke(new RMCPoliceRecordMsg(RMCPoliceRecordAction.CreateGeneral)), RMCCrtIcons.IdCard);
+        create.ToolTip = Loc.GetString("rmc-police-new-record-hint");
+        actions.AddChild(create);
         actions.AddChild(Button("rmc-police-fingerprints", () =>
         {
             _scanner = true;
@@ -79,6 +81,17 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
         _state = state;
         Connection.Text = state.Connected ? string.Empty : Loc.GetString("rmc-police-disconnected");
         Connection.Visible = !state.Connected;
+        PopulateList();
+        PopulateDetails();
+    }
+
+    public void SelectRecord(uint id)
+    {
+        _selected = id;
+        _scanner = false;
+        _tab = RecordTab.Personal;
+        _search.Text = string.Empty;
+        _statusFilter.SelectId(-1);
         PopulateList();
         PopulateDetails();
     }
@@ -184,6 +197,15 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
     private void PopulatePersonal(RMCPoliceRecordView record)
     {
         var general = record.General;
+        if (string.IsNullOrEmpty(general.Fingerprint) && string.IsNullOrEmpty(general.DNA))
+        {
+            var link = Button("rmc-police-link-person", () => Confirm("rmc-police-link-person", () =>
+                Message?.Invoke(new RMCPoliceRecordMsg(RMCPoliceRecordAction.LinkPerson, record.Id)),
+                Loc.GetString("rmc-police-link-person-confirm", ("id", record.DisplayId)), danger: false), RMCCrtIcons.Users);
+            link.ToolTip = Loc.GetString("rmc-police-link-person-hint");
+            Right.AddChild(link);
+            Right.AddChild(Text(Loc.GetString("rmc-police-record-unlinked"), RMCCrtTone.Muted));
+        }
         var limits = RMCPoliceRecord.GetAgeLimits(_prototypes, record.Security?.Portrait);
         Field("rmc-police-name", general.Name, "name", 49, ValidateName);
         Field("rmc-police-age", general.Age.ToString(), "age", 3, value =>

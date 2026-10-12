@@ -52,6 +52,13 @@ public enum RMCPoliceRecordAction : byte
     PrintFingerprints,
     ClearFingerprints,
     EjectScanner,
+    LinkPerson,
+}
+
+[Serializable, NetSerializable]
+public sealed class RMCPoliceRecordSelectedMsg(uint id) : BoundUserInterfaceMessage
+{
+    public readonly uint Id = id;
 }
 
 [Serializable, NetSerializable]

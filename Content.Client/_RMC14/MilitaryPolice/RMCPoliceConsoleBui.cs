@@ -34,4 +34,11 @@ public sealed class RMCPoliceConsoleBui(EntityUid owner, Enum uiKey) : BoundUser
         _records?.Update(police);
         _sentencing?.Update(police);
     }
+
+    protected override void ReceiveMessage(BoundUserInterfaceMessage message)
+    {
+        base.ReceiveMessage(message);
+        if (message is RMCPoliceRecordSelectedMsg selected)
+            _records?.SelectRecord(selected.Id);
+    }
 }

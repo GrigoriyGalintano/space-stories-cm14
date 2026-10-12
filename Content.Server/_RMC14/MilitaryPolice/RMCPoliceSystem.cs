@@ -1,6 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using Content.Server._RMC14.StationRecords;
+using Content.Server._RMC14.StationRecords.Systems;
 using Content.Server.Access.Systems;
 using Content.Server.CriminalRecords.Systems;
 using Content.Server.Destructible;
@@ -21,7 +23,6 @@ using Content.Shared.CriminalRecords;
 using Content.Shared.Damage;
 using Content.Shared.Database;
 using Content.Shared.Destructible;
-using Content.Shared.Forensics.Components;
 using Content.Shared.GameTicking;
 using Content.Shared.Ghost;
 using Content.Shared.Hands.EntitySystems;
@@ -78,6 +79,7 @@ public sealed class RMCPoliceSystem : EntitySystem
     [Dependency] private readonly SharedRMCPowerSystem _power = default!;
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
     [Dependency] private readonly StationRecordsSystem _records = default!;
+    [Dependency] private readonly RMCStationRecordsSystem _rmcRecords = default!;
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly ItemSlotsSystem _slots = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
@@ -93,6 +95,7 @@ public sealed class RMCPoliceSystem : EntitySystem
         _lawCatalogue = _config.GetCVar(RMCCVars.RMCMarineLawCatalogue);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestartCleanup);
         SubscribeLocalEvent<AfterGeneralRecordCreatedEvent>(OnRecordCreated);
+        SubscribeLocalEvent<RMCStationRecordRegisteredEvent>(OnPersonRegistered);
         SubscribeLocalEvent<RecordModifiedEvent>(OnRecordModified);
         SubscribeLocalEvent<RecordRemovedEvent>(OnRecordRemoved);
         SubscribeLocalEvent<InventoryComponent, DidEquipEvent>(OnEquipped);
@@ -132,17 +135,22 @@ public sealed class RMCPoliceSystem : EntitySystem
             Species = args.Profile.Species,
             Appearance = args.Profile.Appearance,
         }.WithSex(args.Profile.Sex).WithGender(args.Profile.Gender);
-        _records.AddRecordEntry(args.Key, new RMCPoliceRecord { Portrait = portrait });
-        if (!string.IsNullOrEmpty(args.Record.Fingerprint))
-        {
-            var owners = EntityQueryEnumerator<FingerprintComponent>();
-            while (owners.MoveNext(out var owner, out var fingerprint))
-            {
-                if (fingerprint.Fingerprint == args.Record.Fingerprint)
-                    EnsureComp<RMCPoliceIdentityComponent>(owner).Key = args.Key;
-            }
-        }
+        if (!_records.TryGetRecord<RMCPoliceRecord>(args.Key, out _))
+            _records.AddRecordEntry(args.Key, new RMCPoliceRecord { Portrait = portrait });
         _records.Synchronize(args.Key);
+    }
+
+    private void OnPersonRegistered(RMCStationRecordRegisteredEvent args)
+    {
+        if (!_records.TryGetRecord<RMCPoliceRecord>(args.Key, out var security))
+        {
+            security = new RMCPoliceRecord();
+            _records.AddRecordEntry(args.Key, security);
+        }
+        security.Portrait ??= args.Profile;
+        if (!_records.TryGetRecord<CriminalRecord>(args.Key, out _))
+            _records.AddRecordEntry(args.Key, new CriminalRecord { Status = ToSecurityStatus(security.Status) });
+        RefreshHud(args.Person);
     }
 
     private void OnRecordModified(RecordModifiedEvent args)
@@ -202,8 +210,7 @@ public sealed class RMCPoliceSystem : EntitySystem
 
     private void RefreshHud(EntityUid wearer)
     {
-        if (!TryWornId(wearer, out var card) ||
-            CompOrNull<StationRecordKeyStorageComponent>(card)?.Key is not { } key ||
+        if (!TryHudKey(wearer, out var key) ||
             !_records.TryGetRecord<RMCPoliceRecord>(key, out var record))
         {
             RemComp<RMCPoliceStatusComponent>(wearer);
@@ -215,6 +222,40 @@ public sealed class RMCPoliceSystem : EntitySystem
             return;
         status.Status = record.Status;
         Dirty(wearer, status);
+    }
+
+    private bool TryHudKey(EntityUid person, out StationRecordKey key)
+    {
+        // Use the registered identity even if the person leaves the ship or exchanges their card.
+        if (TryComp<RMCStationRecordIdentityComponent>(person, out var registered) &&
+            _rmcRecords.TryGetRecordKey(person, registered.ActiveStation, out key))
+            return true;
+        if (_rmcRecords.TryGetRecordKey(person, _station.GetOwningStation(person), out key))
+            return true;
+        if (TryWornId(person, out var card) && CompOrNull<StationRecordKeyStorageComponent>(card)?.Key is { } cardKey &&
+            _records.TryGetRecord<GeneralStationRecord>(cardKey, out _))
+        {
+            if (!_rmcRecords.TryGetRecordKey(person, cardKey.OriginStation, out key))
+                key = cardKey;
+            return true;
+        }
+        // Away from the ship, a person without an ID can still have one unambiguous personnel file.
+        if (TryComp<RMCStationRecordIdentityComponent>(person, out var identity))
+        {
+            var found = false;
+            foreach (var (station, id) in identity.Records)
+            {
+                var candidate = new StationRecordKey(id, station);
+                if (!_records.TryGetRecord<RMCPoliceRecord>(candidate, out _))
+                    continue;
+                if (found)
+                    return false;
+                key = candidate;
+                found = true;
+            }
+            return found;
+        }
+        return false;
     }
 
     private bool CanUse(EntityUid console, EntityUid user)
@@ -384,7 +425,26 @@ public sealed class RMCPoliceSystem : EntitySystem
             _records.AddRecordEntry(key, new RMCPoliceRecord());
             _records.AddRecordEntry(key, new CriminalRecord());
             _records.Synchronize(key);
+            _ui.ServerSendUiMessage(ent.Owner, RMCPoliceUiKey.Key, new RMCPoliceRecordSelectedMsg(key.Id), args.Actor);
             LogChange(args.Actor, ent, $"created personnel record {key.Id}");
+            return;
+        }
+
+        if (args.Action == RMCPoliceRecordAction.LinkPerson)
+        {
+            if (!TryRegistrationSubject(ent, args.Actor, out var person))
+            {
+                Error(args.Actor, "rmc-police-link-person-required");
+                return;
+            }
+            if (!_rmcRecords.TryRegister(station.Value, person, out var key, out var error, args.Id))
+            {
+                if (error is { } message)
+                    Error(args.Actor, message);
+                return;
+            }
+            _ui.ServerSendUiMessage(ent.Owner, RMCPoliceUiKey.Key, new RMCPoliceRecordSelectedMsg(key.Id), args.Actor);
+            LogChange(args.Actor, ent, $"registered {ToPrettyString(person)} in personnel record {key.Id}");
             return;
         }
 
@@ -623,14 +683,25 @@ public sealed class RMCPoliceSystem : EntitySystem
                     ent.Comp.Report = null;
                     break;
                 case RMCSentencingAction.Suspect:
-                    if (!TrySuspectId(args.Actor, out var card, out var key))
+                    if (TryRegistrationSubject(ent, args.Actor, out var person) &&
+                        _rmcRecords.TryGetRecordKey(person, GetStation(ent), out var personKey) &&
+                        _records.TryGetRecord<GeneralStationRecord>(personKey, out var personRecord))
+                    {
+                        report.Suspect = personRecord.Name;
+                        report.RecordId = personKey.Id;
+                        report.RecordStation = GetNetEntity(personKey.OriginStation);
+                    }
+                    else if (TrySuspectId(args.Actor, out var card, out var key))
+                    {
+                        report.Suspect = card.FullName ?? string.Empty;
+                        report.RecordId = key?.OriginStation == GetStation(ent) ? key?.Id : null;
+                        report.RecordStation = key is { } recordKey ? GetNetEntity(recordKey.OriginStation) : null;
+                    }
+                    else
                     {
                         Error(args.Actor, "rmc-police-hold-id");
                         return;
                     }
-                    report.Suspect = card.FullName ?? string.Empty;
-                    report.RecordId = key?.OriginStation == GetStation(ent) ? key?.Id : null;
-                    report.RecordStation = key is { } recordKey ? GetNetEntity(recordKey.OriginStation) : null;
                     break;
                 case RMCSentencingAction.Summary:
                     report.Summary = args.Text.Trim();
@@ -911,7 +982,7 @@ public sealed class RMCPoliceSystem : EntitySystem
         if (!CanUse(ent, args.Actor) || ent.Comp.Squad is not { } selected ||
             !TryGetEntity(args.Target, out var target) ||
             !TryComp(target, out SquadMemberComponent? member) || member.Squad != GetEntity(selected) ||
-            !TryEnlistmentKey(target.Value, GetStation(ent), out var key) ||
+            !_rmcRecords.TryGetRecordKey(target.Value, GetStation(ent), out var key) ||
             !_records.TryGetRecord<RMCPoliceRecord>(key, out var record))
             return;
 
@@ -943,9 +1014,7 @@ public sealed class RMCPoliceSystem : EntitySystem
     {
         if (report.RecordId is { } id && report.RecordStation is { } netStation && TryGetEntity(netStation, out var station))
         {
-            if (TryComp<RMCPoliceIdentityComponent>(actor, out var identity))
-                return identity.Key.Id == id && identity.Key.OriginStation == station;
-            if (TryEnlistmentKey(actor, station, out var key))
+            if (_rmcRecords.TryGetRecordKey(actor, station, out var key))
                 return key.Id == id;
         }
 
@@ -953,30 +1022,14 @@ public sealed class RMCPoliceSystem : EntitySystem
         return string.Equals(Name(actor), report.Suspect, StringComparison.Ordinal);
     }
 
-    private bool TryEnlistmentKey(EntityUid marine, EntityUid? station, out StationRecordKey key)
+    private bool TryRegistrationSubject(EntityUid console, EntityUid actor, out EntityUid person)
     {
-        key = default;
-        if (station == null)
+        person = default;
+        if (CompOrNull<PullerComponent>(actor)?.Pulling is not { } pulled || TerminatingOrDeleted(pulled) ||
+            !_interaction.InRangeUnobstructed(actor, pulled) ||
+            !_interaction.InRangeUnobstructed(console, pulled))
             return false;
-        if (TryComp<RMCPoliceIdentityComponent>(marine, out var identity))
-        {
-            key = identity.Key;
-            return key.OriginStation == station;
-        }
-
-        // Covers existing characters whose records were created before the police system was loaded.
-        var fingerprint = CompOrNull<FingerprintComponent>(marine)?.Fingerprint;
-        if (!string.IsNullOrEmpty(fingerprint))
-        {
-            foreach (var (id, record) in _records.GetRecordsOfType<GeneralStationRecord>(station.Value))
-            {
-                if (record.Fingerprint != fingerprint)
-                    continue;
-                key = new StationRecordKey(id, station.Value);
-                EnsureComp<RMCPoliceIdentityComponent>(marine).Key = key;
-                return true;
-            }
-        }
-        return false;
+        person = pulled;
+        return true;
     }
 }

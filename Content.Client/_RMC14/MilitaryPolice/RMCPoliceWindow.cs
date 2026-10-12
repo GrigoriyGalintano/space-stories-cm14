@@ -141,7 +141,7 @@ public abstract class RMCPoliceWindow : DefaultWindow
         OpenEditor(editor);
     }
 
-    protected void Confirm(LocId title, Action action, string? description = null)
+    protected void Confirm(LocId title, Action action, string? description = null, bool danger = true)
     {
         _editor?.Close();
         var editor = new DefaultWindow { Title = Loc.GetString(title), SetSize = new Vector2(420, 170) };
@@ -152,7 +152,8 @@ public abstract class RMCPoliceWindow : DefaultWindow
         theme.AddChild(layout);
         layout.AddChild(Text(description ?? Loc.GetString("rmc-police-confirm-description"), RMCCrtTone.Warning));
         var actions = Horizontal();
-        actions.AddChild(Button("rmc-police-confirm", () => { action(); editor.Close(); }, RMCCrtIcons.Ban, true));
+        actions.AddChild(Button("rmc-police-confirm", () => { action(); editor.Close(); },
+            danger ? RMCCrtIcons.Ban : RMCCrtIcons.IdCard, danger));
         actions.AddChild(Button("rmc-police-cancel", () => editor.Close()));
         layout.AddChild(actions);
         OpenEditor(editor);
