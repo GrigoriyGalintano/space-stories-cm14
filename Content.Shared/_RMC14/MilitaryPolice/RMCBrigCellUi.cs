@@ -20,13 +20,15 @@ public sealed class RMCBrigCellBuiState(
     TimeSpan? finishAt,
     uint revision,
     bool doorsOpen,
-    bool canToggleDoors) : BoundUserInterfaceState
+    bool canToggleDoors,
+    TimeSpan startedAt = default) : BoundUserInterfaceState
 {
     public readonly string CellName = cellName;
     public readonly List<RMCBrigReportView> Reports = reports;
     public readonly NetEntity? ViewedReport = viewedReport;
     public readonly NetEntity? ActiveReport = activeReport;
     public readonly TimeSpan? FinishAt = finishAt;
+    public readonly TimeSpan StartedAt = startedAt;
     public readonly uint Revision = revision;
     public readonly bool DoorsOpen = doorsOpen;
     public readonly bool CanToggleDoors = canToggleDoors;

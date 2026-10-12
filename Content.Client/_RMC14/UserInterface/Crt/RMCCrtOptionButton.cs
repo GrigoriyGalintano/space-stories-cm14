@@ -30,6 +30,12 @@ public sealed class RMCCrtOptionButton : Container, IRMCCrtThemedControl
     public int SelectedId { get; private set; }
     public int ItemCount => _items.Count;
 
+    public string? IconTexturePath
+    {
+        get => _button.IconTexturePath;
+        set => _button.IconTexturePath = value;
+    }
+
     public bool Disabled
     {
         get => _button.Disabled;

@@ -21,7 +21,7 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
 
     public event Action<RMCPoliceRecordMsg>? Message;
     private readonly RMCCrtLineEdit _search = new();
-    private readonly RMCCrtOptionButton _statusFilter = new();
+    private readonly RMCCrtOptionButton _statusFilter = new() { IconTexturePath = RMCCrtIcons.FilterTexture };
     private readonly RMCCrtOptionButton _sort = new();
     private readonly BoxContainer _list = Vertical();
     private readonly Dictionary<(uint Record, int Incident), bool> _expandedIncidents = new();
@@ -148,18 +148,11 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
         }
 
         var header = Horizontal();
-        header.AddChild(new RMCCrtLabel
-        {
-            Text = PersonnelTitle(record),
-            TextFontSize = 12,
-            Heading = true,
-            HorizontalExpand = true,
-        });
+        header.AddChild(Text(Loc.GetString("rmc-police-record-id", ("id", record.DisplayId))));
         var print = Button("rmc-police-print-record", () => Send(RMCPoliceRecordAction.Print), RMCCrtIcons.PaperPlane);
         print.HorizontalExpand = false;
         header.AddChild(print);
         Right.AddChild(header);
-        Right.AddChild(Text(Loc.GetString("rmc-police-record-id", ("id", record.DisplayId))));
 
         var tabs = Horizontal();
         AddTab(tabs, "rmc-police-security-data", RecordTab.Security);
@@ -199,6 +192,7 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
         var rank = Horizontal();
         rank.AddChild(Text(Loc.GetString("rmc-police-rank-value", ("rank", general.JobTitle))));
         var editRank = Button("rmc-police-edit", () => EditRank(record.Id, general.JobPrototype));
+        editRank.IconTexturePath = RMCCrtIcons.PencilTexture;
         editRank.ToolTip = Loc.GetString("rmc-police-edit-rank");
         editRank.HorizontalExpand = false;
         rank.AddChild(editRank);
@@ -346,6 +340,7 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
         var edit = Button("rmc-police-edit", () => Edit(label, value, text =>
             Message?.Invoke(new RMCPoliceRecordMsg(RMCPoliceRecordAction.EditGeneral, id, text, field)),
             maxLength, multiline: false, validate: validate));
+        edit.IconTexturePath = RMCCrtIcons.PencilTexture;
         edit.ToolTip = Loc.GetString("rmc-police-edit-record-hint");
         edit.HorizontalExpand = false;
         row.AddChild(edit);
@@ -373,20 +368,25 @@ public sealed class RMCPoliceRecordsWindow : RMCPoliceWindow
         layout.Margin = new Thickness(8);
         theme.AddChild(layout);
         var jobs = new RMCCrtOptionButton();
-        var values = _prototypes.EnumeratePrototypes<JobPrototype>().OrderBy(job => job.LocalizedName).ToList();
+        var values = _prototypes.EnumeratePrototypes<JobPrototype>()
+            .Where(job => RMCPoliceRecord.CanAssignJob(_prototypes, job))
+            .OrderBy(job => job.LocalizedName).ToList();
+        jobs.AddItem(Loc.GetString("rmc-police-select"), -1);
         for (var i = 0; i < values.Count; i++)
             jobs.AddItem(values[i].LocalizedName, i);
         var selectedIndex = values.FindIndex(job => job.ID == selected);
-        if (selectedIndex >= 0)
-            jobs.SelectId(selectedIndex);
+        jobs.SelectId(selectedIndex);
         layout.AddChild(jobs);
-        layout.AddChild(Button("rmc-police-save", () =>
+        var save = Button("rmc-police-save", () =>
         {
             if (jobs.SelectedId >= 0 && jobs.SelectedId < values.Count)
                 Message?.Invoke(new RMCPoliceRecordMsg(RMCPoliceRecordAction.EditGeneral, id,
                     values[jobs.SelectedId].ID, "rank"));
             window.Close();
-        }));
+        });
+        save.Disabled = selectedIndex < 0;
+        jobs.OnItemSelected += selectedId => save.Disabled = selectedId < 0 || selectedId >= values.Count;
+        layout.AddChild(save);
         OpenEditor(window);
     }
 

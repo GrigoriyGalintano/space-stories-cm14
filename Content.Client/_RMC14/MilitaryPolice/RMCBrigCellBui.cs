@@ -1,6 +1,8 @@
 using System.Linq;
 using Content.Shared._RMC14.MilitaryPolice;
 using Content.Shared.Access.Systems;
+using Content.Shared.Inventory;
+using Content.Shared.StationRecords;
 using JetBrains.Annotations;
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
@@ -33,8 +35,20 @@ public sealed class RMCBrigCellBui(EntityUid owner, Enum uiKey) : BoundUserInter
 
     private bool CanPardon()
     {
-        return _players.LocalEntity is { } actor &&
-               EntMan.TryGetComponent(Owner, out RMCBrigCellComponent? controller) &&
-               EntMan.System<AccessReaderSystem>().FindAccessTags(actor).Any(controller.PardonAccess.Contains);
+        if (_players.LocalEntity is not { } actor ||
+            !EntMan.TryGetComponent(Owner, out RMCBrigCellComponent? controller) ||
+            !EntMan.System<AccessReaderSystem>().FindAccessTags(actor).Any(controller.PardonAccess.Contains))
+            return false;
+
+        if (State is not RMCBrigCellBuiState state)
+            return true;
+        var report = state.Reports.FirstOrDefault(view => view.Paper == state.ViewedReport)?.Report;
+        if (report?.RecordId is { } id && report.RecordStation is { } station &&
+            EntMan.System<InventorySystem>().TryGetSlotEntity(actor, "id", out var card) &&
+            EntMan.TryGetComponent(card, out StationRecordKeyStorageComponent? record) && record.Key is { } key)
+            return key.Id != id || EntMan.GetNetEntity(key.OriginStation) != station;
+
+        return report == null || !EntMan.TryGetComponent(actor, out MetaDataComponent? metadata) ||
+               !string.Equals(metadata.EntityName, report.Suspect, StringComparison.Ordinal);
     }
 }

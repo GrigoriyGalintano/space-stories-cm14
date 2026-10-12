@@ -1,5 +1,5 @@
 # Marine law from the corresponding in-game guidebook.
-ent-RMCMarineLaw = RMC14 Marine Law
+ent-RMCMarineLaw = USMC Marine Law
 rmc-law-catalogue-sentencing = Sentences are added together. Ordinary brig time is limited to 30 minutes; offences committed in confinement can extend it. Capital and precautionary sanctions are separate from timed imprisonment.
 rmc-law-catalogue-minor = Minor crimes may instead be punished with an NJP or a warning.
 rmc-law-catalogue-capital = Permanent confinement and demotion, or execution and ID termination.

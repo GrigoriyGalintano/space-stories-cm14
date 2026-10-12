@@ -2,7 +2,7 @@
 # Separate severity variants preserve the circumstances and sanctions specified in the guide.
 - type: entity
   id: STMarineLaw
-  name: Space Stories Marine Law
+  name: USMC Marine Law
   categories: [ HideSpawnMenu ]
   components:
   - type: RMCMarineLawCatalogue

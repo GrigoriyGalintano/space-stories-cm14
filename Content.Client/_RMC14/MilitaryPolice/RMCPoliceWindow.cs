@@ -174,13 +174,14 @@ public abstract class RMCPoliceWindow : DefaultWindow
     }
 
     protected static void IncidentDetails(BoxContainer container, RMCIncidentReport report,
-        IPrototypeManager prototypes, IComponentFactory factory, bool includeSentence = true)
+        IPrototypeManager prototypes, IComponentFactory factory, bool includeSentence = true, bool forCell = false)
     {
-        container.AddChild(Text(Loc.GetString("rmc-police-suspect-value", ("name", report.Suspect))));
+        container.AddChild(Text(Loc.GetString(forCell ? "rmc-brig-prisoner-value" : "rmc-police-suspect-value",
+            ("name", report.Suspect))));
         if (includeSentence)
             container.AddChild(Text(Loc.GetString("rmc-police-sentence-value",
                 ("sentence", Sentence(report, prototypes, factory))), RMCCrtTone.Warning));
-        if (report.Detention is { } detention)
+        if (!forCell && report.Detention is { } detention)
             container.AddChild(Text(detention.GetDescription(), RMCCrtTone.Warning));
         container.AddChild(new RMCCrtSeparator());
         container.AddChild(Heading("rmc-police-summary"));
@@ -192,8 +193,12 @@ public abstract class RMCPoliceWindow : DefaultWindow
             if (prototypes.TryIndex(charge.Law, out var law))
             {
                 container.AddChild(Text($"• {Loc.GetString(law.Name)}"));
-                container.AddChild(Text(RMCMarineSentence.DescribePunishmentField(law.Punishment, law.BrigTime),
-                    RMCCrtTone.Warning));
+                var details = forCell
+                    ? Text(Loc.GetString(law.Description), RMCCrtTone.Muted)
+                    : Text(RMCMarineSentence.DescribePunishmentField(law.Punishment, law.BrigTime), RMCCrtTone.Warning);
+                if (forCell)
+                    details.Margin = new Thickness(12, 0, 0, 4);
+                container.AddChild(details);
                 if (charge.RelatedCrime is { } related && prototypes.TryIndex(related, out var relatedLaw))
                     container.AddChild(Text(Loc.GetString("rmc-police-related-crime-value",
                         ("crime", Loc.GetString(relatedLaw.Name))), RMCCrtTone.Muted));

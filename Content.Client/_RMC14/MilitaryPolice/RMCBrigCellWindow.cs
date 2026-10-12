@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Client._RMC14.UserInterface.Crt;
 using Content.Shared._RMC14.MilitaryPolice;
+using Content.Shared._RMC14.RMCClock;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -10,6 +11,7 @@ namespace Content.Client._RMC14.MilitaryPolice;
 public sealed class RMCBrigCellWindow : RMCPoliceWindow
 {
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
+    [Dependency] private readonly IEntitySystemManager _systems = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
     public event Action<RMCBrigCellMsg>? Message;
@@ -17,6 +19,8 @@ public sealed class RMCBrigCellWindow : RMCPoliceWindow
 
     private RMCBrigCellBuiState? _state;
     private RMCCrtLabel? _timer;
+    private RMCCrtLabel? _served;
+    private RMCCrtLabel? _finish;
     private readonly RMCCrtActionButton _doors;
     private bool _canPardon;
     private TimeSpan _nextPermissionRefresh;
@@ -36,6 +40,8 @@ public sealed class RMCBrigCellWindow : RMCPoliceWindow
         Title = state.CellName;
         _canPardon = canPardon;
         _timer = null;
+        _served = null;
+        _finish = null;
         Left.DisposeAllChildren();
         Right.DisposeAllChildren();
         Left.AddChild(Heading("rmc-brig-reports"));
@@ -59,10 +65,29 @@ public sealed class RMCBrigCellWindow : RMCPoliceWindow
 
         var report = selected.Report;
         var detention = report.Detention?.Status ?? RMCBrigSentenceStatus.Ready;
+        IncidentDetails(Right, report, _prototypes, ComponentFactory, includeSentence: false, forCell: true);
+        Right.AddChild(new RMCCrtSeparator { Margin = new Thickness(0, 6) });
+        Right.AddChild(Text(Loc.GetString("rmc-brig-total-sentence",
+            ("sentence", Sentence(report, _prototypes, ComponentFactory))), RMCCrtTone.Warning));
         Right.AddChild(Heading("rmc-brig-timer"));
+        if (detention is not (RMCBrigSentenceStatus.Served or RMCBrigSentenceStatus.Pardoned))
+            Right.AddChild(Text(Loc.GetString("rmc-brig-status-value",
+                ("status", Loc.GetString($"rmc-brig-status-{detention}"))), RMCCrtTone.Muted));
+        if (report.FinalSentence is { Punishment: RMCMarineLawPunishment.Brig } &&
+            detention is not (RMCBrigSentenceStatus.Served or RMCBrigSentenceStatus.Pardoned))
+            Right.AddChild(Text(Loc.GetString("rmc-brig-remaining"), RMCCrtTone.Muted));
         _timer = Text(string.Empty, RMCCrtTone.Warning);
         _timer.TextFontSize = 18;
         Right.AddChild(_timer);
+        _served = Text(string.Empty, RMCCrtTone.Warning);
+        Right.AddChild(_served);
+        if (report.Detention?.StartedAt is { } started)
+            Right.AddChild(Text(Loc.GetString("rmc-brig-started-at", ("time", started.ToString(@"hh\:mm\:ss")))));
+        _finish = Text(string.Empty);
+        Right.AddChild(_finish);
+        if (report.Detention is { PardonedBy: { } officer, PardonedAt: { } pardoned })
+            Right.AddChild(Text(Loc.GetString("rmc-brig-pardoned-by",
+                ("officer", officer), ("time", pardoned.ToString(@"hh\:mm\:ss")))));
         UpdateTimer();
 
         var actions = Horizontal();
@@ -89,8 +114,6 @@ public sealed class RMCBrigCellWindow : RMCPoliceWindow
             Right.AddChild(Button("rmc-brig-pardon", () => ConfirmAction(RMCBrigCellAction.Pardon, "rmc-brig-pardon"),
                 RMCCrtIcons.Ban, danger: true));
         }
-        Right.AddChild(new RMCCrtSeparator());
-        IncidentDetails(Right, report, _prototypes, ComponentFactory);
     }
 
     protected override void FrameUpdate(FrameEventArgs args)
@@ -111,13 +134,33 @@ public sealed class RMCBrigCellWindow : RMCPoliceWindow
             return;
         var report = selected.Report;
         var status = report.Detention?.Status ?? RMCBrigSentenceStatus.Ready;
+        var served = (report.Detention ?? new RMCBrigSentence()).GetTimeServed(_timing.CurTime,
+            _state.ActiveReport == selected.Paper ? _state.StartedAt : null, report.FinalSentence);
         _timer.Text = status is RMCBrigSentenceStatus.Served or RMCBrigSentenceStatus.Pardoned
             ? Loc.GetString($"rmc-brig-status-{status}")
             : report.FinalSentence is { Punishment: RMCMarineLawPunishment.Brig } sentence
                 ? RMCBrigSentence.FormatTime(_state.ActiveReport == selected.Paper && _state.FinishAt is { } deadline
                     ? deadline - _timing.CurTime
-                    : TimeSpan.FromMinutes(sentence.BrigTime) - (report.Detention?.TimeServed ?? TimeSpan.Zero))
+                    : TimeSpan.FromMinutes(sentence.BrigTime) - served)
                 : Loc.GetString("rmc-brig-indefinite");
+        if (_served != null)
+            _served.Text = Loc.GetString("rmc-brig-time-served",
+                ("time", RMCBrigSentence.FormatTime(served, roundUp: false)));
+        if (_finish != null)
+        {
+            var finished = report.Detention?.FinishedAt;
+            if (status == RMCBrigSentenceStatus.Pardoned)
+                _finish.Text = string.Empty;
+            else if (finished != null)
+                _finish.Text = Loc.GetString("rmc-brig-finished-at", ("time", finished.Value.ToString(@"hh\:mm\:ss")));
+            else if (_state.ActiveReport == selected.Paper && _state.FinishAt is { } finishAt)
+                _finish.Text = Loc.GetString("rmc-brig-expected-end",
+                    ("time", (_systems.GetEntitySystem<RMCClockSystem>().GetWorldTime() + (finishAt > _timing.CurTime
+                        ? finishAt - _timing.CurTime : TimeSpan.Zero)).ToString("HH:mm:ss")));
+            else
+                _finish.Text = string.Empty;
+            _finish.Visible = !string.IsNullOrEmpty(_finish.Text);
+        }
     }
 
     private void Send(RMCBrigCellAction action, NetEntity? paper = null)

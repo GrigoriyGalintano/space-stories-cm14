@@ -5,6 +5,7 @@ using Content.Server.DeviceLinking.Systems;
 using Content.Shared._RMC14.Marines.Announce;
 using Content.Shared._RMC14.MilitaryPolice;
 using Content.Shared._RMC14.Power;
+using Content.Shared._RMC14.RMCClock;
 using Content.Shared.Access.Systems;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Administration.Logs;
@@ -37,6 +38,7 @@ public sealed class RMCBrigCellSystem : EntitySystem
     [Dependency] private readonly ISharedAdminLogManager _adminLog = default!;
     [Dependency] private readonly SharedMarineAnnounceSystem _announce = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
+    [Dependency] private readonly RMCClockSystem _clock = default!;
     [Dependency] private readonly SharedContainerSystem _containers = default!;
     [Dependency] private readonly DeviceLinkSystem _links = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
@@ -227,6 +229,7 @@ public sealed class RMCBrigCellSystem : EntitySystem
                     ? _timing.CurTime + TimeSpan.FromMinutes(report.FinalSentence.Value.BrigTime) - detention.TimeServed
                     : null;
                 detention.Status = RMCBrigSentenceStatus.Active;
+                detention.StartedAt ??= _clock.GetWorldTime().TimeOfDay;
                 report.Detention = detention;
                 _links.InvokePort(ent, RMCBrigCellComponent.StartPort);
                 LogChange(ent, args.Actor, $"started the sentence for {report.Suspect}");
@@ -260,6 +263,11 @@ public sealed class RMCBrigCellSystem : EntitySystem
                     Error(args.Actor, "rmc-brig-pardon-denied");
                     return;
                 }
+                if (_police.IsReportSubject(args.Actor, report))
+                {
+                    Error(args.Actor, "rmc-brig-pardon-self-denied");
+                    return;
+                }
                 if (ent.Comp.ActiveReport == paper.Owner)
                 {
                     Pause(ent);
@@ -267,7 +275,8 @@ public sealed class RMCBrigCellSystem : EntitySystem
                 }
                 detention.Status = RMCBrigSentenceStatus.Pardoned;
                 detention.PardonedBy = Name(args.Actor);
-                detention.PardonedAt = _timing.CurTime;
+                detention.PardonedAt = _clock.GetWorldTime().TimeOfDay;
+                detention.FinishedAt = detention.PardonedAt;
                 report.Detention = detention;
                 LogChange(ent, args.Actor, $"pardoned {report.Suspect}", LogImpact.High);
                 Announce(ent, "rmc-brig-announcement-pardon", report);
@@ -303,10 +312,8 @@ public sealed class RMCBrigCellSystem : EntitySystem
 
     private TimeSpan Elapsed(Entity<RMCBrigCellComponent> ent, RMCIncidentReport report)
     {
-        var elapsed = (report.Detention?.TimeServed ?? TimeSpan.Zero) + _timing.CurTime - ent.Comp.StartedAt;
-        if (report.FinalSentence is { Punishment: RMCMarineLawPunishment.Brig } sentence)
-            elapsed = TimeSpan.FromTicks(Math.Min(elapsed.Ticks, TimeSpan.FromMinutes(sentence.BrigTime).Ticks));
-        return elapsed < TimeSpan.Zero ? TimeSpan.Zero : elapsed;
+        return (report.Detention ?? new RMCBrigSentence()).GetTimeServed(_timing.CurTime,
+            ent.Comp.StartedAt, report.FinalSentence);
     }
 
     private void Pause(Entity<RMCBrigCellComponent> ent)
@@ -329,6 +336,7 @@ public sealed class RMCBrigCellSystem : EntitySystem
         var detention = report.Detention ?? new RMCBrigSentence();
         detention.TimeServed = Elapsed(ent, report);
         detention.Status = RMCBrigSentenceStatus.Served;
+        detention.FinishedAt = _clock.GetWorldTime().TimeOfDay;
         report.Detention = detention;
         ent.Comp.ActiveReport = null;
         ent.Comp.FinishAt = null;
@@ -366,7 +374,7 @@ public sealed class RMCBrigCellSystem : EntitySystem
         }
         _ui.SetUiState(ent.Owner, RMCBrigCellUiKey.Key, new RMCBrigCellBuiState(CellName(ent), reports,
             GetNetEntity(ent.Comp.ViewedReport), GetNetEntity(ent.Comp.ActiveReport), ent.Comp.FinishAt,
-            ent.Comp.Revision, doors.DoorsOpen, doors.CanToggleDoors));
+            ent.Comp.Revision, doors.DoorsOpen, doors.CanToggleDoors, ent.Comp.StartedAt));
         UpdateScreen(ent);
     }
 

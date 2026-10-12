@@ -1,5 +1,5 @@
 # Marine law from the corresponding in-game guidebook.
-ent-STMarineLaw = Space Stories Marine Law
+ent-STMarineLaw = USMC Marine Law
 stories-law-catalogue-sentencing = Sentences are added together. Ordinary brig time is limited to 30 minutes, except for major crimes or extensions for offences committed in confinement. Capital and precautionary sanctions are separate from timed imprisonment.
 stories-law-catalogue-minor = Minor crimes may instead be punished with an NJP.
 stories-law-catalogue-capital = Permanent confinement and demotion, or execution and ID termination.

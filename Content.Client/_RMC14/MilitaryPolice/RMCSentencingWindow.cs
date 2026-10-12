@@ -15,7 +15,7 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
 
     public event Action<RMCSentencingMsg>? Message;
     private readonly RMCCrtLineEdit _search = new();
-    private readonly RMCCrtOptionButton _category = new();
+    private readonly RMCCrtOptionButton _category = new() { IconTexturePath = RMCCrtIcons.FilterTexture };
     private readonly BoxContainer _catalogue = Vertical();
     private readonly RMCCrtLabel _sectionNotes = Text(string.Empty, RMCCrtTone.Muted);
     private readonly RMCCrtLabel _sentencingNotes = Text(string.Empty, RMCCrtTone.Muted);
@@ -127,6 +127,7 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
         summary.AddChild(Heading("rmc-police-summary"));
         var editSummary = Button("rmc-police-edit", () =>
             EditReport("rmc-police-summary", report.Summary, RMCSentencingAction.Summary));
+        editSummary.IconTexturePath = RMCCrtIcons.PencilTexture;
         editSummary.HorizontalExpand = false;
         editSummary.ToolTip = Loc.GetString("rmc-police-edit-summary");
         summary.AddChild(editSummary);
@@ -214,6 +215,7 @@ public sealed class RMCSentencingWindow : RMCPoliceWindow
             row.HorizontalAlignment = HAlignment.Right;
             var edit = Button("rmc-police-edit", () => EditReport("rmc-police-edit-notes", entry.Notes,
                 witnesses ? RMCSentencingAction.EditWitness : RMCSentencingAction.EditEvidence, index));
+            edit.IconTexturePath = RMCCrtIcons.PencilTexture;
             edit.HorizontalExpand = false;
             edit.ToolTip = Loc.GetString("rmc-police-edit-notes");
             row.AddChild(edit);

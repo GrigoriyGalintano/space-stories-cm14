@@ -1,6 +1,8 @@
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
+using Content.Shared.Players.PlayTimeTracking;
 using Content.Shared.Preferences;
+using Content.Shared.Roles;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
@@ -40,6 +42,9 @@ public enum RMCPoliceMentalStatus : byte
 [Serializable, NetSerializable, DataDefinition]
 public sealed partial class RMCPoliceRecord
 {
+    public static bool CanAssignJob(IPrototypeManager prototypes, JobPrototype job) =>
+        job.IsCM && prototypes.TryIndex<PlayTimeTrackerPrototype>(job.PlayTimeTracker, out var tracker) && !tracker.IsXeno;
+
     public static (int Min, int Max) GetAgeLimits(IPrototypeManager prototypes, HumanoidCharacterProfile? portrait)
     {
         var species = prototypes.Index<SpeciesPrototype>(portrait?.Species ?? SharedHumanoidAppearanceSystem.DefaultSpecies);

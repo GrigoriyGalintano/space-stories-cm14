@@ -2,7 +2,7 @@
 # Separate severity variants preserve the circumstances and sanctions specified in the guide.
 - type: entity
   id: RMCMarineLaw
-  name: RMC14 Marine Law
+  name: USMC Marine Law
   categories: [ HideSpawnMenu ]
   components:
   - type: RMCMarineLawCatalogue

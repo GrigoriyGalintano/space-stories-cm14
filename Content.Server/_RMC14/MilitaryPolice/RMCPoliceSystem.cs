@@ -525,7 +525,8 @@ public sealed class RMCPoliceSystem : EntitySystem
                     Error(args.Actor, "rmc-police-high-command-only");
                     return;
                 }
-                if (!_prototypes.TryIndex<Content.Shared.Roles.JobPrototype>(value, out var job))
+                if (!_prototypes.TryIndex<Content.Shared.Roles.JobPrototype>(value, out var job) ||
+                    !RMCPoliceRecord.CanAssignJob(_prototypes, job))
                     return;
                 general.JobPrototype = job.ID;
                 general.JobTitle = job.LocalizedName;
@@ -936,6 +937,20 @@ public sealed class RMCPoliceSystem : EntitySystem
         _popup.PopupEntity(Loc.GetString("rmc-police-insubordination-reported"), target.Value, target.Value);
         _popup.PopupEntity(Loc.GetString("rmc-police-insubordination-confirmed"), ent, args.Actor);
         _records.Synchronize(key);
+    }
+
+    public bool IsReportSubject(EntityUid actor, RMCIncidentReport report)
+    {
+        if (report.RecordId is { } id && report.RecordStation is { } netStation && TryGetEntity(netStation, out var station))
+        {
+            if (TryComp<RMCPoliceIdentityComponent>(actor, out var identity))
+                return identity.Key.Id == id && identity.Key.OriginStation == station;
+            if (TryEnlistmentKey(actor, station, out var key))
+                return key.Id == id;
+        }
+
+        // Reports made from an unregistered ID still identify the subject by their recorded name.
+        return string.Equals(Name(actor), report.Suspect, StringComparison.Ordinal);
     }
 
     private bool TryEnlistmentKey(EntityUid marine, EntityUid? station, out StationRecordKey key)

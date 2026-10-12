@@ -26,6 +26,7 @@ public sealed partial class RMCCrtActionButton : ContainerButton, IRMCCrtThemedC
     private int _contentSeparation = 7;
     private float _iconSize = 18;
     private string? _iconState;
+    private string? _iconTexturePath;
     private ResPath _iconRsiPath = DefaultIconRsiPath;
     private string? _text;
     private RMCCrtThemeContext _context = new(
@@ -55,6 +56,21 @@ public sealed partial class RMCCrtActionButton : ContainerButton, IRMCCrtThemedC
         set
         {
             _iconState = value;
+            _iconTexturePath = null;
+            UpdateIcon();
+        }
+    }
+
+    /// <summary>
+    /// Uses an existing texture instead of an RSI state. It keeps the button's size and palette tint.
+    /// </summary>
+    public string? IconTexturePath
+    {
+        get => _iconTexturePath;
+        set
+        {
+            _iconTexturePath = value;
+            _iconState = null;
             UpdateIcon();
         }
     }
@@ -202,7 +218,7 @@ public sealed partial class RMCCrtActionButton : ContainerButton, IRMCCrtThemedC
         if (NameScope == null)
             return;
 
-        if (string.IsNullOrWhiteSpace(IconState))
+        if (string.IsNullOrWhiteSpace(IconState) && string.IsNullOrWhiteSpace(IconTexturePath))
         {
             IconTexture = null;
             return;
@@ -210,6 +226,12 @@ public sealed partial class RMCCrtActionButton : ContainerButton, IRMCCrtThemedC
 
         try
         {
+            if (!string.IsNullOrWhiteSpace(IconTexturePath))
+            {
+                IconTexture = _resourceCache.GetResource<TextureResource>(IconTexturePath).Texture;
+                return;
+            }
+
             var rsi = _resourceCache.GetResource<RSIResource>(IconRsiPath).RSI;
             if (rsi.TryGetState(new RSI.StateId(IconState), out var state))
             {
@@ -223,7 +245,7 @@ public sealed partial class RMCCrtActionButton : ContainerButton, IRMCCrtThemedC
         catch (Exception exception)
         {
             IconTexture = null;
-            Log.Error($"Failed to load CRT icon state '{IconState}' from '{IconRsiPath}': {exception}");
+            Log.Error($"Failed to load CRT icon '{IconTexturePath ?? IconState}' from '{IconRsiPath}': {exception}");
         }
     }
 
@@ -324,6 +346,9 @@ public sealed partial class RMCCrtActionButton : ContainerButton, IRMCCrtThemedC
                 _ => palette.Foreground,
             };
         }
+
+        if (DrawMode == DrawModeEnum.Hover && !isDanger)
+            border = palette.Foreground;
 
         Background.SetColorOverrides(background, border);
         IconControl.ModulateSelfOverride = foreground;

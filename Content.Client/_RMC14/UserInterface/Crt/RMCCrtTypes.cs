@@ -98,7 +98,7 @@ public readonly record struct RMCCrtPalette(
 {
     public Color ButtonBackground => Color.InterpolateBetween(Background, Fill, 0.25f);
 
-    public Color HoverBackground => Color.InterpolateBetween(Background, Fill, 0.3f);
+    public Color HoverBackground => Color.InterpolateBetween(Background, Fill, 0.5f);
 
     public Color PressedBackground => Color.InterpolateBetween(Background, Fill, 0.65f);
 }
@@ -149,6 +149,9 @@ public static class RMCCrtPalettes
 
 public static class RMCCrtIcons
 {
+    public const string FilterTexture = "/Textures/Interface/Nano/filter.svg.96dpi.png";
+    public const string PencilTexture = "/Textures/Interface/pencil.png";
+
     public const string Ban = "ban";
     public const string Bullhorn = "bullhorn";
     public const string Cog = "cog";
