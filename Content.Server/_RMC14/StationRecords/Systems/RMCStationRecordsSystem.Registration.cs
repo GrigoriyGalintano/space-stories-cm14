@@ -55,14 +55,15 @@ public sealed partial class RMCStationRecordsSystem
     public bool TryGetRecordKey(EntityUid person, EntityUid? station, out StationRecordKey key)
     {
         key = default;
-        if (station == null)
+        if (station == null || TerminatingOrDeleted(station.Value) ||
+            !TryComp<StationRecordsComponent>(station.Value, out var records))
             return false;
 
         if (TryComp<RMCStationRecordIdentityComponent>(person, out var identity) &&
             identity.Records.TryGetValue(station.Value, out var id))
         {
             key = new StationRecordKey(id, station.Value);
-            if (_record.TryGetRecord<GeneralStationRecord>(key, out _))
+            if (_record.TryGetRecord<GeneralStationRecord>(key, out _, records))
                 return true;
             identity.Records.Remove(station.Value);
             if (identity.ActiveStation == station)
@@ -75,7 +76,7 @@ public sealed partial class RMCStationRecordsSystem
 
         var dna = CompOrNull<DnaComponent>(person)?.DNA;
         var found = false;
-        foreach (var (recordId, record) in _record.GetRecordsOfType<GeneralStationRecord>(station.Value))
+        foreach (var (recordId, record) in _record.GetRecordsOfType<GeneralStationRecord>(station.Value, records))
         {
             if (record.Fingerprint != fingerprint || !string.IsNullOrEmpty(record.DNA) && record.DNA != dna)
                 continue;

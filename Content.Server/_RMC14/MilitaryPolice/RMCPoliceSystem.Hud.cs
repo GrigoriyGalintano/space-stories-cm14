@@ -38,6 +38,9 @@ public sealed partial class RMCPoliceSystem
 
     private void RefreshHud(EntityUid wearer)
     {
+        if (TerminatingOrDeleted(wearer))
+            return;
+
         if (!TryHudKey(wearer, out var key) ||
             !_records.TryGetRecord<RMCPoliceRecord>(key, out var record))
         {
@@ -61,7 +64,9 @@ public sealed partial class RMCPoliceSystem
         if (_rmcRecords.TryGetRecordKey(person, _station.GetOwningStation(person), out key))
             return true;
         if (TryWornId(person, out var card) && CompOrNull<StationRecordKeyStorageComponent>(card)?.Key is { } cardKey &&
-            _records.TryGetRecord<GeneralStationRecord>(cardKey, out _))
+            !TerminatingOrDeleted(cardKey.OriginStation) &&
+            TryComp<StationRecordsComponent>(cardKey.OriginStation, out var records) &&
+            _records.TryGetRecord<GeneralStationRecord>(cardKey, out _, records))
         {
             if (!_rmcRecords.TryGetRecordKey(person, cardKey.OriginStation, out key))
                 key = cardKey;
@@ -74,7 +79,9 @@ public sealed partial class RMCPoliceSystem
             foreach (var (station, id) in identity.Records)
             {
                 var candidate = new StationRecordKey(id, station);
-                if (!_records.TryGetRecord<RMCPoliceRecord>(candidate, out _))
+                if (TerminatingOrDeleted(station) ||
+                    !TryComp<StationRecordsComponent>(station, out var stationRecords) ||
+                    !_records.TryGetRecord<RMCPoliceRecord>(candidate, out _, stationRecords))
                     continue;
                 if (found)
                     return false;
