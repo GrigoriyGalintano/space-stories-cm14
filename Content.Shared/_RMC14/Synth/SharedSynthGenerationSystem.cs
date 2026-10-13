@@ -7,6 +7,7 @@ using Content.Shared.Actions.Components;
 using Content.Shared.Damage;
 using Content.Shared.GameTicking;
 using Content.Shared.Movement.Components;
+using Content.Shared.Movement.Systems;
 using Content.Shared.Prototypes;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Network;
@@ -24,6 +25,7 @@ public sealed class SharedSynthGenerationSystem : EntitySystem
     [Dependency] private readonly INetManager _net = default!;
     [Dependency] private readonly DialogSystem _dialog = default!;
     [Dependency] private readonly DamageableSystem _damageable = default!;
+    [Dependency] private readonly MovementSpeedModifierSystem _movementSpeed = default!; // Stories-Synth
 
     public override void Initialize()
     {
@@ -35,15 +37,47 @@ public sealed class SharedSynthGenerationSystem : EntitySystem
         SubscribeLocalEvent<SynthGenerationComponent, MapInitEvent>(OnGenerationMapInit);
         SubscribeLocalEvent<SynthGenerationComponent, PlayerAttachedEvent>(OnGenerationPlayerAttached);
         SubscribeLocalEvent<SynthGenerationComponent, PlayerSpawnCompleteEvent>(OnGenerationSpawnComplete);
+        SubscribeLocalEvent<SynthComponent, PlayerSpawnCompleteEvent>(OnSynthSpawnComplete); // Stories-SynthGenerationFix
     }
+
+    // Stories-SynthGenerationFix-Start
+    private void OnSynthSpawnComplete(Entity<SynthComponent> ent, ref PlayerSpawnCompleteEvent args)
+    {
+        SynthStartup(ent);
+    }
+    // Stories-SynthGenerationFix-End
 
     public void SynthStartup(Entity<SynthComponent> ent)
     {
         EnsureComp(ent, out SynthGenerationComponent comp);
 
-        if (comp.Generation != null)
+        if (comp.Generation is { } generation)
         {
-            ApplyGenerationModifier((ent.Owner, comp));
+            // Stories-SynthGenerationFix-Start
+            if (comp.SelectGenerationActionEntity != null)
+            {
+                _actions.RemoveAction(ent.Owner, comp.SelectGenerationActionEntity);
+                comp.SelectGenerationActionEntity = null;
+                Dirty(ent.Owner, comp);
+            }
+            // Stories-SynthGenerationFix-End
+
+            // Stories-SynthGenerationFix-Start
+            var selectable = comp.Selectable;
+
+            if (_prototype.TryIndex(generation, out var proto))
+            {
+                EntityManager.AddComponents(ent.Owner, proto);
+                _movementSpeed.RefreshMovementSpeedModifiers(ent.Owner);
+            }
+
+            if (TryComp(ent.Owner, out SynthGenerationComponent? applied))
+            {
+                applied.Selectable = selectable;
+                Dirty(ent.Owner, applied);
+                ApplyGenerationModifier((ent.Owner, applied));
+            }
+            // Stories-SynthGenerationFix-End
 
             return;
         }
@@ -74,9 +108,37 @@ public sealed class SharedSynthGenerationSystem : EntitySystem
         if (!HasComp<RMCAdminSpawnedComponent>(ent))
             return;
 
+        // Stories-SynthGenerationFix-Start
+        if (ent.Comp.Generation != null && !ent.Comp.Selectable)
+            return;
+
+        ClearGeneration(ent);
+        // Stories-SynthGenerationFix-End
         GenerationPopup(ent);
     }
 
+    // Stories-SynthGenerationFix-Start
+    private void ClearGeneration(Entity<SynthGenerationComponent> ent)
+    {
+        if (ent.Comp.Generation is { } current && _prototype.TryIndex(current, out var proto))
+        {
+            var keep = _compFactory.GetComponentName(typeof(SynthGenerationComponent));
+            foreach (var (name, _) in proto.Components)
+            {
+                if (name == keep)
+                    continue;
+
+                EntityManager.RemoveComponent(ent.Owner, _compFactory.GetRegistration(name).Type);
+            }
+        }
+
+        ent.Comp.Generation = null;
+        Dirty(ent);
+        _actions.AddAction(ent.Owner, ref ent.Comp.SelectGenerationActionEntity, ent.Comp.GenerationAction);
+
+        _movementSpeed.RefreshMovementSpeedModifiers(ent.Owner);
+    }
+    // Stories-SynthGenerationFix-End
 
     private void OnGenerationSelectAction(Entity<SynthGenerationComponent> ent, ref GenerationSelectActionEvent args)
     {
@@ -112,7 +174,8 @@ public sealed class SharedSynthGenerationSystem : EntitySystem
             foreach (var id in ent.Comp.AvailableGenerations)
             {
                 if (_prototype.TryIndex(id, out var proto) &&
-                    proto.TryGetComponent(out SynthGenerationComponent? gen, _compFactory))
+                    proto.TryGetComponent(out SynthGenerationComponent? gen, _compFactory) &&
+                    gen.Selectable) // Stories-Synth
                     synthTypes.Add((proto, gen.Priority));
             }
         }
@@ -120,7 +183,8 @@ public sealed class SharedSynthGenerationSystem : EntitySystem
         {
             foreach (var proto in _prototype.EnumeratePrototypes<EntityPrototype>())
             {
-                if (proto.TryGetComponent(out SynthGenerationComponent? gen, _compFactory))
+                if (proto.TryGetComponent(out SynthGenerationComponent? gen, _compFactory) &&
+                    gen.Selectable) // Stories-Synth
                     synthTypes.Add((proto, gen.Priority));
             }
         }
@@ -173,6 +237,8 @@ public sealed class SharedSynthGenerationSystem : EntitySystem
 
         if (TryComp<SynthGenerationComponent>(ent, out var gen))
             ApplyGenerationModifier((ent.Owner, gen));
+
+        _movementSpeed.RefreshMovementSpeedModifiers(ent.Owner); // Stories-Synth
 
         _actions.RemoveAction(ent.Owner, actionEntity);
     }

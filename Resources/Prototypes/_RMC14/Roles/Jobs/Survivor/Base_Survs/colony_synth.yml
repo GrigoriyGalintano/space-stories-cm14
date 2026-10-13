@@ -34,6 +34,11 @@
     - type: IntelRescueSurvivorObjective
     - type: RMCSurvivor
     - type: MotionDetectorTracked
+    # Stories-Synth-Start
+    - type: SynthGeneration
+      generation: RMCSynthGenTwo
+      selectable: false
+    # Stories-Synth-End
     - type: Synth
   hidden: true
   useLoadoutOfJob: RMCSyntheticColony # for inheritance
