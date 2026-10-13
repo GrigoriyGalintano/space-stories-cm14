@@ -187,7 +187,7 @@
   components:
   - type: SynthGeneration
     generation: RMCARESWorker
-    damageModifier: RMCSynthGenOne
+    damageModifier: STJoeSynth
     selectable: false
   - type: STSynthHeavyGrab # Stories-SynthHeavyGrab
   - type: Skills
@@ -206,7 +206,6 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      399: Critical
       400: Dead
   - type: MovementSpeedModifier
     baseSprintSpeed: 3.8
