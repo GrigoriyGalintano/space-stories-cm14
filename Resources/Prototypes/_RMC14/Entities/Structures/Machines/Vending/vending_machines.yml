@@ -573,9 +573,7 @@
     CMBeltSecurityMP: 10
     CMFlash: 5
     RMCFoodDonut: 12
-    # RMC14-EvidenceBags-Start
     RMCBoxEvidence: 6
-    # RMC14-EvidenceBags-End
     CMArmorHelmetM10MP: 6
     # PeakedMPCap: 6
     CMHeadCapMP: 6
