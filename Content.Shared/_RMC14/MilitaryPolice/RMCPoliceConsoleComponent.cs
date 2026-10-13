@@ -30,7 +30,7 @@ public sealed partial class RMCPoliceConsoleComponent : Component
     public EntProtoId ReportPaper = "RMCIncidentReportPaper";
 
     [DataField]
-    public EntProtoId RecordPaper = "CMPaper";
+    public EntProtoId RecordPaper = "RMCPoliceRecordPaper";
 }
 
 [Serializable, NetSerializable]

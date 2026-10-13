@@ -66,7 +66,25 @@
   name: security records console
 
 - type: entity
+  abstract: true
   parent: CMPaper
+  id: RMCPolicePrintedPaper
+  components:
+  - type: Paper
+    editingDisabled: true
+  - type: PaperVisuals
+    backgroundImagePath: "/Textures/Interface/Paper/paper_background_default.svg.96dpi.png"
+    backgroundPatchMargin: 16.0, 16.0, 16.0, 16.0
+    contentMargin: 18.0, 18.0, 18.0, 18.0
+
+- type: entity
+  parent: RMCPolicePrintedPaper
+  id: RMCPoliceRecordPaper
+  name: security record
+  description: An official extract from the military police personnel database.
+
+- type: entity
+  parent: RMCPolicePrintedPaper
   id: RMCIncidentReportPaper
   name: encoded incident report
   description: An original incident report exported by the Jurisdictional Automated System.

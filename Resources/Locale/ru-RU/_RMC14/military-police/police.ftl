@@ -84,18 +84,6 @@ rmc-police-incidents = История происшествий
 rmc-police-print-record = Распечатать запись
 rmc-police-print-title = Полицейский отчёт ({$name})
 rmc-police-incident-print-title = Закодированный отчёт о происшествии ({$name})
-rmc-police-record-print =
-    КРИМИНАЛЬНАЯ ЗАПИСЬ
-    Имя: {$name}
-    Отпечаток: {$id}
-    Должность: {$rank}
-    Возраст: {$age}
-    Пол: {$gender}
-    Отряд: {$squad}
-    Физическое состояние: {$physical}
-    Психическое состояние: {$mental}
-    Криминальный статус: {$status}
-    Тяжкие преступления: {$crimes}
 rmc-police-fingerprints = Анализ отпечатков
 rmc-police-scanner-slot = Криминалистический сканер
 rmc-police-scanner-connected = Сканер подключён.
@@ -159,11 +147,6 @@ rmc-police-law-category-Major = Тяжкие преступления
 rmc-police-law-category-Capital = Особо тяжкие преступления
 rmc-police-law-category-Optional = Факультативные преступления
 rmc-police-law-category-Precautionary = Меры предосторожности
-rmc-police-incident-print =
-    ОТЧЁТ О ПРОИСШЕСТВИИ
-    Подозреваемый: {$name}
-    Итоговый приговор: {$sentence}
-    Описание: {$summary}
 rmc-police-mark-insubordination = Сообщить о неповиновении этого морпеха
 rmc-police-insubordination-charge = Неповиновение.
 rmc-police-insubordination-reported = Overwatch: офицер наблюдения сообщил о вашем неповиновении.

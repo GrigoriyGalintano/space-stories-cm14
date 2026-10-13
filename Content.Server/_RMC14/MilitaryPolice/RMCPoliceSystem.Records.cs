@@ -101,7 +101,7 @@ public sealed partial class RMCPoliceSystem
         if (args.Action == RMCPoliceRecordAction.Print)
         {
             Print(ent, args.Actor, ent.Comp.RecordPaper, general.Name,
-                FormatRecord(general, security ?? new RMCPoliceRecord()));
+                FormatRecord(args.Id, general, security ?? new RMCPoliceRecord()));
             return;
         }
 

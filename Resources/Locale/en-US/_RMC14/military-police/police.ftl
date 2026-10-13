@@ -84,18 +84,6 @@ rmc-police-incidents = Incident history
 rmc-police-print-record = Print record
 rmc-police-print-title = Security report ({$name})
 rmc-police-incident-print-title = Encoded incident report ({$name})
-rmc-police-record-print =
-    SECURITY RECORD
-    Name: {$name}
-    Fingerprint: {$id}
-    Position: {$rank}
-    Age: {$age}
-    Gender: {$gender}
-    Squad: {$squad}
-    Physical status: {$physical}
-    Mental status: {$mental}
-    Criminal status: {$status}
-    Major crimes: {$crimes}
 rmc-police-fingerprints = Fingerprint analysis
 rmc-police-scanner-slot = Forensic scanner
 rmc-police-scanner-connected = Scanner connected.
@@ -159,11 +147,6 @@ rmc-police-law-category-Major = Major crimes
 rmc-police-law-category-Capital = Capital crimes
 rmc-police-law-category-Optional = Optional crimes
 rmc-police-law-category-Precautionary = Precautionary charges
-rmc-police-incident-print =
-    INCIDENT REPORT
-    Suspect: {$name}
-    Total sentence: {$sentence}
-    Summary: {$summary}
 rmc-police-mark-insubordination = Report this marine for insubordination
 rmc-police-insubordination-charge = Insubordination.
 rmc-police-insubordination-reported = Overwatch: Your overwatch officer has reported you for insubordination.

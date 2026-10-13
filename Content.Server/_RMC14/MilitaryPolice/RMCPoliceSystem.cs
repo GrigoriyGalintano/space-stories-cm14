@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
 using Content.Server._RMC14.StationRecords;
 using Content.Server._RMC14.StationRecords.Systems;
 using Content.Server.Access.Systems;
@@ -292,10 +291,14 @@ public sealed partial class RMCPoliceSystem : EntitySystem
             var match = records.FirstOrDefault(view => !string.IsNullOrEmpty(clue.Fingerprint) &&
                                                        view.General.Fingerprint == clue.Fingerprint);
             var captured = !string.IsNullOrEmpty(clue.Name);
+            var rank = captured ? clue.Rank : match?.General.JobTitle;
+            var squad = captured ? clue.Squad : match?.General.Squad;
             entries.Add(new RMCIncidentEntry(
                 captured ? clue.Name : match?.General.Name ?? Loc.GetString("rmc-police-unknown"),
-                $"{(captured ? clue.Rank : match?.General.JobTitle)} / " +
-                $"{(captured ? clue.Squad : match?.General.Squad)}\n{clue.Fingerprint}\n{clue.Description}"));
+                Loc.GetString("rmc-police-fingerprint-details",
+                    ("rank", string.IsNullOrWhiteSpace(rank) ? Loc.GetString("rmc-police-unknown") : rank),
+                    ("squad", string.IsNullOrWhiteSpace(squad) ? Loc.GetString("rmc-police-unknown") : squad),
+                    ("fingerprint", clue.Fingerprint), ("description", clue.Description))));
         }
         return entries;
     }
@@ -351,7 +354,6 @@ public sealed partial class RMCPoliceSystem : EntitySystem
             case RMCPoliceRecordAction.PrintFingerprints:
                 if (scanner.Clues.Count == 0)
                     break;
-                var content = new StringBuilder(Loc.GetString("rmc-police-fingerprints"));
                 var station = GetStation(ent);
                 var records = new List<RMCPoliceRecordView>();
                 if (station != null)
@@ -359,10 +361,8 @@ public sealed partial class RMCPoliceSystem : EntitySystem
                     foreach (var (id, general) in _records.GetRecordsOfType<GeneralStationRecord>(station.Value))
                         records.Add(new RMCPoliceRecordView(id, general, null));
                 }
-                foreach (var clue in ClueEntries(scanner, records))
-                    content.AppendLine().AppendLine(clue.Name).AppendLine(clue.Notes);
                 Print(ent, args.Actor, ent.Comp.RecordPaper, Loc.GetString("rmc-police-fingerprints"),
-                    content.ToString());
+                    FormatFingerprints(ClueEntries(scanner, records)));
                 break;
         }
 
