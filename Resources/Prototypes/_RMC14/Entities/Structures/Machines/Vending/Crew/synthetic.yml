@@ -16,7 +16,7 @@
     - name: Standard Equipment
       takeAll: CMStandard
       entries:
-      # /obj/item/coin/marine/synth
+      - id: STSynthExperimentalToolsToken # Stories-SynthExperimentalToken
       # /obj/item/device/defibrillator/synthetic
       - id: RMCSynthResetKey
       - id: RMCHeadsetSynth
@@ -344,6 +344,10 @@
         points: 15
       - id: RMCSatchelMarineIntelChestrig
         points: 15
+      # Stories-SynthExperimentalMeson-Start
+      - id: RMCGlassesExperimentalMeson
+        points: 15
+      # Stories-SynthExperimentalMeson-End
 
 - type: entity
   parent: CMVendorBundleRiflemanApparel

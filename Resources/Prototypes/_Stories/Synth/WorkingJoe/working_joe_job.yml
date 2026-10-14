@@ -42,6 +42,7 @@
     - type: STSynthVoiceSynthesizer
       alternateSoundVariants:
       - Hazmat
+      alternateEmoteSounds: STWorkingJoeHazmatSounds
     - type: UserInterface
       interfaces:
         enum.STSynthVoiceUIKey.Key:

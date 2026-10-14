@@ -18,6 +18,8 @@ public sealed class STJobVariantGenerationSystem : EntitySystem
 
     private void OnPlayerSpawnComplete(Entity<STJobVariantGenerationComponent> ent, ref PlayerSpawnCompleteEvent args)
     {
+        ent.Comp.SpawnCompleted = true;
+
         if (args.JobId == null)
             return;
 

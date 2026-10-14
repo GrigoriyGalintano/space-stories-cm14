@@ -1,3 +1,4 @@
+using Content.Shared._RMC14.Xenonids.ClawSharpness;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.DoAfter;
@@ -59,7 +60,8 @@ public sealed class STWallBreacherSystem : EntitySystem
 
         args.Handled = true;
 
-        var doAfter = new DoAfterArgs(EntityManager, args.User, ent.Comp.Duration, new STWallBreachDoAfterEvent(), ent, target, ent)
+        var duration = IsReinforced(target) ? ent.Comp.ReinforcedDuration : ent.Comp.Duration;
+        var doAfter = new DoAfterArgs(EntityManager, args.User, duration, new STWallBreachDoAfterEvent(), ent, target, ent)
         {
             BreakOnMove = true,
             BreakOnDamage = true,
@@ -102,6 +104,12 @@ public sealed class STWallBreacherSystem : EntitySystem
         _damageable.TryChangeDamage(target, damage, true, damageable: damageable, origin: ent, tool: ent);
 
         _audio.PlayPvs(ent.Comp.FinishSound, Transform(target).Coordinates);
+    }
+
+    private bool IsReinforced(EntityUid wall)
+    {
+        return TryComp<ReceiverXenoClawsComponent>(wall, out var claws) &&
+               claws.MinimumClawStrength >= XenoClawType.VerySharp;
     }
 
     private bool IsWielded(EntityUid uid)

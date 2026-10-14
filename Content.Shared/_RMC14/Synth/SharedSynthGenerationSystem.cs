@@ -2,6 +2,7 @@ using Content.Shared._RMC14.Admin;
 using Content.Shared._RMC14.Dialog;
 using Content.Shared._RMC14.Humanoid;
 using Content.Shared._RMC14.Prototypes;
+using Content.Shared._Stories.Synth; // Stories-SynthGenerationVariant
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
 using Content.Shared.Damage;
@@ -44,6 +45,16 @@ public sealed class SharedSynthGenerationSystem : EntitySystem
     private void OnSynthSpawnComplete(Entity<SynthComponent> ent, ref PlayerSpawnCompleteEvent args)
     {
         SynthStartup(ent);
+
+        // Stories-SynthGenerationVariant-Start
+        if (HasComp<STJobVariantGenerationComponent>(ent) &&
+            !HasComp<RMCAdminSpawnedComponent>(ent) &&
+            TryComp(ent, out SynthGenerationComponent? generation) &&
+            generation.Generation == null)
+        {
+            GenerationPopup((ent.Owner, generation));
+        }
+        // Stories-SynthGenerationVariant-End
     }
     // Stories-SynthGenerationFix-End
 
@@ -99,6 +110,11 @@ public sealed class SharedSynthGenerationSystem : EntitySystem
     {
         if (ent.Comp.Generation != null)
             return;
+
+        // Stories-SynthGenerationVariant-Start
+        if (TryComp(ent, out STJobVariantGenerationComponent? variant) && !variant.SpawnCompleted)
+            return;
+        // Stories-SynthGenerationVariant-End
 
         GenerationPopup(ent);
     }

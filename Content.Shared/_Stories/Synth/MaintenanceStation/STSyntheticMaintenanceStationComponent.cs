@@ -4,10 +4,11 @@ using Content.Shared.FixedPoint;
 using Robust.Shared.Containers;
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization;
+using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
 namespace Content.Shared._Stories.Synth;
 
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState, AutoGenerateComponentPause]
 public sealed partial class STSyntheticMaintenanceStationComponent : Component
 {
     public const string BodyContainerId = "st_synthetic_maintenance_station_body";
@@ -63,7 +64,7 @@ public sealed partial class STSyntheticMaintenanceStationComponent : Component
     [DataField]
     public FixedPoint2 BloodRestoreAmount = 10;
 
-    [ViewVariables]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextUpdate;
 }
 

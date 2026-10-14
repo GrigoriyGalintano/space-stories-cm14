@@ -14,6 +14,9 @@ public sealed partial class STWallBreacherComponent : Component
     public TimeSpan Duration = TimeSpan.FromSeconds(5);
 
     [DataField, AutoNetworkedField]
+    public TimeSpan ReinforcedDuration = TimeSpan.FromSeconds(10);
+
+    [DataField, AutoNetworkedField]
     public FixedPoint2 Damage = 9999;
 
     [DataField, AutoNetworkedField]

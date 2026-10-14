@@ -82,7 +82,10 @@
     speechVerb: STWorkingJoe
     speechSounds: null
   - type: Vocal
-    sounds: null
+    sounds:
+      Male: STWorkingJoeSounds
+      Female: STWorkingJoeSounds
+      Unsexed: STWorkingJoeSounds
     screamAction: null
   - type: Deathgasp
     prototype: STWorkingJoeDeathGasp

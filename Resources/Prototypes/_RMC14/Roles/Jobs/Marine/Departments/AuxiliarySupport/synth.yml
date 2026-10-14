@@ -61,8 +61,10 @@
     - type: CMVendorUser
       id: RMCJobSynthetic
       points: 45
-      extraPoints:
-        ExperimentalTools: 30
+      # Stories-SynthExperimentalToken-Start
+      # extraPoints:
+      #   ExperimentalTools: 30
+      # Stories-SynthExperimentalToken-End
     - type: JobPrefix
       prefix: rmc-job-prefix-synth
     - type: TacticalMapIcon

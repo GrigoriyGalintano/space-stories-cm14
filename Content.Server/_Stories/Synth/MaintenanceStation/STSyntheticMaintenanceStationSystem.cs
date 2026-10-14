@@ -1,4 +1,7 @@
 using System.Numerics;
+using Content.Server.Atmos.Rotting;
+using Content.Server.EUI;
+using Content.Server.Ghost;
 using Content.Server.Power.EntitySystems;
 using Content.Shared._RMC14.Map;
 using Content.Shared._RMC14.Synth;
@@ -12,6 +15,7 @@ using Content.Shared.DragDrop;
 using Content.Shared.Examine;
 using Content.Shared.FixedPoint;
 using Content.Shared.Maps;
+using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -20,11 +24,13 @@ using Content.Shared.Physics;
 using Content.Shared.Popups;
 using Content.Shared.Stunnable;
 using Content.Shared.Tag;
+using Content.Shared.Traits.Assorted;
 using Content.Shared.Verbs;
 using Robust.Server.Containers;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Components;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
@@ -32,18 +38,23 @@ namespace Content.Server._Stories.Synth;
 
 public sealed class STSyntheticMaintenanceStationSystem : EntitySystem
 {
-    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly SharedBloodstreamSystem _bloodstream = default!;
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly EuiManager _euiManager = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly ISharedPlayerManager _player = default!;
+
     [Dependency] private readonly ContainerSystem _container = default!;
     [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly MobThresholdSystem _mobThreshold = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly RMCMapSystem _rmcMap = default!;
+    [Dependency] private readonly RottingSystem _rotting = default!;
+    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
+    [Dependency] private readonly SharedBloodstreamSystem _bloodstream = default!;
+    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
+    [Dependency] private readonly SharedMindSystem _mind = default!;
+    [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedStunSystem _stun = default!;
+    [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly TurfSystem _turf = default!;
 
     private static readonly ProtoId<TagPrototype> WallTag = "Wall";
@@ -122,7 +133,7 @@ public sealed class STSyntheticMaintenanceStationSystem : EntitySystem
         var user = args.User;
         args.Verbs.Add(new AlternativeVerb
         {
-            Act = () => Insert(ent, user),
+            Act = () => Insert(ent, user, user),
             Category = VerbCategory.Insert,
             Text = Loc.GetString("st-synthetic-maintenance-station-enter-verb"),
         });
@@ -134,7 +145,7 @@ public sealed class STSyntheticMaintenanceStationSystem : EntitySystem
             return;
 
         if (args.User == args.Dragged)
-            args.Handled = Insert(ent, args.Dragged);
+            args.Handled = Insert(ent, args.Dragged, args.User);
         else
             args.Handled = StartInsertDoAfter(ent, args.User, args.Dragged);
     }
@@ -163,7 +174,7 @@ public sealed class STSyntheticMaintenanceStationSystem : EntitySystem
 
         args.Handled = true;
         var inserted = GetEntity(args.Inserted);
-        Insert(ent, inserted);
+        Insert(ent, inserted, args.User);
     }
 
     public override void Update(float frameTime)
@@ -174,7 +185,7 @@ public sealed class STSyntheticMaintenanceStationSystem : EntitySystem
             if (_timing.CurTime < comp.NextUpdate)
                 continue;
 
-            comp.NextUpdate += comp.UpdateInterval;
+            comp.NextUpdate = _timing.CurTime + comp.UpdateInterval;
             Process((uid, comp));
         }
     }
@@ -254,7 +265,18 @@ public sealed class STSyntheticMaintenanceStationSystem : EntitySystem
             return;
         }
 
+        if (_rotting.IsRotten(contained) || HasComp<UnrevivableComponent>(contained))
+            return;
+
         _mobState.ChangeMobState(contained, MobState.Critical, mobState, station.Owner);
+        _mobThreshold.VerifyThresholds(contained);
+
+        if (_mind.TryGetMind(contained, out _, out var mind) &&
+            mind.CurrentEntity != contained &&
+            _player.TryGetSessionById(mind.UserId, out var session))
+        {
+            _euiManager.OpenEui(new ReturnToBodyEui(mind, _mind, _player), session);
+        }
     }
 
     private bool TryRestoreBlood(EntityUid contained, Entity<STSyntheticMaintenanceStationComponent> station)
@@ -270,7 +292,7 @@ public sealed class STSyntheticMaintenanceStationSystem : EntitySystem
 
     private bool StartInsertDoAfter(Entity<STSyntheticMaintenanceStationComponent> station, EntityUid user, EntityUid target)
     {
-        if (!CanInsert(station, target))
+        if (!CanInsert(station, target) || !CheckPower(station, user))
             return false;
 
         var ev = new STSyntheticMaintenanceStationInsertDoAfterEvent(GetNetEntity(target));
@@ -285,9 +307,9 @@ public sealed class STSyntheticMaintenanceStationSystem : EntitySystem
         return _doAfter.TryStartDoAfter(doAfter);
     }
 
-    private bool Insert(Entity<STSyntheticMaintenanceStationComponent> station, EntityUid target)
+    private bool Insert(Entity<STSyntheticMaintenanceStationComponent> station, EntityUid target, EntityUid user)
     {
-        if (!CanInsert(station, target))
+        if (!CanInsert(station, target) || !CheckPower(station, user))
             return false;
 
         if (!_container.Insert(target, station.Comp.BodyContainer))
@@ -345,6 +367,15 @@ public sealed class STSyntheticMaintenanceStationSystem : EntitySystem
         }
 
         return _container.CanInsert(target, station.Comp.BodyContainer);
+    }
+
+    private bool CheckPower(Entity<STSyntheticMaintenanceStationComponent> station, EntityUid user)
+    {
+        if (this.IsPowered(station.Owner, EntityManager) && station.Comp.CurrentInternalCharge > 0)
+            return true;
+
+        _popup.PopupEntity(Loc.GetString("stories-synthetic-maintenance-station-no-power", ("station", station.Owner)), station, user);
+        return false;
     }
 
     private bool IsOccupied(STSyntheticMaintenanceStationComponent component)

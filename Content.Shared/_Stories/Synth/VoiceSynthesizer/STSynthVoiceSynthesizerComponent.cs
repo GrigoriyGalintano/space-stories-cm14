@@ -1,3 +1,4 @@
+using Content.Shared.Chat.Prototypes;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
@@ -11,10 +12,16 @@ public sealed partial class STSynthVoiceSynthesizerComponent : Component
     public EntProtoId Action = "STActionWorkingJoeVoice";
 
     [DataField, AutoNetworkedField]
+    public EntityUid? ActionEntity;
+
+    [DataField, AutoNetworkedField]
     public bool UseAlternateSound;
 
     [DataField]
     public HashSet<string> AlternateSoundVariants = new();
+
+    [DataField]
+    public ProtoId<EmoteSoundsPrototype>? AlternateEmoteSounds;
 
     [DataField, AutoNetworkedField]
     public TimeSpan Cooldown = TimeSpan.FromSeconds(2);

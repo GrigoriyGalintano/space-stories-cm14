@@ -140,6 +140,12 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
             }
 
             DoJobSpecials(job, jobEntity);
+
+            // Stories-JobEntityIdCard-Start
+            if (prototype != null)
+                SetPdaAndIdCardData(jobEntity, Name(jobEntity), prototype, station);
+            // Stories-JobEntityIdCard-End
+
             _identity.QueueIdentityUpdate(jobEntity);
             return jobEntity;
         }

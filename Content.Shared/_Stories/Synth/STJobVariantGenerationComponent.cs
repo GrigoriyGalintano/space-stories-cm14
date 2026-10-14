@@ -8,4 +8,7 @@ public sealed partial class STJobVariantGenerationComponent : Component
 {
     [DataField(required: true)]
     public Dictionary<string, EntProtoId<SynthGenerationComponent>> Variants = new();
+
+    [ViewVariables]
+    public bool SpawnCompleted;
 }
