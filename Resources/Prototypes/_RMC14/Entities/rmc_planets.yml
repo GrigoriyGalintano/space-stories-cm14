@@ -112,6 +112,7 @@
     - CMSurvivorEngineer: 4
     - CMSurvivorSecurity: 2
     - CMSurvivorScientist: 2
+    - RMCSyntheticColony: 1 # Stories-SynthSurvivor
     survivorJobVariants:
       RMCSurvivorCommandingOfficer:
       - CMSurvivorSolarisCMBMarshal: 1
@@ -488,6 +489,7 @@
     - CMSurvivorEngineer: 4
     - CMSurvivorSecurity: 2
     - CMSurvivorScientist: 2
+    - RMCSyntheticColony: 1 # Stories-SynthSurvivor
     survivorJobVariants:
       RMCSurvivorCommandingOfficer:
       - RMCSurvivorCommanderNewVaradero: 1

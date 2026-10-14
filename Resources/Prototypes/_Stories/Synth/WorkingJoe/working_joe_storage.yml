@@ -5,6 +5,9 @@
   name: Seegson storage closet
   description: A storage closet for Working Joe synthetic units, built to keep them powered down and out of the way between shifts.
   components:
+  - type: SpawnPoint
+    spawn_type: Job
+    job_id: STJobWorkingJoe
   - type: Sprite
     sprite: _Stories/Synth/WorkingJoe/joe_storage.rsi
     drawdepth: Mobs

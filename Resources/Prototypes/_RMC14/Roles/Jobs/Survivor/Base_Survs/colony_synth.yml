@@ -40,7 +40,7 @@
       selectable: false
     # Stories-Synth-End
     - type: Synth
-  hidden: true
+  hidden: false # Stories-SynthSurvivor
   useLoadoutOfJob: RMCSyntheticColony # for inheritance
 
 - type: startingGear

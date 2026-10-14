@@ -6,7 +6,10 @@
   description: st-job-description-working-joe
   playTimeTracker: STJobWorkingJoe
   icon: "RMCJobIconSynth"
-  joinNotifyCrew: true
+  joinNotifyCrew: false
+  lateJoinAnnouncement: stories-latejoin-arrival-announcement-working-joe
+  lateJoinChannels:
+  - STApolloLink
   whitelisted: true
   supervisors: st-job-supervisors-ares
   accessGroups:
@@ -59,7 +62,7 @@
   - type: SpawnPoint
     job_id: STJobWorkingJoe
   - type: Sprite
-    state: syn_spawn
+    state: wj_spawn
 
 - type: playTimeTracker
   id: STJobWorkingJoe

@@ -4,3 +4,5 @@ st-job-supervisors-ares = ARES
 st-working-joe-name-prefix = Working Joe
 st-job-working-joe-variant-standard = Standard
 st-job-working-joe-variant-hazmat = Hazmat
+
+stories-latejoin-arrival-announcement-working-joe = {$character} has been activated.

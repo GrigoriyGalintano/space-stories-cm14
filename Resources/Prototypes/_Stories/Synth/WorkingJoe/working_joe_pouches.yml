@@ -56,7 +56,7 @@
     - id: RMCCableCoil30
     - id: CMMultitool
     - id: RMCLightReplacer
-    - id: RMCSynthResetKey
+    - id: STSynthResetKeySeegson
 
 - type: entity
   parent: RMCOuterClothingExternalWebbing
