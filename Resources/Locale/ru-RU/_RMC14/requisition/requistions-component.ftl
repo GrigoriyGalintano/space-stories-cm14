@@ -2,6 +2,24 @@
 requisition-paperwork-receiver-name = Отдел логистики
 requisition-paperwork-reward-message = Подтверждение получено! Переведено ${ $amount } из излишков бюджета.
 
+# Stories-BlackMarket-Start
+rmc-requisitions-category-ammo = Боеприпасы
+rmc-requisitions-category-attachments = Обвесы
+rmc-requisitions-category-clothing = Одежда
+rmc-requisitions-category-engineering = Инженерия
+rmc-requisitions-category-explosives = Взрывчатка
+rmc-requisitions-category-food = Еда
+rmc-requisitions-category-gear = Снаряжение
+rmc-requisitions-category-medical = Медицина
+rmc-requisitions-category-mortar = Мортира
+rmc-requisitions-category-reagent-tanks = Резервуары для реагентов
+rmc-requisitions-category-research = Исследование
+rmc-requisitions-category-restricted-equipment = Ограниченное оборудование
+rmc-requisitions-category-vehicle-ammo = Боеприпасы для техники
+rmc-requisitions-category-weapons = Оружие
+rmc-requisitions-category-weapons-specialist-ammo = Боеприпасы специалиста по оружию
+# Stories-BlackMarket-End
+
 # Requisition Invoice
 requisition-paper-print-name = { $name } счет-фактура
 requisition-paper-print-manifest = { "[" }head=2]
