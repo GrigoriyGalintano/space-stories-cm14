@@ -141487,8 +141487,7 @@ entities:
   - uid: 19062
     components:
     - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -72.25,103.5
+      pos: -72.0625,103.5
       parent: 1
   - uid: 29025
     components:
@@ -185597,7 +185596,7 @@ entities:
   - uid: 19061
     components:
     - type: Transform
-      pos: -72.5619,103.52811
+      pos: -72.625,103.5
       parent: 1
   - uid: 19067
     components:
