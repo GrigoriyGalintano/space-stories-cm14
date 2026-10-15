@@ -23,3 +23,6 @@ ent-RMCSpaceCash500 = { ent-RMCSpaceCash1 }
 ent-RMCSpaceCash1000 = { ent-RMCSpaceCash1 }
     .desc = { ent-RMCSpaceCash1.desc }
     .suffix = 1000
+ent-RMCSpaceCash1000Counterfeit = { ent-RMCSpaceCash1000 }
+    .desc = { ent-RMCSpaceCash1000.desc }
+    .suffix = Поддельные
