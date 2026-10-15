@@ -27,7 +27,21 @@
       scenarioProbability: 0.1
     - scenarioName: none
       scenarioProbability: 0.9
+    # Stories-SynthSurvivor-Start
+    survivorJobs:
+    - RMCSyntheticColony: 1
+    - CMSurvivorEngineer: 4
+    - CMSurvivorDoctor: 3
+    - CMSurvivorSecurity: 2
+    - CMSurvivorCorporate: 2
+    - CMSurvivorScientist: 2
+    - CMSurvivor: -1
+    # Stories-SynthSurvivor-End
     survivorJobVariants:
+      # Stories-SynthSurvivor-Start
+      RMCSyntheticColony:
+      - STSyntheticColonyGeneral: 1
+      # Stories-SynthSurvivor-End
       CMSurvivor:
       - CMSurvivor: -1
       - RMCSurvivorCivilianUnique: 1
@@ -49,12 +63,17 @@
     survivorJobScenarios:
       asset_protection: # Corporate Dome Goons, order of job priority for goons. Scientist is overriden into doctor.
       - CMSurvivorCorporate: 1
+      - RMCSyntheticColony: 1 # Stories-SynthSurvivor
       - CMSurvivorEngineer: 1
       - CMSurvivorDoctor: 1
       - CMSurvivorSecurity: 1
       - CMSurvivor: -1
     survivorJobVariantScenarios:
       asset_protection: # Corporate Dome Goons
+        # Stories-SynthSurvivor-Start
+        RMCSyntheticColony:
+        - CMSurvivorLV624CorporateDomeGoonSynth: 1
+        # Stories-SynthSurvivor-End
         CMSurvivor:
         - CMSurvivorLV624CorporateDomeGoon: -1
         CMSurvivorCorporate:
@@ -106,14 +125,18 @@
       scenarioProbability: 0.8
     survivorJobs:
     - RMCSurvivorCommandingOfficer: 1
+    - RMCSyntheticColony: 1 # Stories-SynthSurvivor
     - CMSurvivor: -1
     - CMSurvivorCorporate: 2
     - CMSurvivorDoctor: 3
     - CMSurvivorEngineer: 4
     - CMSurvivorSecurity: 2
     - CMSurvivorScientist: 2
-    - RMCSyntheticColony: 1 # Stories-SynthSurvivor
     survivorJobVariants:
+      # Stories-SynthSurvivor-Start
+      RMCSyntheticColony:
+      - STSyntheticColonyGeneral: 1
+      # Stories-SynthSurvivor-End
       RMCSurvivorCommandingOfficer:
       - CMSurvivorSolarisCMBMarshal: 1
       CMSurvivor:
@@ -140,6 +163,7 @@
     survivorJobScenarios:
       crashlanding_offices: # PMC, order of job priority for PMCs. Scientist is overriden into doctor.
       - RMCSurvivorCommandingOfficer: 1
+      - RMCSyntheticColony: 1 # Stories-SynthSurvivor
       - CMSurvivorEngineer: 1
       - CMSurvivorDoctor: 1
       - CMSurvivorSecurity: 1
@@ -149,6 +173,10 @@
       crashlanding_offices: # PMC
         RMCSurvivorCommandingOfficer:
         - RMCSurvivorSolarisPMCCommander: 1
+        # Stories-SynthSurvivor-Start
+        RMCSyntheticColony:
+        - RMCSurvivorPMCSupportSynthetic: 1
+        # Stories-SynthSurvivor-End
         CMSurvivorSecurity:
         - RMCSurvivorSolarisPMCLeader: 1
         CMSurvivorDoctor:
@@ -214,7 +242,21 @@
       scenarioProbability: 0.15
     - scenarioName: none # 85% chance of regular surv. Reduce to 75% (0.75) once CLF survs are in.
       scenarioProbability: 0.85
+    # Stories-SynthSurvivor-Start
+    survivorJobs:
+    - RMCSyntheticColony: 1
+    - CMSurvivorEngineer: 4
+    - CMSurvivorDoctor: 3
+    - CMSurvivorSecurity: 2
+    - CMSurvivorCorporate: 2
+    - CMSurvivorScientist: 2
+    - CMSurvivor: -1
+    # Stories-SynthSurvivor-End
     survivorJobVariants: # Civ survivor is default one
+      # Stories-SynthSurvivor-Start
+      RMCSyntheticColony:
+      - STSyntheticColonyGeneral: 1
+      # Stories-SynthSurvivor-End
       CMSurvivorCorporate:
       - RMCSurvivorShivasCorporateLiaison: -1
       CMSurvivorDoctor:
@@ -229,6 +271,7 @@
     survivorJobScenarios:
       panic_room_hold:
       - CMSurvivorSecurity: 1
+      - RMCSyntheticColony: 1 # Stories-SynthSurvivor
       - CMSurvivor: 2
       - CMSurvivorCorporate: 1
       - CMSurvivorDoctor: 2
@@ -267,6 +310,10 @@
     map: /Maps/_RMC14/prison.yml
     camouflage: Classic
     minPlayers: 130
+    # Stories-RandomScenarioVariant-Start
+    randomScenarioVariantJobs:
+    - RMCSyntheticColony
+    # Stories-RandomScenarioVariant-End
     specialFaxes:
       Liaison: RMCPaperWeYaLiaisonBriefingFiorina
     commandingOfficerBriefings:
@@ -283,7 +330,21 @@
       scenarioProbability: 0.15
     - scenarioName: none
       scenarioProbability: 0.85
+    # Stories-SynthSurvivor-Start
+    survivorJobs:
+    - RMCSyntheticColony: 1
+    - CMSurvivorEngineer: 4
+    - CMSurvivorDoctor: 3
+    - CMSurvivorSecurity: 2
+    - CMSurvivorCorporate: 2
+    - CMSurvivorScientist: 2
+    - CMSurvivor: -1
+    # Stories-SynthSurvivor-End
     survivorJobVariants:
+      # Stories-SynthSurvivor-Start
+      RMCSyntheticColony:
+      - STSyntheticColonyGeneral: 1
+      # Stories-SynthSurvivor-End
       CMSurvivor:
       - CMSurvivor: -1
       - CMSurvivorISR: -1
@@ -302,11 +363,17 @@
       - CMSurvivorFiorinaResearcher: 2
     survivorJobScenarios:
       riot_in_progress: # Riot In Progress CMB Team. One as the main CMB RCTL, two as specialized roles, the rest as supporting officers.
+        - RMCSyntheticColony: 1 # Stories-SynthSurvivor
         - CMSurvivor: -1
         - CMSurvivorDoctor: 1
         - CMSurvivorEngineer: 1
     survivorJobVariantScenarios:
       riot_in_progress: # Riot In Progress Riot Control team
+        # Stories-SynthSurvivor-Start
+        RMCSyntheticColony:
+        - RMCSurvivorFiorinaRiotInProgressCMBRiotControlSynth: 1
+        - RMCSurvivorFiorinaRiotInProgressCMBSupportSynth: 1
+        # Stories-SynthSurvivor-End
         CMSurvivorEngineer:
         - RMCSurvivorFiorinaRiotInProgressCMBRiotControlBreachingTechnician: 1
         CMSurvivorDoctor:
@@ -352,7 +419,21 @@
       scenarioProbability: 0.6
     - scenarioName: spp_bar
       scenarioProbability: 0.4
+    # Stories-SynthSurvivor-Start
+    survivorJobs:
+    - RMCSyntheticColony: 1
+    - CMSurvivorEngineer: 4
+    - CMSurvivorDoctor: 3
+    - CMSurvivorSecurity: 2
+    - CMSurvivorCorporate: 2
+    - CMSurvivorScientist: 2
+    - CMSurvivor: -1
+    # Stories-SynthSurvivor-End
     survivorJobVariants:
+      # Stories-SynthSurvivor-Start
+      RMCSyntheticColony:
+      - STSyntheticColonyGeneral: 1
+      # Stories-SynthSurvivor-End
       CMSurvivor:
       - CMSurvivor: -1
       - RMCSurvivorCivilianUnique: -1
@@ -376,12 +457,17 @@
       - CMSurvivorTrijentResearcher: 2
     survivorJobScenarios:
       spp_bar:
+      - RMCSyntheticColony: 1 # Stories-SynthSurvivor
       - CMSurvivorDoctor: 1
       - CMSurvivorEngineer: 1
       - CMSurvivorSecurity: 2
       - CMSurvivor: -1
     survivorJobVariantScenarios:
       spp_bar:
+        # Stories-SynthSurvivor-Start
+        RMCSyntheticColony:
+        - RMCSurvivorSPPCrashlandSynth: 1
+        # Stories-SynthSurvivor-End
         CMSurvivorDoctor:
         - RMCSurvivorSPPCrashlandMedic: 1
         CMSurvivorEngineer:
@@ -483,13 +569,13 @@
       scenarioProbability: 1
     survivorJobs:
     - RMCSurvivorCommandingOfficer: 1
+    - RMCSyntheticColony: 1 # Stories-SynthSurvivor
     - CMSurvivor: -1
     - CMSurvivorCorporate: 2
     - CMSurvivorDoctor: 3
     - CMSurvivorEngineer: 4
     - CMSurvivorSecurity: 2
     - CMSurvivorScientist: 2
-    - RMCSyntheticColony: 1 # Stories-SynthSurvivor
     survivorJobVariants:
       RMCSurvivorCommandingOfficer:
       - RMCSurvivorCommanderNewVaradero: 1
@@ -514,6 +600,10 @@
       - RMCSurvivorNewVaraderoXenoarchaeologist: 2
       - RMCSurvivorNewVaraderoXenobiologist: 2
       - RMCSurvivorNewVaraderoResearcher: 2
+      # Stories-SynthSurvivor-Start
+      RMCSyntheticColony:
+      - RMCSurvivorUNMCSynth: 1
+      # Stories-SynthSurvivor-End
     replacements: # Stories-Survivor
       RMCWeaponMar50LMG: RMCSpawnerRandomGunRifleMed
       RMCMagazineMar50LMG: null
@@ -547,7 +637,21 @@
       scenarioProbability: 1
     specialFaxes:
       Liaison: RMCPaperWeYaLiaisonBriefingKutjevo
+    # Stories-SynthSurvivor-Start
+    survivorJobs:
+    - RMCSyntheticColony: 1
+    - CMSurvivorEngineer: 4
+    - CMSurvivorDoctor: 3
+    - CMSurvivorSecurity: 2
+    - CMSurvivorCorporate: 2
+    - CMSurvivorScientist: 2
+    - CMSurvivor: -1
+    # Stories-SynthSurvivor-End
     survivorJobVariants:
+      # Stories-SynthSurvivor-Start
+      RMCSyntheticColony:
+      - STSyntheticColonyGeneral: 1
+      # Stories-SynthSurvivor-End
       CMSurvivor:
       - CMSurvivor: -1
       - RMCSurvivorKutjevoChaplain: 1
@@ -596,9 +700,14 @@
     selectRandomSurvivorVariant: false
     survivorJobs:
     - RMCSurvivorCommandingOfficer: 1
+    - RMCSyntheticColony: 1 # Stories-SynthSurvivor
     - RMCSurvivorForeconSupportTech: 1
     - RMCSurvivorForeconBase: 6 # todo 7 when eight survs
     survivorJobVariants:
+      # Stories-SynthSurvivor-Start
+      RMCSyntheticColony:
+      - RMCSurvivorForeconSynth: 1
+      # Stories-SynthSurvivor-End
       RMCSurvivorCommandingOfficer:
       - RMCSurvivorForeconCommander: 1
       RMCSurvivorForeconBase:
@@ -649,6 +758,16 @@
     - scenarioName: none
       scenarioProbability: 0.7
     minPlayers: 130
+    # Stories-SynthSurvivor-Start
+    survivorJobs:
+    - RMCSyntheticColony: 1
+    - CMSurvivorEngineer: 4
+    - CMSurvivorDoctor: 3
+    - CMSurvivorSecurity: 2
+    - CMSurvivorCorporate: 2
+    - CMSurvivorScientist: 2
+    - CMSurvivor: -1
+    # Stories-SynthSurvivor-End
     survivorJobVariants:
       CMSurvivor:
       - RMCSurvivorHybrisaCivilian: -1
@@ -675,6 +794,16 @@
       CMSurvivorScientist:
       - RMCSurvivorHybrisaXenoarchaeologist: 2
       - RMCSurvivorHybrisaXenobiologist: 2
+      # Stories-SynthSurvivor-Start
+      RMCSyntheticColony:
+      - RMCSyntheticColonyHybrisaCivilian: 1
+      - RMCSyntheticColonyHybrisaDetective: 1
+      - RMCSyntheticColonyHybrisaEMT: 1
+      - RMCSyntheticColonyHybrisaEngineer: 1
+      - RMCSyntheticColonyHybrisaExecBodyguard: 1
+      - RMCSyntheticColonyHybrisaTSEPA: 1
+      - RMCSyntheticColonyHybrisaXenoarch: 1
+      # Stories-SynthSurvivor-End
     survivorJobScenarios:
       tse_airbase: # Order of job priority for paramarines. Scientist is overriden into doctor, Corporate into survivor
       - RMCSurvivorCommandingOfficer: 1
@@ -739,7 +868,21 @@
       scenarioProbability: 0.4
     - scenarioName: none # reduce by 0.1 once clf survs are in
       scenarioProbability: 0.6
+    # Stories-SynthSurvivor-Start
+    survivorJobs:
+    - RMCSyntheticColony: 1
+    - CMSurvivorEngineer: 4
+    - CMSurvivorDoctor: 3
+    - CMSurvivorSecurity: 2
+    - CMSurvivorCorporate: 2
+    - CMSurvivorScientist: 2
+    - CMSurvivor: -1
+    # Stories-SynthSurvivor-End
     survivorJobVariants:
+      # Stories-SynthSurvivor-Start
+      RMCSyntheticColony:
+      - STSyntheticColonyGeneral: 1
+      # Stories-SynthSurvivor-End
       CMSurvivor:
       - CMJobSurvivorSoroCivilian: -1
       - CMJobSurvivorSoroMiner: -1
@@ -776,12 +919,17 @@
 #        - : -1
     survivorJobScenarios:
       spp_sof:
+      - RMCSyntheticColony: 1 # Stories-SynthSurvivor
       - CMSurvivorEngineer: 1
       - CMSurvivorDoctor: 1
       - CMSurvivorSecurity: 2
       - CMSurvivor: -1
     survivorJobVariantScenarios:
       spp_sof:
+        # Stories-SynthSurvivor-Start
+        RMCSyntheticColony:
+        - RMCSurvivorSPPSOFSynth: 1
+        # Stories-SynthSurvivor-End
         CMSurvivorSecurity:
         - RMCSurvivorSPPSOFSpec: 1
         - RMCSurvivorSPPSOFSL: 1

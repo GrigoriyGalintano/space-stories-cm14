@@ -17,6 +17,13 @@
   - ColonistSynthShipside # Med, Engi, Synth
   roleWeight: 0.25
   basePlaytimeTracker: true
+  # Stories-SurvivorSpawnerFallback-Start
+  survivorSpawnerFallback:
+  - RMCSurvivorShivasPanicRoomResearcher
+  - RMCSurvivorShivasPanicRoomEngineer
+  - RMCSurvivorShivasPanicRoomDoctor
+  - RMCSurvivorShivasPanicRoomCivilian
+  # Stories-SurvivorSpawnerFallback-End
   special:
   - !type:AddComponentSpecial
     components:
