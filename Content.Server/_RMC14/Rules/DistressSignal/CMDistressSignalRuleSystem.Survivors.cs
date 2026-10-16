@@ -128,6 +128,15 @@ public sealed partial class CMDistressSignalRuleSystem
         if (!ev.Profiles.TryGetValue(id, out var profile))
             return;
 
+        // Stories-CLFSurvivor-Start
+        if (comp.SurvivorJobVariantScenarios != null &&
+            comp.SurvivorJobVariantScenarios.TryGetValue(job, out var scenarioJobs) &&
+            !scenarioJobs.Any(entry => IsJobAllowed(id, entry.Special)))
+        {
+            return;
+        }
+        // Stories-CLFSurvivor-End
+
         if (comp.SurvivorJobOverrides != null)
         {
             foreach (var (originalJob, overrideJob) in comp.SurvivorJobOverrides)
