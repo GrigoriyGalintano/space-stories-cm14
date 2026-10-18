@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 10/17/2026 17:41:03
-  entityCount: 29579
+  entityCount: 29587
 maps:
 - 1
 grids:
@@ -32721,66 +32721,150 @@ entities:
     - type: Transform
       pos: -5.6442814,-18.48777
       parent: 1
-- proto: BrigTimer
+- proto: RMCBrigCellController
   entities:
   - uid: 24
     components:
     - type: Transform
       pos: -115.5,98.5
       parent: 1
-    missingComponents:
-    - AccessReader
+    - type: RMCBrigCell
+      cellNumber: 1
+    - type: DeviceLinkSource
+      linkedPorts:
+        15388:
+        - - Start
+          - Close
+        26749:
+        - - RMCBrigOpen
+          - Open
+        - - RMCBrigClose
+          - Close
   - uid: 25
     components:
     - type: Transform
       pos: -112.5,98.5
       parent: 1
-    missingComponents:
-    - AccessReader
+    - type: RMCBrigCell
+      cellNumber: 2
+    - type: DeviceLinkSource
+      linkedPorts:
+        15389:
+        - - Start
+          - Close
+        26750:
+        - - RMCBrigOpen
+          - Open
+        - - RMCBrigClose
+          - Close
   - uid: 26
     components:
     - type: Transform
       pos: -109.5,98.5
       parent: 1
-    missingComponents:
-    - AccessReader
+    - type: RMCBrigCell
+      cellNumber: 3
+    - type: DeviceLinkSource
+      linkedPorts:
+        15390:
+        - - Start
+          - Close
+        26751:
+        - - RMCBrigOpen
+          - Open
+        - - RMCBrigClose
+          - Close
   - uid: 27
     components:
     - type: Transform
       pos: -106.5,98.5
       parent: 1
-    missingComponents:
-    - AccessReader
+    - type: RMCBrigCell
+      cellNumber: 4
+    - type: DeviceLinkSource
+      linkedPorts:
+        15391:
+        - - Start
+          - Close
+        26752:
+        - - RMCBrigOpen
+          - Open
+        - - RMCBrigClose
+          - Close
   - uid: 28
     components:
     - type: Transform
       pos: -103.5,98.5
       parent: 1
-    missingComponents:
-    - AccessReader
+    - type: RMCBrigCell
+      cellNumber: 5
+    - type: DeviceLinkSource
+      linkedPorts:
+        15392:
+        - - Start
+          - Close
+        26753:
+        - - RMCBrigOpen
+          - Open
+        - - RMCBrigClose
+          - Close
   - uid: 29
     components:
     - type: Transform
       pos: -100.5,98.5
       parent: 1
-    missingComponents:
-    - AccessReader
+    - type: RMCBrigCell
+      cellNumber: 6
+    - type: DeviceLinkSource
+      linkedPorts:
+        15393:
+        - - Start
+          - Close
+        26754:
+        - - RMCBrigOpen
+          - Open
+        - - RMCBrigClose
+          - Close
   - uid: 30
     components:
     - type: Transform
-      rot: 1.5707963267948966 rad
       pos: -126.5,105.5
       parent: 1
-    missingComponents:
-    - AccessReader
+    - type: RMCBrigCell
+    - type: MetaData
+      name: Пермабриг 1
+    - type: DeviceLinkSource
+      linkedPorts:
+        26755:
+        - - RMCBrigOpen
+          - Open
+        - - RMCBrigClose
+          - Close
+        26756:
+        - - RMCBrigOpen
+          - Open
+        - - RMCBrigClose
+          - Close
   - uid: 31
     components:
     - type: Transform
-      rot: 1.5707963267948966 rad
       pos: -120.5,105.5
       parent: 1
-    missingComponents:
-    - AccessReader
+    - type: RMCBrigCell
+    - type: MetaData
+      name: Пермабриг 2
+    - type: DeviceLinkSource
+      linkedPorts:
+        26757:
+        - - RMCBrigOpen
+          - Open
+        - - RMCBrigClose
+          - Close
+        26758:
+        - - RMCBrigOpen
+          - Open
+        - - RMCBrigClose
+          - Close
 - proto: CarrotSeeds
   entities:
   - uid: 32
@@ -55521,7 +55605,7 @@ entities:
   - uid: 4235
     components:
     - type: Transform
-      rot: 1.5707963267948966 rad
+      rot: 3.141592653589793 rad
       pos: -112.5,103.5
       parent: 1
     - type: ContainerContainer
@@ -58700,7 +58784,7 @@ entities:
   - uid: 4672
     components:
     - type: Transform
-      rot: -1.5707963267948966 rad
+      rot: 3.141592653589793 rad
       pos: -99.5,89.5
       parent: 1
   - uid: 4673
@@ -63390,7 +63474,7 @@ entities:
   - uid: 5480
     components:
     - type: Transform
-      pos: -118.49347,107.494156
+      pos: -112.65,102.15
       parent: 1
   - uid: 5481
     components:
@@ -67442,7 +67526,7 @@ entities:
   - uid: 6164
     components:
     - type: Transform
-      pos: -118.5,108.5
+      pos: -112.65,102.65
       parent: 1
   - uid: 6165
     components:
@@ -68075,7 +68159,7 @@ entities:
   - uid: 6285
     components:
     - type: Transform
-      pos: -118.446594,108.21365
+      pos: -112.2,102.3
       parent: 1
   - uid: 6286
     components:
@@ -74316,6 +74400,18 @@ entities:
       parent: 1
 - proto: CMTableAlmayer
   entities:
+  - uid: 29588
+    components:
+    - type: Transform
+      rot: 0 rad
+      pos: -99.5,88.5
+      parent: 1
+  - uid: 29589
+    components:
+    - type: Transform
+      rot: 0 rad
+      pos: -112.5,104.5
+      parent: 1
   - uid: 7402
     components:
     - type: Transform
@@ -116529,31 +116625,43 @@ entities:
     - type: Transform
       pos: -116.5,98.5
       parent: 1
+    - type: DeviceLinkSink
+      ports: [Open, Close, Toggle, DoorBolt]
   - uid: 15389
     components:
     - type: Transform
       pos: -113.5,98.5
       parent: 1
+    - type: DeviceLinkSink
+      ports: [Open, Close, Toggle, DoorBolt]
   - uid: 15390
     components:
     - type: Transform
       pos: -110.5,98.5
       parent: 1
+    - type: DeviceLinkSink
+      ports: [Open, Close, Toggle, DoorBolt]
   - uid: 15391
     components:
     - type: Transform
       pos: -107.5,98.5
       parent: 1
+    - type: DeviceLinkSink
+      ports: [Open, Close, Toggle, DoorBolt]
   - uid: 15392
     components:
     - type: Transform
       pos: -104.5,98.5
       parent: 1
+    - type: DeviceLinkSink
+      ports: [Open, Close, Toggle, DoorBolt]
   - uid: 15393
     components:
     - type: Transform
       pos: -101.5,98.5
       parent: 1
+    - type: DeviceLinkSink
+      ports: [Open, Close, Toggle, DoorBolt]
   - uid: 15394
     components:
     - type: Transform
@@ -121917,7 +122025,7 @@ entities:
   - uid: 16412
     components:
     - type: Transform
-      pos: -118.5,99.5
+      pos: -97.5,101.5
       parent: 1
   - uid: 16413
     components:
@@ -141473,12 +141581,6 @@ entities:
     components:
     - type: Transform
       pos: -42.5,-0.5
-      parent: 1
-  - uid: 19799
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -122.5,99.5
       parent: 1
 - proto: RMCComputerCrewMonitoringCompact
   entities:
@@ -186883,12 +186985,6 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 10.5,116.5
       parent: 1
-  - uid: 26521
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: -95.5,95.5
-      parent: 1
   - uid: 26522
     components:
     - type: Transform
@@ -188266,6 +188362,9 @@ entities:
       parent: 1
     - type: RMCPodDoor
       id: Cell1
+    - type: DoorSignalControl
+    - type: DeviceLinkSink
+      ports: [Open, Close, Toggle, DoorBolt]
   - uid: 26750
     components:
     - type: Transform
@@ -188273,6 +188372,9 @@ entities:
       parent: 1
     - type: RMCPodDoor
       id: Cell2
+    - type: DoorSignalControl
+    - type: DeviceLinkSink
+      ports: [Open, Close, Toggle, DoorBolt]
   - uid: 26751
     components:
     - type: Transform
@@ -188280,6 +188382,9 @@ entities:
       parent: 1
     - type: RMCPodDoor
       id: Cell3
+    - type: DoorSignalControl
+    - type: DeviceLinkSink
+      ports: [Open, Close, Toggle, DoorBolt]
   - uid: 26752
     components:
     - type: Transform
@@ -188287,6 +188392,9 @@ entities:
       parent: 1
     - type: RMCPodDoor
       id: Cell4
+    - type: DoorSignalControl
+    - type: DeviceLinkSink
+      ports: [Open, Close, Toggle, DoorBolt]
   - uid: 26753
     components:
     - type: Transform
@@ -188294,6 +188402,9 @@ entities:
       parent: 1
     - type: RMCPodDoor
       id: Cell5
+    - type: DoorSignalControl
+    - type: DeviceLinkSink
+      ports: [Open, Close, Toggle, DoorBolt]
   - uid: 26754
     components:
     - type: Transform
@@ -188301,6 +188412,9 @@ entities:
       parent: 1
     - type: RMCPodDoor
       id: Cell6
+    - type: DoorSignalControl
+    - type: DeviceLinkSink
+      ports: [Open, Close, Toggle, DoorBolt]
   - uid: 26755
     components:
     - type: Transform
@@ -188308,6 +188422,9 @@ entities:
       parent: 1
     - type: RMCPodDoor
       id: PermaCell1
+    - type: DoorSignalControl
+    - type: DeviceLinkSink
+      ports: [Open, Close, Toggle, DoorBolt]
   - uid: 26756
     components:
     - type: Transform
@@ -188315,6 +188432,9 @@ entities:
       parent: 1
     - type: RMCPodDoor
       id: PermaCell1
+    - type: DoorSignalControl
+    - type: DeviceLinkSink
+      ports: [Open, Close, Toggle, DoorBolt]
   - uid: 26757
     components:
     - type: Transform
@@ -188322,6 +188442,9 @@ entities:
       parent: 1
     - type: RMCPodDoor
       id: PermaCell2
+    - type: DoorSignalControl
+    - type: DeviceLinkSink
+      ports: [Open, Close, Toggle, DoorBolt]
   - uid: 26758
     components:
     - type: Transform
@@ -188329,6 +188452,9 @@ entities:
       parent: 1
     - type: RMCPodDoor
       id: PermaCell2
+    - type: DoorSignalControl
+    - type: DeviceLinkSink
+      ports: [Open, Close, Toggle, DoorBolt]
   - uid: 26759
     components:
     - type: Transform
@@ -191602,7 +191728,7 @@ entities:
     - type: MetaData
       name: окно во внутренний двор
     - type: Transform
-      pos: -99.75,90.75
+      pos: -99.75,88.75
       parent: 1
     - type: RMCDoorButton
       id: Courtyard Window
@@ -191619,7 +191745,7 @@ entities:
     - type: MetaData
       name: приватные жалюзи камер
     - type: Transform
-      pos: -99.4,90.75
+      pos: -99.4,88.75
       parent: 1
     - type: RMCDoorButton
       id: Cell Privacy Shutters
@@ -191636,7 +191762,7 @@ entities:
     - type: MetaData
       name: изоляция брига
     - type: Transform
-      pos: -99.75,90.5
+      pos: -99.75,88.5
       parent: 1
     - type: RMCDoorButton
       id: Brig Lockdown Shutters
@@ -191653,7 +191779,7 @@ entities:
     - type: MetaData
       name: подлоки внутреннего двора
     - type: Transform
-      pos: -99.4,90.5
+      pos: -99.4,88.5
       parent: 1
     - type: RMCDoorButton
       id: Сourtyard Сells
@@ -193003,7 +193129,7 @@ entities:
   - uid: 27243
     components:
     - type: Transform
-      pos: -112.5,102.5
+      pos: -111.5,104.5
       parent: 1
   - uid: 27244
     components:
@@ -194865,6 +194991,24 @@ entities:
       parent: 1
 - proto: RMCSecurityRecordsConsole
   entities:
+  - uid: 29581
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -118.5,108.5
+      parent: 1
+  - uid: 29582
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -120.5,104.5
+      parent: 1
+  - uid: 29583
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -115.5,103.5
+      parent: 1
   - uid: 27540
     components:
     - type: Transform
@@ -194873,6 +195017,36 @@ entities:
       parent: 1
 - proto: RMCSecurityRecordsConsoleAlt
   entities:
+  - uid: 29584
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -118.5,107.5
+      parent: 1
+  - uid: 29585
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -120.5,103.5
+      parent: 1
+  - uid: 29586
+    components:
+    - type: Transform
+      rot: 0 rad
+      pos: -112.5,104.5
+      parent: 1
+  - uid: 29587
+    components:
+    - type: Transform
+      rot: 0 rad
+      pos: -99.25,90.5
+      parent: 1
+  - uid: 26521
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -95.5,95.5
+      parent: 1
   - uid: 27541
     components:
     - type: Transform
