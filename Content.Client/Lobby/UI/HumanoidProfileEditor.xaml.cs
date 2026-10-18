@@ -498,7 +498,7 @@ namespace Content.Client.Lobby.UI
 
             TabContainer.SetTabTitle(2, Loc.GetString("humanoid-profile-editor-antags-tab"));
             // TODO RMC14 antags
-            TabContainer.SetTabVisible(2, false);
+            TabContainer.SetTabVisible(2, AntagList.ChildCount > 0); // Stories-CLFSurvivor
 
             RefreshTraits();
 
@@ -897,6 +897,8 @@ namespace Content.Client.Lobby.UI
 
                 AntagList.AddChild(antagContainer);
             }
+
+            TabContainer.SetTabVisible(2, AntagList.ChildCount > 0); // Stories-CLFSurvivor
         }
 
         private void SetDirty()

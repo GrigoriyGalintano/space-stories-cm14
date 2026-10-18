@@ -13,13 +13,3 @@
   - type: HideLayerClothing
     slots:
     - Hair
-
-- type: entity
-  parent: RMCHeadBandana
-  id: RMCHeadBandanaTan
-  name: tan bandana
-  components:
-  - type: Sprite
-    sprite: _RMC14/Objects/Clothing/Head/Hats/bandana/tan.rsi
-  - type: Clothing
-    sprite: _RMC14/Objects/Clothing/Head/Hats/bandana/tan.rsi

@@ -69,7 +69,18 @@ public sealed partial class CMDistressSignalRuleSystem
             return false;
         // Stories-SynthSurvivor-End
 
-        return _playTime.IsAllowed(player, role);
+        if (!_playTime.IsAllowed(player, role))
+            return false;
+
+        // Check if player has antag preference matching this job
+        if (_prototypes.TryIndex(role, out var rolePrototype) &&
+            rolePrototype.AntagRole is { } antagRole &&
+            !GameTicker.GetPlayerProfile(player).AntagPreferences.Contains(antagRole))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     // TODO RMC14: Move these to a prototype
