@@ -115,7 +115,6 @@ rmc-ert-error-docking-verification-failed = Шаттл ОБР не смог со
 rmc-ert-warning-no-compatible-landing-zone = {$call} нельзя одобрить: нет совместимой зоны посадки или стыковочного порта.
 rmc-ert-error-no-random-calls = Для этого запроса нет доступных взвешенных случайных вызовов ОБР.
 rmc-ert-error-random-selection-failed = Взвешенный случайный выбор ОБР завершился ошибкой.
-rmc-ert-error-unavailable-evacuation = {$call} недоступен во время эвакуации.
 rmc-ert-error-min-round-time = Для {$call} требуется минимум {$minutes} минут раунда.
 rmc-ert-error-max-calls-reached = {$call} уже был отправлен в этом раунде.
 rmc-ert-error-source-cooldown = {$call} находится на перезарядке для этого источника бедствия.
