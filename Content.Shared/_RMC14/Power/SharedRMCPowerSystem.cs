@@ -2370,7 +2370,8 @@ public abstract class SharedRMCPowerSystem : EntitySystem
             return;
 
         var coordinates = xform.Coordinates.Offset(direction.ToVec());
-        _transform.SetCoordinates((uid, xform, MetaData(uid)), coordinates, xform.LocalRotation, unanchor: false);
+        _transform.SetCoordinates((uid, xform, MetaData(uid)), coordinates, xform.LocalRotation);
+        _transform.AnchorEntity((uid, xform));
     }
 
     private bool HasWallAtCoordinates(EntityCoordinates coordinates)
