@@ -219,6 +219,19 @@ public sealed partial class AnnouncementWidget
             AddChild(contentContainer);
         }
 
+        var bodyFontSize = AnnouncementStyling.CalculateResponsiveFontSize(
+            announcement.Text,
+            style.TextConfig.FontSize,
+            _activeTextMaxWidth,
+            screenSize,
+            style);
+        var bodyFont = _textLayoutBuilder.ResolveFont(style.TextConfig.Font, (int)bodyFontSize);
+        var bodyStylesheet = new Stylesheet([StylesheetHelpers.Element<RichTextLabel>().Prop("font", bodyFont)]);
+        for (var i = _titleOffset; i < _richTextLabels.Length; i++)
+        {
+            _richTextLabels[i].Stylesheet = bodyStylesheet;
+        }
+
         SetInitialVisibility();
         ApplyUIScale(style.LayoutConfig.UIScale);
     }
