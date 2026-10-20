@@ -161,6 +161,7 @@ rmc-dropship-destination-invalid-class = Эта точка назначения 
 rmc-dropship-destination-invalid-tags = Эта точка назначения не соответствует текущим правилам маршрутизации шаттла.
 rmc-dropship-destination-blocked-tags = Эта точка назначения запрещена текущими правилами маршрутизации шаттла.
 rmc-dropship-destination-occupied = Эта точка назначения уже занята.
+rmc-dropship-destination-obstructed = Посадочная зона перекрыта сооружением.
 rmc-dropship-invalid-docking-footprint = У шаттла отсутствует допустимый стыковочный контур.
 rmc-dropship-no-compatible-docking-port = Для этого шаттла нет совместимого стыковочного порта.
 rmc-dropship-clearance-port = Шаттл выходит за левую границу посадочной зоны (требуется {$shuttleSize}, доступно {$destinationSize}).
