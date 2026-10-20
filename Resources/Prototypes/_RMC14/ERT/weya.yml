@@ -3,6 +3,7 @@
   name: rmc-ert-call-pmc-name
   organization: rmc-ert-organization-weya
   npcFactions: [ WeYa ]
+  accessGroups: [ ShipMasterAccess, RMCERT ]
   iffFaction: FactionWeYa
   category: rmc-ert-category-corporate
   enabled: true
@@ -118,6 +119,7 @@
   name: rmc-ert-call-pmc-platoon-name
   organization: rmc-ert-organization-weya
   npcFactions: [ WeYa ]
+  accessGroups: [ ShipMasterAccess, RMCERT ]
   iffFaction: FactionWeYa
   category: rmc-ert-category-corporate
   enabled: true
@@ -243,6 +245,7 @@
   name: rmc-ert-call-weya-bodyguard-name
   organization: rmc-ert-organization-weya
   npcFactions: [ WeYa ]
+  accessGroups: [ ShipMasterAccess, RMCERT ]
   iffFaction: FactionWeYa
   category: rmc-ert-category-corporate
   enabled: true
@@ -284,6 +287,7 @@
   name: rmc-ert-call-weya-bodyguard-goon-name
   organization: rmc-ert-organization-weya
   npcFactions: [ WeYa ]
+  accessGroups: [ ShipMasterAccess, RMCERT ]
   iffFaction: FactionWeYa
   category: rmc-ert-category-corporate
   enabled: true
@@ -321,6 +325,7 @@
   name: rmc-ert-call-weya-bodyguard-pmc-name
   organization: rmc-ert-organization-weya
   npcFactions: [ WeYa ]
+  accessGroups: [ ShipMasterAccess, RMCERT ]
   iffFaction: FactionWeYa
   category: rmc-ert-category-corporate
   enabled: true
@@ -357,6 +362,7 @@
   name: rmc-ert-call-weya-bodyguard-pmc-enforcer-name
   organization: rmc-ert-organization-weya
   npcFactions: [ WeYa ]
+  accessGroups: [ ShipMasterAccess, RMCERT ]
   iffFaction: FactionWeYa
   category: rmc-ert-category-corporate
   enabled: true
@@ -393,6 +399,7 @@
   name: rmc-ert-call-weya-bodyguard-commando-name
   organization: rmc-ert-organization-weya
   npcFactions: [ WeYa ]
+  accessGroups: [ ShipMasterAccess, RMCERT ]
   iffFaction: FactionWeYa
   category: rmc-ert-category-corporate
   enabled: true
@@ -429,6 +436,7 @@
   name: rmc-ert-call-weya-lawyers-name
   organization: rmc-ert-organization-weya
   npcFactions: [ WeYa ]
+  accessGroups: [ ShipMasterAccess, RMCERT ]
   iffFaction: FactionWeYa
   category: rmc-ert-category-corporate
   enabled: true
@@ -516,6 +524,7 @@
   name: rmc-ert-call-wy-commando-name
   organization: rmc-ert-organization-weya
   npcFactions: [ WeYa ]
+  accessGroups: [ ShipMasterAccess, RMCERT ]
   iffFaction: FactionWeYa
   category: rmc-ert-category-corporate
   enabled: true
