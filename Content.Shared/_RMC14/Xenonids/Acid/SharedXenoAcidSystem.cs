@@ -10,9 +10,11 @@ using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Coordinates;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Chemistry.Reagent;
+using Content.Shared.Climbing.Components; // Stories-AcidTraversal
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.DoAfter;
+using Content.Shared.Doors.Components; // Stories-AcidTraversal
 using Content.Shared.Interaction.Events;
 using Content.Shared.Item;
 using Content.Shared.Mobs.Systems;
@@ -293,13 +295,20 @@ public abstract class SharedXenoAcidSystem : EntitySystem
     }
 
     // Stories-Acid-Start
-    private void OnAcidInteractAttempt<T>(EntityUid uid, T component, ref GettingInteractedWithAttemptEvent args) where T : Component
+    private void OnAcidInteractAttempt<T>(Entity<T> ent, ref GettingInteractedWithAttemptEvent args) where T : Component
     {
         if (args.Cancelled)
             return;
 
+        if (HasComp<XenoComponent>(args.Uid) &&
+            !HasComp<ItemComponent>(ent) &&
+            (HasComp<ClimbableComponent>(ent) || HasComp<DoorComponent>(ent)))
+        {
+            return;
+        }
+
         args.Cancelled = true;
-        _popup.PopupClient(Loc.GetString("rmc-acid-pickup-blocked", ("target", uid)), args.Uid, args.Uid, PopupType.SmallCaution);
+        _popup.PopupClient(Loc.GetString("rmc-acid-pickup-blocked", ("target", ent.Owner)), args.Uid, args.Uid, PopupType.SmallCaution);
     }
 
     private void OnAcidGettingUsedAttempt<T>(EntityUid uid, T component, ref GettingUsedAttemptEvent args) where T : Component
