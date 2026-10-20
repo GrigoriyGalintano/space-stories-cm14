@@ -140,9 +140,6 @@ public abstract partial class SharedGunSystem : EntitySystem
     }
 
     // Stories-GunBalance-Start
-    [ValidatePrototypeId<TagPrototype>]
-    public static readonly ProtoId<TagPrototype> SidearmTag = "Sidearm";
-
     public bool IsGunInHands(EntityUid user, EntityUid gun)
     {
         if (_hands.IsHolding(user, gun))
@@ -202,50 +199,17 @@ public abstract partial class SharedGunSystem : EntitySystem
 
         return true;
     }
+    // Stories-GunBalance-End
 
-    public int GetGunAmmoCount(EntityUid gunUid)
-    {
-        var ev = new GetAmmoCountEvent();
-        RaiseLocalEvent(gunUid, ref ev);
-        return ev.Count;
-    }
-
-    public bool HasShootableAmmo(EntityUid gunUid)
-    {
-        return _akimbo.HasShootableAmmo(gunUid);
-    }
-
+    // Stories-Akimbo-Start
     public bool TryGetAkimboGuns(EntityUid gunUid, out Entity<AkimboComponent> akimboGun, out Entity<AkimboComponent> otherAkimboGun)
     {
         return _akimbo.TryGetAkimboGuns(gunUid, out akimboGun, out otherAkimboGun);
     }
-
-    public bool HasAkimboGuns(EntityUid currentGun)
-    {
-        return _akimbo.HasAkimboGuns(currentGun);
-    }
-
-    public bool HasDualPistols(EntityUid currentGun)
-    {
-        return _akimbo.HasDualPistols(currentGun);
-    }
+    // Stories-Akimbo-End
 
     private void OnMapInit(Entity<GunComponent> gun, ref MapInitEvent args)
     {
-        // Stories-GunBalance-Start
-        if (gun.Comp.NextFire > Timing.CurTime)
-        {
-            gun.Comp.NextFire = Timing.CurTime;
-            DirtyField(gun.Owner, gun.Comp, nameof(GunComponent.NextFire));
-
-            if (TryComp<UseDelayComponent>(gun.Owner, out var useDelay))
-            {
-                var delaySys = Get<UseDelaySystem>();
-                delaySys.ResetAllDelays((gun.Owner, useDelay));
-            }
-        }
-        // Stories-GunBalance-End
-
 #if DEBUG
         if (gun.Comp.NextFire > Timing.CurTime)
             Log.Warning($"Initializing a map that contains an entity that is on cooldown. Entity: {ToPrettyString(gun)}");
@@ -621,9 +585,9 @@ public abstract partial class SharedGunSystem : EntitySystem
         var shotEv = new GunShotEvent(user, ev.Ammo, fromCoordinates, toCoordinates.Value);
         RaiseLocalEvent(gunUid, ref shotEv);
 
-        // Stories-MarineShooter-Start
+        // Stories-Akimbo-Start
         _akimbo.ApplyAkimboShootDelay(gunUid, gun, user, curTime);
-        // Stories-MarineShooter-End
+        // Stories-Akimbo-End
 
         if (userImpulse && TryComp<PhysicsComponent>(user, out var userPhysics))
         {

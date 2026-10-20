@@ -40,6 +40,11 @@
   - type: GunDualWielding
     weaponGroup: Submachinegun
   - type: GunPointBlank
+  # Stories-ShotgunSMGCooldown-Start
+  - type: RMCFireGroup
+    group: Shotgun
+    delay: 3
+  # Stories-ShotgunSMGCooldown-End
   - type: GunGroupPenalty
   - type: WieldedCrosshair
     rsi:

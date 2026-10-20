@@ -10,10 +10,8 @@ using Content.Client.Items;
 using Content.Client.Weapons.Ranged.Components;
 using Content.Shared._RMC14.Weapons.Ranged;
 using Content.Shared._RMC14.Weapons.Ranged.Prediction;
-using Content.Shared._Stories.Weapons.Guns;
 using Content.Shared.CCVar;
 using Content.Shared.CombatMode;
-using Content.Shared.Timing;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Weapons.Ranged.Systems;
@@ -53,7 +51,6 @@ public sealed partial class GunSystem : SharedGunSystem
     [Dependency] private readonly GunPredictionSystem _gunPrediction = default!;
     [Dependency] private readonly RMCLagCompensationSystem _rmcLagCompensation = default!;
     [Dependency] private readonly VehicleTurretMuzzleOffsetSystem _vehicleTurretMuzzleOffset = default!;
-    [Dependency] private readonly GunBalanceSystem _gunBalance = default!;
     // RMC14
 
     public static readonly EntProtoId HitscanProto = "HitscanEffect";
@@ -198,10 +195,8 @@ public sealed partial class GunSystem : SharedGunSystem
             return;
         }
 
-        // Stories-GunBalance-Start
-        if (!_gunBalance.CanShoot(gunUid, entity, gun))
+        if (gun.NextFire > Timing.CurTime)
             return;
-        // Stories-GunBalance-End
 
         var mousePos = _eyeManager.PixelToMap(_inputManager.MouseScreenPosition);
 

@@ -54,9 +54,6 @@
       state: all
   - type: InteractionActivateOnClick
   - type: GunSecondWind
-  - type: RMCFireGroup # Stories-GunBalance
-    group: Base
-    delay: 4
 
 - type: entity
   parent: BaseBullet
