@@ -43,10 +43,6 @@
       alternateSoundVariants:
       - Hazmat
       alternateEmoteSounds: STWorkingJoeHazmatSounds
-    - type: UserInterface
-      interfaces:
-        enum.STSynthVoiceUIKey.Key:
-          type: STSynthVoiceSynthesizerBui
     - type: STJobVariantGear
       variants:
         Hazmat:
@@ -87,5 +83,6 @@
     - RMCSprayBottleSpaceCleaner
     - RMCSprayBottleSpaceCleaner
     - CMMop
+    - STJugSpaceCleanerWorkingJoe
   inhand:
   - TrashBag

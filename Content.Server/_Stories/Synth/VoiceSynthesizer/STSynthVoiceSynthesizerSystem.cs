@@ -49,6 +49,7 @@ public sealed class STSynthVoiceSynthesizerSystem : EntitySystem
 
     private void OnStartup(Entity<STSynthVoiceSynthesizerComponent> ent, ref ComponentStartup args)
     {
+        _ui.SetUi(ent.Owner, STSynthVoiceUIKey.Key, new InterfaceData("STSynthVoiceSynthesizerBui"));
         _actions.AddAction(ent.Owner, ref ent.Comp.ActionEntity, ent.Comp.Action);
         Dirty(ent);
     }

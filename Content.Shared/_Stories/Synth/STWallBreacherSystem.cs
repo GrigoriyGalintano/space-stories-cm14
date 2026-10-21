@@ -67,6 +67,9 @@ public sealed class STWallBreacherSystem : EntitySystem
             BreakOnDamage = true,
             NeedHand = true,
             AttemptFrequency = AttemptFrequency.EveryTick,
+            DuplicateCondition = DuplicateConditions.SameTool | DuplicateConditions.SameEvent,
+            CancelDuplicate = true,
+            BlockDuplicate = false,
         };
 
         _doAfter.TryStartDoAfter(doAfter);

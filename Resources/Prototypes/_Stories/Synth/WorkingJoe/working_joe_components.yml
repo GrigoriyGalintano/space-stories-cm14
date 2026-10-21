@@ -16,3 +16,4 @@
   - type: RMCSuicide
     damage: { }
   - type: HiddenAppearance
+  - type: TTS

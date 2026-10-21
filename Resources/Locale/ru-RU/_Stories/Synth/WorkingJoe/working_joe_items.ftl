@@ -27,3 +27,6 @@ ent-STOuterClothingExternalWebbingWorkingJoe = внешняя разгрузка
 
 stories-unstrippable-while-able-unequip = Хватка слишком крепкая, снаряжение не поддаётся!
 stories-unstrippable-while-able-equip = Он слишком силён, на него ничего не надеть!
+
+ent-STJugSpaceCleanerWorkingJoe = канистра космического очистителя
+    .desc = Большая канистра космического очистителя для заправки распылителей.

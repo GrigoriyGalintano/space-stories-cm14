@@ -1,10 +1,15 @@
 using Content.Shared._RMC14.Synth;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Buckle.Components;
+using Content.Shared.Hands;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Inventory.Events;
+using Content.Shared.Item;
 using Content.Shared.Movement.Events;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Events;
 using Content.Shared.Movement.Pulling.Systems;
+using Content.Shared.Throwing;
 using Robust.Shared.Timing;
 
 namespace Content.Shared._Stories.Synth;
@@ -24,6 +29,16 @@ public sealed class StoriesSynthGripSystem : EntitySystem
         SubscribeLocalEvent<STSynthGrippedComponent, UpdateCanMoveEvent>(OnGrippedCanMove);
         SubscribeLocalEvent<STSynthGrippedComponent, StopBeingPulledAlertEvent>(OnGrippedStopBeingPulledAlert, before: [typeof(PullingSystem)]);
         SubscribeLocalEvent<STSynthGrippedComponent, BuckleAttemptEvent>(OnGrippedBuckleAttempt);
+
+        SubscribeLocalEvent<STSynthGrippedComponent, InteractionAttemptEvent>(OnGrippedInteractAttempt);
+        SubscribeLocalEvent<STSynthGrippedComponent, ChangeDirectionAttemptEvent>(OnGrippedAttempt);
+        SubscribeLocalEvent<STSynthGrippedComponent, UseAttemptEvent>(OnGrippedAttempt);
+        SubscribeLocalEvent<STSynthGrippedComponent, ThrowAttemptEvent>(OnGrippedAttempt);
+        SubscribeLocalEvent<STSynthGrippedComponent, DropAttemptEvent>(OnGrippedAttempt);
+        SubscribeLocalEvent<STSynthGrippedComponent, AttackAttemptEvent>(OnGrippedAttempt);
+        SubscribeLocalEvent<STSynthGrippedComponent, PickupAttemptEvent>(OnGrippedAttempt);
+        SubscribeLocalEvent<STSynthGrippedComponent, IsEquippingAttemptEvent>(OnGrippedEquipAttempt);
+        SubscribeLocalEvent<STSynthGrippedComponent, IsUnequippingAttemptEvent>(OnGrippedUnequipAttempt);
     }
 
     private void OnSynthPullStarted(Entity<SynthComponent> ent, ref PullStartedMessage args)
@@ -77,5 +92,37 @@ public sealed class StoriesSynthGripSystem : EntitySystem
             return;
 
         args.Cancelled = true;
+    }
+
+    private bool IsGripped(Entity<STSynthGrippedComponent> ent)
+    {
+        if (ent.Comp.LifeStage > ComponentLifeStage.Running)
+            return false;
+
+        return TryComp(ent, out PullableComponent? pullable) && pullable.Puller != null;
+    }
+
+    private void OnGrippedInteractAttempt(Entity<STSynthGrippedComponent> ent, ref InteractionAttemptEvent args)
+    {
+        if (IsGripped(ent))
+            args.Cancelled = true;
+    }
+
+    private void OnGrippedAttempt<T>(Entity<STSynthGrippedComponent> ent, ref T args) where T : CancellableEntityEventArgs
+    {
+        if (IsGripped(ent))
+            args.Cancel();
+    }
+
+    private void OnGrippedEquipAttempt(Entity<STSynthGrippedComponent> ent, ref IsEquippingAttemptEvent args)
+    {
+        if (args.Equipee == ent.Owner && IsGripped(ent))
+            args.Cancel();
+    }
+
+    private void OnGrippedUnequipAttempt(Entity<STSynthGrippedComponent> ent, ref IsUnequippingAttemptEvent args)
+    {
+        if (args.Unequipee == ent.Owner && IsGripped(ent))
+            args.Cancel();
     }
 }

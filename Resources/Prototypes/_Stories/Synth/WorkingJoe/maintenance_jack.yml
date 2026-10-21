@@ -37,7 +37,7 @@
   - type: MeleeWeapon
     damage:
       types:
-        Blunt: 25
+        Blunt: 40
     soundHit:
       path: /Audio/_RMC14/Weapons/genhit3.ogg
   - type: Tag

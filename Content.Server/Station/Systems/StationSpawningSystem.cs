@@ -163,19 +163,8 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
         // RMC14
 
         // Stories-SynthAppearance-Start
-        if (profile != null &&
-            prototype != null &&
-            IsSynthJob(prototype) &&
-            (profile.SynthAppearance != null || profile.SynthName != string.Empty))
-        {
-            profile = new HumanoidCharacterProfile(profile);
-
-            if (profile.SynthAppearance != null)
-                profile = profile.WithCharacterAppearance(profile.SynthAppearance);
-
-            if (profile.SynthName != string.Empty)
-                profile.Name = profile.SynthName;
-        }
+        if (profile != null)
+            profile = GetJobProfile(profile, prototype);
         // Stories-SynthAppearance-End
 
         if (profile != null)
@@ -225,6 +214,31 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
     }
 
     // Stories-SynthAppearance-Start
+    public HumanoidCharacterProfile GetJobProfile(HumanoidCharacterProfile profile, ProtoId<JobPrototype>? job)
+    {
+        if (job == null || !_prototypeManager.TryIndex(job.Value, out var prototype))
+            return profile;
+
+        return GetJobProfile(profile, prototype);
+    }
+
+    public HumanoidCharacterProfile GetJobProfile(HumanoidCharacterProfile profile, JobPrototype? job)
+    {
+        if (job == null || !IsSynthJob(job))
+            return profile;
+
+        profile = new HumanoidCharacterProfile(profile);
+
+        if (profile.SynthAppearance != null)
+            profile = profile.WithCharacterAppearance(profile.SynthAppearance);
+
+        if (profile.SynthName != string.Empty)
+            profile.Name = profile.SynthName;
+
+        profile.FlavorText = string.Empty;
+        return profile;
+    }
+
     private static bool IsSynthJob(JobPrototype job)
     {
         foreach (var special in job.Special)

@@ -65,12 +65,7 @@ public sealed class SharedSynthGenerationSystem : EntitySystem
         if (comp.Generation is { } generation)
         {
             // Stories-SynthGenerationFix-Start
-            if (comp.SelectGenerationActionEntity != null)
-            {
-                _actions.RemoveAction(ent.Owner, comp.SelectGenerationActionEntity);
-                comp.SelectGenerationActionEntity = null;
-                Dirty(ent.Owner, comp);
-            }
+            RemoveGenerationActions((ent.Owner, comp));
             // Stories-SynthGenerationFix-End
 
             // Stories-SynthGenerationFix-Start
@@ -93,6 +88,7 @@ public sealed class SharedSynthGenerationSystem : EntitySystem
             return;
         }
 
+        comp.SelectGenerationActionEntity ??= FindGenerationActionEntity((ent.Owner, comp)); // Stories-SynthGenerationFix
         _actions.AddAction(ent, ref comp.SelectGenerationActionEntity, comp.GenerationAction);
         Dirty(ent.Owner, comp);
     }
@@ -150,6 +146,7 @@ public sealed class SharedSynthGenerationSystem : EntitySystem
 
         ent.Comp.Generation = null;
         Dirty(ent);
+        ent.Comp.SelectGenerationActionEntity ??= FindGenerationActionEntity(ent);
         _actions.AddAction(ent.Owner, ref ent.Comp.SelectGenerationActionEntity, ent.Comp.GenerationAction);
 
         _movementSpeed.RefreshMovementSpeedModifiers(ent.Owner);
@@ -212,10 +209,12 @@ public sealed class SharedSynthGenerationSystem : EntitySystem
             var desc = proto.TryGetComponent(out SynthGenerationComponent? genComp, _compFactory)
                 ? genComp.Description
                 : string.Empty;
+            if (Loc.TryGetString(desc, out var locDesc)) // Stories-SynthGenerationLoc
+                desc = locDesc;
             options.Add(new DialogOption(proto.Name, new GenerationSelectedActionEvent(proto.ID), description: desc));
         }
 
-        _dialog.OpenOptions(ent.Owner, "Select a Generation", options, "Available Generations", enableSearch: false);
+        _dialog.OpenOptions(ent.Owner, Loc.GetString("stories-synth-generation-select-title"), options, Loc.GetString("stories-synth-generation-select-message"), enableSearch: false); // Stories-SynthGenerationLoc
     }
 
     private void OnGenerationSelectedAction(Entity<SynthGenerationComponent> ent, ref GenerationSelectedActionEvent args)
@@ -231,8 +230,8 @@ public sealed class SharedSynthGenerationSystem : EntitySystem
 
         _dialog.OpenConfirmation(
             ent.Owner,
-            "Confirm Generation",
-            $"Please confirm {proto.Name} selection.",
+            Loc.GetString("stories-synth-generation-confirm-title"), // Stories-SynthGenerationLoc
+            Loc.GetString("stories-synth-generation-confirm-message", ("generation", proto.Name)), // Stories-SynthGenerationLoc
             new GenerationConfirmedEvent(args.Generation));
     }
 
@@ -247,8 +246,6 @@ public sealed class SharedSynthGenerationSystem : EntitySystem
             return;
         }
 
-        var actionEntity = ent.Comp.SelectGenerationActionEntity ?? FindGenerationActionEntity(ent);
-
         EntityManager.AddComponents(ent, proto);
 
         if (TryComp<SynthGenerationComponent>(ent, out var gen))
@@ -256,8 +253,31 @@ public sealed class SharedSynthGenerationSystem : EntitySystem
 
         _movementSpeed.RefreshMovementSpeedModifiers(ent.Owner); // Stories-Synth
 
-        _actions.RemoveAction(ent.Owner, actionEntity);
+        // Stories-SynthGenerationFix-Start
+        if (TryComp<SynthGenerationComponent>(ent, out var applied))
+            RemoveGenerationActions((ent.Owner, applied));
+        // Stories-SynthGenerationFix-End
     }
+
+    // Stories-SynthGenerationFix-Start
+    private void RemoveGenerationActions(Entity<SynthGenerationComponent> ent)
+    {
+        var toRemove = new List<EntityUid>();
+        foreach (var action in _actions.GetActions(ent.Owner))
+        {
+            if (Prototype(action.Owner) is { } proto && proto.ID == ent.Comp.GenerationAction)
+                toRemove.Add(action.Owner);
+        }
+
+        foreach (var action in toRemove)
+        {
+            _actions.RemoveAction(ent.Owner, action);
+        }
+
+        ent.Comp.SelectGenerationActionEntity = null;
+        Dirty(ent);
+    }
+    // Stories-SynthGenerationFix-End
 
     private EntityUid? FindGenerationActionEntity(Entity<SynthGenerationComponent> ent)
     {

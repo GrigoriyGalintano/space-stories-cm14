@@ -21,6 +21,10 @@ public sealed partial class STSynthVoiceSynthesizerWindow : DefaultWindow
 
     private readonly List<(string Id, string Text, Button SearchButton)> _allLines = new();
 
+    private readonly ButtonGroup _categoryGroup = new();
+
+    private readonly List<(STSynthVoiceCategoryButton Button, ScrollContainer Content)> _categories = new();
+
     public STSynthVoiceSynthesizerWindow()
     {
         RobustXamlLoader.Load(this);
@@ -51,18 +55,21 @@ public sealed partial class STSynthVoiceSynthesizerWindow : DefaultWindow
                 {
                     VerticalExpand = true,
                     HorizontalExpand = true,
+                    HScrollEnabled = false,
+                    Visible = _categories.Count == 0,
                 };
                 scroll.AddChild(content);
+                CategoryContents.AddChild(scroll);
 
-                var wrapper = new BoxContainer
+                var categoryButton = new STSynthVoiceCategoryButton
                 {
-                    Orientation = BoxContainer.LayoutOrientation.Vertical,
-                    VerticalExpand = true,
+                    Text = categoryName,
+                    Group = _categoryGroup,
+                    Pressed = _categories.Count == 0,
                 };
-                wrapper.AddChild(scroll);
-
-                CategoryTabs.AddChild(wrapper);
-                TabContainer.SetTabTitle(wrapper, categoryName);
+                categoryButton.OnPressed += _ => SelectCategory(scroll);
+                CategoryButtons.AddChild(categoryButton);
+                _categories.Add((categoryButton, scroll));
 
                 tab = (categoryName, content);
                 byCategory[categoryName] = tab;
@@ -103,6 +110,14 @@ public sealed partial class STSynthVoiceSynthesizerWindow : DefaultWindow
             : "st-working-joe-voice-panel-title");
     }
 
+    private void SelectCategory(ScrollContainer selected)
+    {
+        foreach (var (_, content) in _categories)
+        {
+            content.Visible = content == selected;
+        }
+    }
+
     private void TryPlayLine(string lineId)
     {
         if (_onCooldown)
@@ -117,12 +132,12 @@ public sealed partial class STSynthVoiceSynthesizerWindow : DefaultWindow
 
         if (string.IsNullOrEmpty(search))
         {
-            CategoryTabs.Visible = true;
+            CategoryView.Visible = true;
             SearchResultsScroll.Visible = false;
             return;
         }
 
-        CategoryTabs.Visible = false;
+        CategoryView.Visible = false;
         SearchResultsScroll.Visible = true;
 
         foreach (var (_, text, button) in _allLines)

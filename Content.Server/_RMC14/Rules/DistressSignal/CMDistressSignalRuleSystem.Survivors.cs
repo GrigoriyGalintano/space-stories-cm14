@@ -251,6 +251,7 @@ public sealed partial class CMDistressSignalRuleSystem
         GameTicker.PlayerJoinGame(player);
 
         var profile = GameTicker.GetPlayerProfile(player);
+        profile = _stationSpawning.GetJobProfile(profile, spawnAsJob); // Stories-SynthAppearance
         var coordinates = _transform.GetMoverCoordinates(spawner);
         var survivorMob = _stationSpawning.SpawnPlayerMob(coordinates, spawnAsJob, profile, null);
 

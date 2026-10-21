@@ -1,6 +1,7 @@
 using Content.Shared._RMC14.BlurredVision;
 using Content.Shared._RMC14.Emote;
 using Content.Shared._RMC14.Marines.Skills;
+using Content.Shared._RMC14.Synth; // Stories-SynthNoPainEmote
 using Content.Shared.Chat.Prototypes;
 using Content.Shared.EntityEffects;
 using Content.Shared.Eye.Blinding.Components;
@@ -61,13 +62,18 @@ public sealed partial class RMCPepperSpray : EntityEffect
             return;
         }
 
-        entMan.System<SharedRMCEmoteSystem>().TryEmoteWithChat(
-            target,
-            Scream,
-            hideLog: true,
-            ignoreActionBlocker: true,
-            forceEmote: true
-        );
+        // Stories-SynthNoPainEmote-Start
+        if (!entMan.HasComponent<SynthComponent>(target))
+        {
+            entMan.System<SharedRMCEmoteSystem>().TryEmoteWithChat(
+                target,
+                Scream,
+                hideLog: true,
+                ignoreActionBlocker: true,
+                forceEmote: true
+            );
+        }
+        // Stories-SynthNoPainEmote-End
 
         popup.PopupEntity(Loc.GetString("rmc-pepper-spray-hit"), target, target, PopupType.LargeCaution);
         status.TryAddStatusEffect<RMCBlindedComponent>(target, "Blinded", BlurTime, true);

@@ -187,19 +187,18 @@
     wideAnimationRotation: -135
     damage:
       types:
-        Blunt: 4
+        Blunt: 10 # Stories-TelescopicBaton
     angle: 60
     animation: WeaponArcThrust
   - type: ItemToggleMeleeWeapon
     activatedDamage:
       types:
-        Blunt: 9
+        Blunt: 45 # Stories-TelescopicBaton
   - type: STTelescopicBatonMode
     combatDamage:
       types:
-        Blunt: 9
-    stunStaminaDamage: 60
-    stunDuration: 6
+        Blunt: 45
+    stunStaminaDamage: 40
     stunWhitelist:
       components:
       - Marine

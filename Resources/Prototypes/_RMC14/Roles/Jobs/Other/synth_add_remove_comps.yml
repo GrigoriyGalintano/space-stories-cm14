@@ -40,6 +40,7 @@
   - type: SniperWhitelist
   - type: PyroWhitelist
   - type: QYJWhitelist
+  - type: TackleResist # Stories-SynthTackleResist
 
 - type: entity
   id: RMCSynthRemoveComponents
