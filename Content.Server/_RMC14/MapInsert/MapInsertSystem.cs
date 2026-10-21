@@ -147,6 +147,7 @@ public sealed class MapInsertSystem : EntitySystem
             () =>
             {
                 _fixture.Merge((EntityUid)mainGrid, insertGrid, coordinatesi, Angle.Zero);
+                _areas.QueueRender(mainGrid.Value); // Stories-TacMapInsert
             });
 
         QueueDel(ent);
