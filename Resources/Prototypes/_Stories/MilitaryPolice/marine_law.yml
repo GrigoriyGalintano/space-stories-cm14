@@ -13,6 +13,7 @@
       Minor: stories-law-catalogue-minor
       Capital: stories-law-catalogue-capital
       Precautionary: stories-law-catalogue-precautionary
+      Civil: stories-law-catalogue-civil
     laws:
     - st-law-variable-property-damage-minor
     - st-law-variable-property-damage-major
@@ -55,6 +56,12 @@
     - st-law-precautionary-insanity
     - st-law-precautionary-prisoner-of-war
     - st-law-precautionary-discretionary-detainment
+    - st-law-civil-terror-association
+    - st-law-civil-terrorism
+    - st-law-civil-insubordination-minor
+    - st-law-civil-insubordination-major
+    - st-law-civil-black-marketeering
+    - st-law-civil-arms-dealing
 
 - type: entity
   id: st-law-variable-property-damage-minor
@@ -454,3 +461,64 @@
   - type: RMCMarineLaw
     category: Precautionary
     punishment: Permanent
+- type: entity
+  id: st-law-civil-terror-association
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Civil
+    punishment: Permanent
+    specialPunishment: stories-law-civil-permabrig
+    conditions: stories-law-civil-terror-association-conditions
+
+- type: entity
+  id: st-law-civil-terrorism
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Civil
+    punishment: Permanent
+    specialPunishment: stories-law-civil-permabrig
+    conditions: stories-law-civil-terrorism-conditions
+
+- type: entity
+  id: st-law-civil-insubordination-minor
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Civil
+    punishment: Brig
+    brigTime: 5
+    conditions: stories-law-civil-non-uscm-conditions
+
+- type: entity
+  id: st-law-civil-insubordination-major
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Civil
+    punishment: Brig
+    brigTime: 10
+    conditions: stories-law-civil-non-uscm-conditions
+
+- type: entity
+  id: st-law-civil-black-marketeering
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Civil
+    punishment: Brig
+    brigTime: 7.5
+    specialPunishment: stories-law-civil-contraband-punishment
+    conditions: stories-law-civil-cmb-conditions
+
+- type: entity
+  id: st-law-civil-arms-dealing
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RMCMarineLaw
+    category: Civil
+    punishment: Brig
+    brigTime: 15
+    specialPunishment: stories-law-civil-contraband-punishment
+    conditions: stories-law-civil-cmb-conditions

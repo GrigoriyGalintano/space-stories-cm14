@@ -11,6 +11,7 @@ public enum RMCMarineLawCategory : byte
     Capital,
     Optional,
     Precautionary,
+    Civil, // Stories-FederalLaw
 }
 
 [Serializable, NetSerializable]

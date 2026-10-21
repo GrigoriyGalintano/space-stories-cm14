@@ -145,3 +145,30 @@ ent-st-law-precautionary-prisoner-of-war = Prisoner of War
 
 ent-st-law-precautionary-discretionary-detainment = Discretionary Detainment
     .desc = A discretionary charge used by Commanding Officer to detain personnel for any reason, for the safety and benefit of the operation or security. This is only appealable to the Commanding Officer, or the Provost Marshal Office, and may be lifted at any time by the Commanding Officer.
+# Federal law of the United Americas, based on cmss13 code/modules/law/laws/civil_crime.dm.
+rmc-police-law-category-Civil = Civil Law
+stories-law-catalogue-civil = Federal law of the United Americas. The Commanding Officer cannot modify it. Civil Insubordination applies only to non-USCM personnel.
+stories-law-civil-permabrig = Permanent confinement.
+stories-law-civil-contraband-punishment = Confiscation of contraband.
+stories-law-civil-non-uscm-conditions = Only applicable to non-USCM personnel.
+stories-law-civil-cmb-conditions = Enforced by civil authorities such as the Colonial Marshal Bureau (CMB).
+
+ent-st-law-civil-terror-association = Terror Association
+    .desc = Being a member of, or providing aid to a member of, a terrorist organisation.
+stories-law-civil-terror-association-conditions = Not applicable if the defendant has engaged in terror attacks. Not applicable for execution on its own.
+
+ent-st-law-civil-terrorism = Terrorism
+    .desc = Conducting terror attacks against the United Americas or its allies.
+stories-law-civil-terrorism-conditions = Not applicable if the defendant has not engaged in terror attacks.
+
+ent-st-law-civil-insubordination-minor = Civil Insubordination - minor
+    .desc = Failing to follow a lawful order from a member of the department (if any) to which you have been assigned. Additionally applicable for being disrespectful to the Commander or Duty Officer.
+
+ent-st-law-civil-insubordination-major = Civil Insubordination - major
+    .desc = Failing to follow a lawful order from the Commander or Duty Officer (or assigned department head, if any) during an active Military Operation.
+
+ent-st-law-civil-black-marketeering = Blackmarketeering
+    .desc = Illegally procuring or selling restricted products, excluding firearms or explosives.
+
+ent-st-law-civil-arms-dealing = Arms Dealing
+    .desc = Illegally procuring or selling firearms or explosives.
