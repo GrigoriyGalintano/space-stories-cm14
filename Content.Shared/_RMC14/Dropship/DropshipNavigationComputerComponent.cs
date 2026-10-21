@@ -12,7 +12,7 @@ namespace Content.Shared._RMC14.Dropship;
 /// <summary>
 /// Navigation settings for a dropship flight computer, including restricted destination routing flags.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true)] // Stories-DropshipAutopilot
 [Access(typeof(SharedDropshipSystem))]
 public sealed partial class DropshipNavigationComputerComponent : Component
 {
@@ -58,14 +58,13 @@ public sealed partial class DropshipNavigationComputerComponent : Component
     [DataField, AutoNetworkedField]
     public bool Hijackable = true;
 
+    // Stories-DropshipAutopilot-Start
     /// <summary>
-    /// Whether this console can control a shuttle remotely instead of from onboard.
+    /// Faction receiving this computer's flight logs.
     /// </summary>
     [DataField, AutoNetworkedField]
     public EntProtoId<IFFFactionComponent> Faction = "FactionMarine";
-
-    [DataField, AutoNetworkedField]
-    public bool RemoteControl = false;
+    // Stories-DropshipAutopilot-End
 
     /// <summary>
     /// Duration after forced shutdown before this console can launch again.
@@ -172,11 +171,5 @@ public sealed partial class DropshipNavigationComputerComponent : Component
     /// Whether launch alarm controls should be shown.
     /// </summary>
     [DataField, AutoNetworkedField]
-    public bool ShowLaunchAlarmControls = true;
-
-    /// <summary>
-    /// Whether remote control controls should be shown.
-    /// </summary>
-    [DataField, AutoNetworkedField]
-    public bool ShowRemoteControlControls = true;
+    public bool ShowLaunchAlarmControls = true; // Stories-DropshipAutopilot
 }

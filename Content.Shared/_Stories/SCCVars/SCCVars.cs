@@ -7,7 +7,7 @@ namespace Content.Shared._Stories.SCCVars;
 /// </summary>
 [CVarDefs]
 // ReSharper disable once InconsistentNaming
-public sealed class SCCVars
+public sealed partial class SCCVars
 {
     /// <summary>
     /// Whether the TTS system is enabled on the server.

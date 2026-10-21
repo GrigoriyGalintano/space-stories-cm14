@@ -54,12 +54,7 @@ public sealed partial class DropshipDestinationComponent : Component
     [DataField, AutoNetworkedField]
     public EntityUid? Ship;
 
-    /// <summary>
-    /// Whether the shuttle should automatically recall from this destination.
-    /// </summary>
-    [DataField, AutoNetworkedField]
-    public bool AutoRecall;
-
+    // Stories-DropshipAutopilot
     /// <summary>
     /// Tile radius used to find landing lights associated with this destination.
     /// </summary>

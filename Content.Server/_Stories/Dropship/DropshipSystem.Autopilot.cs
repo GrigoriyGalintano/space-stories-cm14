@@ -1,0 +1,288 @@
+using Content.Shared._RMC14.Dropship;
+using Content.Shared._Stories.SCCVars;
+using Content.Shared.Access.Systems;
+using Content.Shared.Database;
+using Content.Shared.GameTicking;
+using Content.Shared.Interaction;
+using Content.Shared.Interaction.Events;
+using Content.Shared.Shuttles.Components;
+using Content.Shared.UserInterface;
+
+// ReSharper disable CheckNamespace
+
+namespace Content.Server._RMC14.Dropship;
+
+public sealed partial class DropshipSystem
+{
+    private TimeSpan _autopilotDefaultDelay;
+    private TimeSpan _autopilotMinDelay;
+    private TimeSpan _autopilotMaxDelay;
+    private TimeSpan _autopilotRetryDelay;
+    private TimeSpan _nextAutopilotUiRefresh;
+
+    private void InitializeAutopilot()
+    {
+        SubscribeLocalEvent<DropshipRemoteControlConsoleComponent, ActivateInWorldEvent>(OnRemoteControlActivateInWorld, before: [typeof(ActivatableUISystem), typeof(ActivatableUIRequiresAccessSystem)]);
+        SubscribeLocalEvent<DropshipRemoteControlConsoleComponent, ActivatableUIOpenAttemptEvent>(OnRemoteControlOpenAttempt);
+        SubscribeLocalEvent<DropshipRemoteControlConsoleComponent, AfterActivatableUIOpenEvent>(OnRemoteControlConsoleOpen);
+        Subs.CVar(_config, SCCVars.DropshipAutopilotDefaultDelaySeconds, v => _autopilotDefaultDelay = TimeSpan.FromSeconds(v), true);
+        Subs.CVar(_config, SCCVars.DropshipAutopilotMinDelaySeconds, v => _autopilotMinDelay = TimeSpan.FromSeconds(Math.Max(1, v)), true);
+        Subs.CVar(_config, SCCVars.DropshipAutopilotMaxDelaySeconds, v => _autopilotMaxDelay = TimeSpan.FromSeconds(Math.Max(1, v)), true);
+        Subs.CVar(_config, SCCVars.DropshipAutopilotRetrySeconds, v => _autopilotRetryDelay = TimeSpan.FromSeconds(Math.Max(1, v)), true);
+
+        Subs.BuiEvents<DropshipRemoteControlConsoleComponent>(DropshipRemoteControlUiKey.Key,
+            subs =>
+            {
+                subs.Event<DropshipRemoteLaunchMsg>(OnDropshipRemoteLaunchMsg);
+                subs.Event<DropshipRemoteAutopilotConfigureMsg>(OnDropshipRemoteAutopilotConfigureMsg);
+                subs.Event<DropshipRemoteAutopilotDisableMsg>(OnDropshipRemoteAutopilotDisableMsg);
+                subs.Event<DropshipRemoteAutopilotLaunchNowMsg>(OnDropshipRemoteAutopilotLaunchNowMsg);
+                subs.Event<DropshipRemoteAutopilotRecallNowMsg>(OnDropshipRemoteAutopilotRecallNowMsg);
+            });
+
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnAutopilotRoundRestart);
+    }
+
+    private void OnAutopilotRoundRestart(RoundRestartCleanupEvent ev)
+    {
+        _nextAutopilotUiRefresh = default;
+    }
+
+    private TimeSpan ClampAutopilotDelay(TimeSpan delay)
+    {
+        var min = Math.Min(_autopilotMinDelay.TotalSeconds, _autopilotMaxDelay.TotalSeconds);
+        var max = Math.Max(_autopilotMinDelay.TotalSeconds, _autopilotMaxDelay.TotalSeconds);
+        var seconds = Math.Clamp(delay.TotalSeconds, min, max);
+        return TimeSpan.FromSeconds(seconds);
+    }
+
+    private void SetAutopilotStatus(
+        EntityUid dropship,
+        DropshipAutopilotComponent autopilot,
+        DropshipAutopilotStatus status,
+        string details)
+    {
+        if (autopilot.Status == status && autopilot.StatusDetails == details)
+            return;
+
+        autopilot.Status = status;
+        autopilot.StatusDetails = details;
+        Dirty(dropship, autopilot);
+    }
+
+    private void SetAutopilotDisabled(
+        Entity<DropshipComponent> dropship,
+        DropshipAutopilotComponent autopilot,
+        EntityUid? actor,
+        string reason)
+    {
+        var wasActive = autopilot.Mode != DropshipAutopilotMode.Disabled;
+        autopilot.Mode = DropshipAutopilotMode.Disabled;
+        autopilot.NextDepartureAt = null;
+        autopilot.RetryAt = null;
+        autopilot.Status = DropshipAutopilotStatus.Offline;
+        autopilot.StatusDetails = reason;
+        Dirty(dropship.Owner, autopilot);
+
+        if (!wasActive)
+            return;
+
+        _adminLog.Add(LogType.RMCDropshipAutopilot,
+            $"{ToPrettyString(actor):player} disabled autopilot on {ToPrettyString(dropship):dropship}: {reason}");
+    }
+
+    private void DisableAutopilotForManualOverride(
+        Entity<DropshipComponent> dropship,
+        DropshipAutopilotComponent autopilot,
+        DropshipLaunchSource source,
+        EntityUid? actor)
+    {
+        if (source is not (DropshipLaunchSource.ManualNavigation or DropshipLaunchSource.RemoteNavigation or DropshipLaunchSource.PlanetsideTerminal or DropshipLaunchSource.Hijack))
+            return;
+
+        SetAutopilotDisabled(dropship, autopilot, actor,
+            GetAutopilotOverrideReason(source));
+    }
+
+    private string GetAutopilotOverrideReason(DropshipLaunchSource source)
+    {
+        return source switch
+        {
+            DropshipLaunchSource.ManualNavigation => Loc.GetString("stories-dropship-autopilot-status-detail-override-manual"),
+            DropshipLaunchSource.RemoteNavigation => Loc.GetString("stories-dropship-autopilot-status-detail-override-remote"),
+            DropshipLaunchSource.PlanetsideTerminal => Loc.GetString("stories-dropship-autopilot-status-detail-override-planetside"),
+            DropshipLaunchSource.Hijack => Loc.GetString("stories-dropship-autopilot-status-detail-override-hijack"),
+            _ => Loc.GetString("stories-dropship-autopilot-status-detail-disabled"),
+        };
+    }
+
+    private bool TryGetNextAutopilotTarget(
+        Entity<DropshipComponent> dropship,
+        DropshipAutopilotComponent autopilot,
+        out EntityUid target,
+        out string reason)
+    {
+        target = default;
+        reason = string.Empty;
+
+        if (autopilot.Mode == DropshipAutopilotMode.Disabled)
+        {
+            reason = Loc.GetString("stories-dropship-autopilot-status-detail-disabled");
+            return false;
+        }
+
+        if (!TryResolveRouteHangar(dropship, autopilot, out var routeHangar))
+        {
+            reason = Loc.GetString("stories-dropship-autopilot-status-detail-select-hangar");
+            return false;
+        }
+
+        if (autopilot.Mode == DropshipAutopilotMode.RecallOnly)
+        {
+            if (dropship.Comp.Destination == routeHangar)
+            {
+                reason = Loc.GetString("stories-dropship-autopilot-status-detail-holding-hangar");
+                return false;
+            }
+
+            target = routeHangar;
+            return true;
+        }
+
+        if (!TryResolveLandingZone(autopilot, out var landingZone))
+        {
+            reason = Loc.GetString("stories-dropship-autopilot-status-detail-lz-invalid");
+            return false;
+        }
+
+        target = dropship.Comp.Destination == routeHangar ? landingZone : routeHangar;
+        return true;
+    }
+
+    private void LaunchAutopilotNow(
+        Entity<DropshipComponent> dropship,
+        DropshipAutopilotComponent autopilot,
+        Entity<DropshipNavigationComputerComponent> computer,
+        EntityUid target)
+    {
+        autopilot.NextDepartureAt = null;
+        autopilot.RetryAt = null;
+
+        if (!CanAutopilotLaunchTo(computer, dropship, target, out var reason))
+        {
+            autopilot.RetryAt = _timing.CurTime + _autopilotRetryDelay;
+            Dirty(dropship.Owner, autopilot);
+            SetAutopilotStatus(dropship, autopilot, DropshipAutopilotStatus.Blocked, reason);
+            return;
+        }
+
+        if (FlyTo(computer, target, null, source: DropshipLaunchSource.Autopilot))
+        {
+            Dirty(dropship.Owner, autopilot);
+            SetAutopilotStatus(dropship, autopilot, DropshipAutopilotStatus.InFlight,
+                Loc.GetString("stories-dropship-autopilot-status-detail-launching", ("destination", Name(target))));
+            return;
+        }
+
+        autopilot.RetryAt = _timing.CurTime + _autopilotRetryDelay;
+        Dirty(dropship.Owner, autopilot);
+        SetAutopilotStatus(dropship, autopilot, DropshipAutopilotStatus.Blocked,
+            Loc.GetString("stories-dropship-autopilot-status-detail-busy"));
+    }
+
+    private void UpdateAutopilot(EntityUid uid, DropshipComponent dropship, DropshipAutopilotComponent autopilot, TimeSpan time)
+    {
+        if (autopilot.Mode == DropshipAutopilotMode.Disabled)
+            return;
+
+        if (dropship.Crashed)
+        {
+            SetAutopilotDisabled((uid, dropship), autopilot, null, Loc.GetString("stories-dropship-autopilot-status-detail-crashed-disabled"));
+            return;
+        }
+
+        if (HasComp<FTLComponent>(uid))
+        {
+            SetAutopilotStatus(uid, autopilot, DropshipAutopilotStatus.InFlight,
+                Loc.GetString("stories-dropship-autopilot-status-detail-waiting-ftl"));
+            return;
+        }
+
+        if (IsDropshipPreFlightFueling(out var remaining))
+        {
+            autopilot.NextDepartureAt = null;
+            autopilot.RetryAt = time + _autopilotRetryDelay;
+            Dirty(uid, autopilot);
+            SetAutopilotStatus(uid, autopilot, DropshipAutopilotStatus.Waiting,
+                Loc.GetString("stories-dropship-autopilot-status-detail-preflight",
+                    ("minutes", Math.Max(1, (int)remaining.TotalMinutes))));
+            return;
+        }
+
+        if (autopilot.RetryAt is { } retryAt && retryAt > time)
+            return;
+
+        if (!TryGetNextAutopilotTarget((uid, dropship), autopilot, out var target, out var reason))
+        {
+            autopilot.NextDepartureAt = null;
+            autopilot.RetryAt = time + _autopilotRetryDelay;
+            Dirty(uid, autopilot);
+            var holdingAtRouteHangar = Loc.GetString("stories-dropship-autopilot-status-detail-holding-hangar");
+            SetAutopilotStatus(uid, autopilot,
+                reason == holdingAtRouteHangar ? DropshipAutopilotStatus.Ready : DropshipAutopilotStatus.Error,
+                reason);
+            return;
+        }
+
+        if (!TryGetDropshipComputer(uid, out var computer))
+        {
+            autopilot.NextDepartureAt = null;
+            autopilot.RetryAt = time + _autopilotRetryDelay;
+            Dirty(uid, autopilot);
+            SetAutopilotStatus(uid, autopilot, DropshipAutopilotStatus.Error,
+                Loc.GetString("stories-dropship-autopilot-status-detail-no-computer"));
+            return;
+        }
+
+        if (!CanAutopilotLaunchTo(computer, (uid, dropship), target, out reason))
+        {
+            autopilot.NextDepartureAt = null;
+            autopilot.RetryAt = time + _autopilotRetryDelay;
+            Dirty(uid, autopilot);
+            SetAutopilotStatus(uid, autopilot, DropshipAutopilotStatus.Blocked, reason);
+            return;
+        }
+
+        if (autopilot.NextDepartureAt == null)
+        {
+            autopilot.NextDepartureAt = time + ClampAutopilotDelay(autopilot.Delay);
+            autopilot.RetryAt = null;
+            Dirty(uid, autopilot);
+            SetAutopilotStatus(uid, autopilot, DropshipAutopilotStatus.Waiting,
+                Loc.GetString("stories-dropship-autopilot-status-detail-waiting-launch", ("destination", Name(target))));
+            return;
+        }
+
+        if (autopilot.NextDepartureAt > time)
+            return;
+
+        LaunchAutopilotNow((uid, dropship), autopilot, computer, target);
+    }
+
+    private void UpdateAutopilots(TimeSpan time)
+    {
+        if (time < _nextAutopilotUiRefresh)
+            return;
+
+        _nextAutopilotUiRefresh = time + TimeSpan.FromSeconds(1);
+        var query = EntityQueryEnumerator<DropshipComponent, DropshipAutopilotComponent>();
+        while (query.MoveNext(out var uid, out var dropship, out var autopilot))
+        {
+            if (!TerminatingOrDeleted(uid))
+                UpdateAutopilot(uid, dropship, autopilot, time);
+        }
+
+        RefreshUI();
+        RefreshRemoteControlConsoles();
+    }
+}

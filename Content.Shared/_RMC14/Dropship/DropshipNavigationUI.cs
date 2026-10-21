@@ -1,31 +1,8 @@
 ﻿using Content.Shared.Doors.Components;
-using Content.Shared.Shuttles.Systems;
-using Content.Shared.Timing;
+// Stories-DropshipAutopilot-Start
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._RMC14.Dropship;
-
-[Serializable, NetSerializable]
-public sealed class DropshipNavigationDestinationsBuiState(NetEntity? flyBy, List<Destination> destinations, Dictionary<DoorLocation, bool> doorLockStatus, bool remoteControlStatus, bool launchAlarmStatus) : BoundUserInterfaceState
-{
-    public readonly NetEntity? FlyBy = flyBy;
-    public readonly List<Destination> Destinations = destinations;
-    public readonly Dictionary<DoorLocation, bool> DoorLockStatus = doorLockStatus;
-    public readonly bool RemoteControlStatus = remoteControlStatus;
-    public readonly bool LaunchAlarmStatus = launchAlarmStatus;
-}
-
-[Serializable, NetSerializable]
-public sealed class DropshipNavigationTravellingBuiState(FTLState state, StartEndTime time, string destination, string departureLocation, Dictionary<DoorLocation, bool> doorLockStatus, bool remoteControlStatus, bool launchAlarmStatus) : BoundUserInterfaceState
-{
-    public readonly FTLState State = state;
-    public readonly StartEndTime Time = time;
-    public readonly string Destination = destination;
-    public readonly string DepartureLocation = departureLocation;
-    public readonly Dictionary<DoorLocation, bool> DoorLockStatus = doorLockStatus;
-    public readonly bool RemoteControlStatus = remoteControlStatus;
-    public readonly bool LaunchAlarmStatus = launchAlarmStatus;
-}
 
 [Serializable, NetSerializable]
 public sealed class DropshipNavigationLaunchMsg(NetEntity target) : BoundUserInterfaceMessage
@@ -54,7 +31,5 @@ public enum DropshipNavigationUiKey
 public readonly record struct Destination(NetEntity Id, string Name, bool Occupied, bool Primary);
 
 [Serializable, NetSerializable]
-public sealed class DropshipRemoteControlToggleMsg : BoundUserInterfaceMessage;
-
-[Serializable, NetSerializable]
 public sealed class DropshipLaunchAlarmToggleMsg : BoundUserInterfaceMessage;
+// Stories-DropshipAutopilot-End

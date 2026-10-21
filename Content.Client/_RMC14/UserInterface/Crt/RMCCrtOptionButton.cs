@@ -15,11 +15,25 @@ namespace Content.Client._RMC14.UserInterface.Crt;
 public sealed partial class RMCCrtOptionButton : Container, IRMCCrtThemedControl
 {
     private readonly List<(int Id, string Label, RMCCrtActionButton Button)> _items = new();
+    private string? _placeholderText; // Stories-DropshipAutopilot
     private RMCCrtThemeContext _context;
 
     public event Action<int>? OnItemSelected;
     public int SelectedId { get; private set; }
     public int ItemCount => _items.Count;
+
+    // Stories-DropshipAutopilot-Start
+    public string? PlaceholderText
+    {
+        get => _placeholderText;
+        set
+        {
+            _placeholderText = value;
+            if (_items.Count == 0)
+                Button.Text = value;
+        }
+    }
+    // Stories-DropshipAutopilot-End
 
     public string? IconTexturePath
     {
@@ -92,7 +106,7 @@ public sealed partial class RMCCrtOptionButton : Container, IRMCCrtThemedControl
         OptionsPopup.Close();
         Options.DisposeAllChildren();
         _items.Clear();
-        Button.Text = string.Empty;
+        Button.Text = _placeholderText; // Stories-DropshipAutopilot
         SelectedId = 0;
     }
 
