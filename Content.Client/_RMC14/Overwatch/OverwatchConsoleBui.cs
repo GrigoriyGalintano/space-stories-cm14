@@ -148,7 +148,7 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
                         return int.MaxValue;
 
                     if (squad.Leader == marine.Id)
-                        return 1000;
+                        return int.MinValue; // Stories-OverwatchLeaderSorting
 
                     if (marine.Role is not { } role)
                         return 0;
@@ -588,6 +588,18 @@ public sealed class OverwatchConsoleBui : RMCPopOutBui<OverwatchConsoleWindow>
                         row.Buttons.Container.SetPositionInParent(position);
                     }
                 }
+
+                // Stories-OverwatchLeaderSorting-Start
+                if (squad.Leader == id)
+                {
+                    row.Name.Panel.SetPositionFirst();
+                    row.Role.Panel.SetPositionFirst();
+                    row.State.Panel.SetPositionFirst();
+                    row.Location.Panel.SetPositionFirst();
+                    row.Distance.Panel.SetPositionFirst();
+                    row.Buttons.Container.SetPositionFirst();
+                }
+                // Stories-OverwatchLeaderSorting-End
 
                 var hasCamera = entry.IsCamera ||
                                 entry.Marine is { Camera: var cameraId } && cameraId != default;
