@@ -2,14 +2,12 @@ using Content.Shared._RMC14.Armor;
 using Content.Shared._RMC14.Marines.Skills;
 using Content.Shared._RMC14.Wieldable.Components;
 using Content.Shared._RMC14.Wieldable.Events;
-using Content.Shared._Stories.Weapons.Guns;
 using Content.Shared.Hands;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Timing;
-using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Wieldable;
 using Content.Shared.Wieldable.Components;
@@ -146,11 +144,6 @@ public sealed class RMCWieldableSystem : EntitySystem
 #region Wield delay
     private void OnGotEquippedHand(Entity<WieldDelayComponent> wieldable, ref GotEquippedHandEvent args)
     {
-        // Stories-WieldDelay-Start
-        if (wieldable.Comp.BaseDelay <= GunBalanceSystem.GunDrawDelay)
-            return;
-        // Stories-WieldDelay-End
-
         _useDelaySystem.SetLength(wieldable.Owner, wieldable.Comp.ModifiedDelay, WieldUseDelayId);
         _useDelaySystem.TryResetDelay(wieldable.Owner, id: WieldUseDelayId);
     }
@@ -188,30 +181,8 @@ public sealed class RMCWieldableSystem : EntitySystem
         if (skillModifiedDelay < TimeSpan.Zero)
             skillModifiedDelay = TimeSpan.Zero;
 
-        // Stories-WieldDelay-Start
-        if (TryComp<GunComponent>(wieldable.Owner, out var gunComp))
-        {
-            var curTime = _timing.CurTime;
-            var wieldTargetTime = curTime + skillModifiedDelay;
-            if (gunComp.NextFire < wieldTargetTime)
-            {
-                gunComp.NextFire = wieldTargetTime;
-                DirtyField(wieldable.Owner, gunComp, nameof(GunComponent.NextFire));
-            }
-
-            var remaining = gunComp.NextFire - curTime;
-            if (remaining > TimeSpan.Zero)
-            {
-                _useDelaySystem.SetLength(wieldable.Owner, remaining, WieldUseDelayId);
-                _useDelaySystem.TryResetDelay(wieldable.Owner, id: WieldUseDelayId);
-            }
-        }
-        else
-        {
-            _useDelaySystem.SetLength(wieldable.Owner, skillModifiedDelay, WieldUseDelayId);
-            _useDelaySystem.TryResetDelay(wieldable.Owner, id: WieldUseDelayId);
-        }
-        // Stories-WieldDelay-End
+        _useDelaySystem.SetLength(wieldable.Owner, skillModifiedDelay, WieldUseDelayId);
+        _useDelaySystem.TryResetDelay(wieldable.Owner, id: WieldUseDelayId);
     }
 
     public void OnShotAttempt(Entity<WieldDelayComponent> wieldable, ref ShotAttemptedEvent args)

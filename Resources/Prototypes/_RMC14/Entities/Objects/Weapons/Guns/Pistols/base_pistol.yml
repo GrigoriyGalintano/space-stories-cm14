@@ -86,7 +86,7 @@
           - RMCAttachmentBurstFireAssembly
           - RMCAttachmentLaserSight
   - type: RMCFireGroup # Stories-GunBalance
-    group: Base
+    group: Sidearm
     delay: 0
 
 - type: entity

@@ -13,10 +13,10 @@ namespace Content.Shared._Stories.Weapons.Guns;
 
 public sealed class AkimboSystem : EntitySystem
 {
-    [Dependency] private readonly SharedHandsSystem _hands = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SharedContainerSystem _containers = default!;
+    [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
 
     public override void Initialize()
     {
@@ -24,6 +24,16 @@ public sealed class AkimboSystem : EntitySystem
 
         SubscribeLocalEvent<AkimboComponent, GetWeaponAccuracyEvent>(OnAkimboGetWeaponAccuracy);
         SubscribeLocalEvent<AkimboComponent, GunRefreshModifiersEvent>(OnAkimboRefreshModifiers);
+        SubscribeLocalEvent<AkimboUserComponent, ShotAttemptedEvent>(OnAkimboShotAttempted);
+    }
+
+    private void OnAkimboShotAttempted(Entity<AkimboUserComponent> ent, ref ShotAttemptedEvent args)
+    {
+        if (args.Cancelled || !HasComp<AkimboComponent>(args.Used))
+            return;
+
+        if (ent.Comp.NextFire > _timing.CurTime && ent.Comp.LastFiredGun != args.Used.Owner)
+            args.Cancel();
     }
 
     private void OnAkimboGetWeaponAccuracy(Entity<AkimboComponent> gun, ref GetWeaponAccuracyEvent args)
@@ -73,16 +83,6 @@ public sealed class AkimboSystem : EntitySystem
 
         akimboGun = (gunUid, akimboComp);
         return TryGetOtherAkimboGun(akimboGun, out otherAkimboGun);
-    }
-
-    public bool HasAkimboGuns(EntityUid currentGun)
-    {
-        return TryGetAkimboGuns(currentGun, out _, out _);
-    }
-
-    public bool HasDualPistols(EntityUid currentGun)
-    {
-        return HasAkimboGuns(currentGun);
     }
 
     public bool HasShootableAmmo(EntityUid gunUid)
@@ -186,7 +186,7 @@ public sealed class AkimboSystem : EntitySystem
                 {
                     return (otherAkimbo.Owner, otherGunComp);
                 }
-                if (activeReady && otherReady && TryComp<MarineShooterComponent>(user, out var shooterComp))
+                if (activeReady && otherReady && TryComp<AkimboUserComponent>(user, out var shooterComp))
                 {
                     if (shooterComp.LastFiredGun == held)
                     {
@@ -201,19 +201,19 @@ public sealed class AkimboSystem : EntitySystem
 
     public void ApplyAkimboShootDelay(EntityUid gunUid, GunComponent gun, EntityUid user, TimeSpan curTime)
     {
-        var shooter = EnsureComp<MarineShooterComponent>(user);
+        if (!TryGetAkimboGuns(gunUid, out var akimbo, out _))
+            return;
+
+        var shooter = EnsureComp<AkimboUserComponent>(user);
         shooter.LastFiredGun = gunUid;
 
-        if (TryGetAkimboGuns(gunUid, out var akimbo, out _))
-        {
-            var baseDelay = 1f / Math.Max(gun.FireRateModified, 0.1f);
-            var gunDelay = TimeSpan.FromSeconds(baseDelay / akimbo.Comp.IndividualFireRateMultiplier);
-            var marineDelay = TimeSpan.FromSeconds(baseDelay / akimbo.Comp.TotalFireRateMultiplier);
+        var baseDelay = 1f / Math.Max(gun.FireRateModified, 0.1f);
+        var gunDelay = TimeSpan.FromSeconds(baseDelay / akimbo.Comp.IndividualFireRateMultiplier);
+        var akimboDelay = TimeSpan.FromSeconds(baseDelay / akimbo.Comp.TotalFireRateMultiplier);
 
-            gun.NextFire = curTime + gunDelay;
-            shooter.NextGlobalFire = curTime + marineDelay;
-            DirtyField(gunUid, gun, nameof(GunComponent.NextFire));
-        }
+        gun.NextFire = curTime + gunDelay;
+        shooter.NextFire = curTime + akimboDelay;
+        DirtyField(gunUid, gun, nameof(GunComponent.NextFire));
 
         Dirty(user, shooter);
     }

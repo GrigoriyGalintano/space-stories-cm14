@@ -58,7 +58,7 @@
   - type: RMCWeaponAccuracy
     accuracyMultiplier: 0.85
   - type: RMCFireGroup # Stories-GunBalance
-    group: Base
+    group: Sidearm
     delay: 0
 
 - type: Tag
