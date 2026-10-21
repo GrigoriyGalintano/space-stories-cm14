@@ -57,6 +57,9 @@
   - type: GunPointBlank
   - type: RMCWeaponAccuracy
     accuracyMultiplier: 0.85
+  - type: RMCFireGroup # Stories-GunBalance
+    group: Base
+    delay: 0
 
 - type: Tag
   id: RMCMagazineRevolver

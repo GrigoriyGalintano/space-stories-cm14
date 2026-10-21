@@ -85,6 +85,9 @@
           tags:
           - RMCAttachmentBurstFireAssembly
           - RMCAttachmentLaserSight
+  - type: RMCFireGroup # Stories-GunBalance
+    group: Base
+    delay: 0
 
 - type: entity
   abstract: true

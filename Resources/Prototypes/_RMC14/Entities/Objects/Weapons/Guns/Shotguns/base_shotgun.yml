@@ -68,9 +68,6 @@
   - type: Tag
     tags:
     - RMCWeaponShotgun
-  - type: RMCFireGroup
-    group: Shotgun
-    delay: 3 # Stories-ShotgunSMGCooldown
   - type: GunDualWielding
     weaponGroup: Shotgun
   - type: GunPointBlank
