@@ -99,3 +99,5 @@ stories-dropship-flight-travelling = До точки «{$destination}»: {$secon
 stories-dropship-flight-arriving = Посадка в точке «{$destination}» через {$seconds} сек.
 stories-dropship-flight-refueling = Дозаправка: до готовности {$seconds} сек.
 stories-dropship-remote-xeno-announce = Королева приказала металлической птице прибыть к улью в точке «{$location}».
+stories-dropship-autopilot-departure-warning = Корабль «{$ship}» автоматически отправится из точки «{$location}» через {$seconds} сек.
+stories-dropship-autopilot-departing = Десантный корабль «{$ship}» отправляется из точки «{$location}».

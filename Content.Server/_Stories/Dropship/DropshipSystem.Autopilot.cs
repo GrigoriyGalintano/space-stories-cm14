@@ -1,4 +1,7 @@
+using Content.Server._RMC14.Announce;
+using Content.Shared._RMC14.Announce;
 using Content.Shared._RMC14.Dropship;
+using Content.Shared._RMC14.Weapons.Ranged.IFF;
 using Content.Shared._Stories.SCCVars;
 using Content.Shared.Access.Systems;
 using Content.Shared.Database;
@@ -7,6 +10,7 @@ using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.UserInterface;
+using Robust.Shared.Prototypes;
 
 // ReSharper disable CheckNamespace
 
@@ -14,6 +18,10 @@ namespace Content.Server._RMC14.Dropship;
 
 public sealed partial class DropshipSystem
 {
+    [Dependency] private readonly AnnouncementRouterSystem _announcements = default!;
+
+    private static readonly EntProtoId<IFFFactionComponent> AutopilotAnnouncementFaction = "FactionMarine";
+
     private TimeSpan _autopilotDefaultDelay;
     private TimeSpan _autopilotMinDelay;
     private TimeSpan _autopilotMaxDelay;
@@ -22,6 +30,7 @@ public sealed partial class DropshipSystem
 
     private void InitializeAutopilot()
     {
+        SubscribeLocalEvent<DropshipAutopilotComponent, ComponentInit>(OnAutopilotInit);
         SubscribeLocalEvent<DropshipRemoteControlConsoleComponent, ActivateInWorldEvent>(OnRemoteControlActivateInWorld, before: [typeof(ActivatableUISystem), typeof(ActivatableUIRequiresAccessSystem)]);
         SubscribeLocalEvent<DropshipRemoteControlConsoleComponent, ActivatableUIOpenAttemptEvent>(OnRemoteControlOpenAttempt);
         SubscribeLocalEvent<DropshipRemoteControlConsoleComponent, AfterActivatableUIOpenEvent>(OnRemoteControlConsoleOpen);
@@ -41,6 +50,12 @@ public sealed partial class DropshipSystem
             });
 
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnAutopilotRoundRestart);
+    }
+
+    private void OnAutopilotInit(Entity<DropshipAutopilotComponent> ent, ref ComponentInit args)
+    {
+        ent.Comp.Delay = ClampAutopilotDelay(ent.Comp.Delay == TimeSpan.Zero ? _autopilotDefaultDelay : ent.Comp.Delay);
+        Dirty(ent);
     }
 
     private void OnAutopilotRoundRestart(RoundRestartCleanupEvent ev)
@@ -176,11 +191,18 @@ public sealed partial class DropshipSystem
             return;
         }
 
+        var departure = dropship.Comp.Destination;
         if (FlyTo(computer, target, null, source: DropshipLaunchSource.Autopilot))
         {
             Dirty(dropship.Owner, autopilot);
             SetAutopilotStatus(dropship, autopilot, DropshipAutopilotStatus.InFlight,
                 Loc.GetString("stories-dropship-autopilot-status-detail-launching", ("destination", Name(target))));
+            if (departure is { } location && Exists(location))
+            {
+                AnnounceAutopilot(computer, dropship,
+                    Loc.GetString("stories-dropship-autopilot-departing",
+                        ("ship", Name(dropship)), ("location", Name(location))));
+            }
             return;
         }
 
@@ -255,11 +277,19 @@ public sealed partial class DropshipSystem
 
         if (autopilot.NextDepartureAt == null)
         {
-            autopilot.NextDepartureAt = time + ClampAutopilotDelay(autopilot.Delay);
+            var delay = ClampAutopilotDelay(autopilot.Delay);
+            autopilot.NextDepartureAt = time + delay;
             autopilot.RetryAt = null;
             Dirty(uid, autopilot);
             SetAutopilotStatus(uid, autopilot, DropshipAutopilotStatus.Waiting,
                 Loc.GetString("stories-dropship-autopilot-status-detail-waiting-launch", ("destination", Name(target))));
+            if (dropship.Destination is { } location && Exists(location))
+            {
+                AnnounceAutopilot(computer, uid,
+                    Loc.GetString("stories-dropship-autopilot-departure-warning",
+                        ("ship", Name(uid)), ("location", Name(location)),
+                        ("seconds", (int)delay.TotalSeconds)));
+            }
             return;
         }
 
@@ -267,6 +297,28 @@ public sealed partial class DropshipSystem
             return;
 
         LaunchAutopilotNow((uid, dropship), autopilot, computer, target);
+    }
+
+    private void AnnounceAutopilot(Entity<DropshipNavigationComputerComponent> computer, EntityUid dropship, string message)
+    {
+        if (computer.Comp.Faction != AutopilotAnnouncementFaction)
+            return;
+
+        _announcements.Announce(new AnnouncementRequest
+        {
+            Message = message,
+            Route = new AnnouncementRoute
+            {
+                Target = AnnouncementTarget.Marines,
+                Source = dropship,
+                Channels = AnnouncementChannels.Chat,
+            },
+            Chat = new AnnouncementChatOptions
+            {
+                Message = message,
+                WrappedMessage = _marineAnnounce.FormatARESStaging(null, message),
+            },
+        }, _marineAnnounce.GetMarineFilter());
     }
 
     private void UpdateAutopilots(TimeSpan time)

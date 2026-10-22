@@ -531,11 +531,7 @@ public abstract class SharedDropshipSystem : EntitySystem
         return false;
     }
 
-    protected virtual bool IsInFTL(EntityUid dropship)
-    {
-        return false;
-    }
-
+    // Stories-DropshipAutopilot
     protected bool IsDestinationAllowed(
         Entity<DropshipNavigationComputerComponent> computer,
         EntityUid destination,
@@ -795,15 +791,15 @@ public abstract class SharedDropshipSystem : EntitySystem
         }
 
         return true;
-    // Stories-DropshipAutopilot-Start
     }
 
+    // Stories-DropshipAutopilot-Start
     protected bool IsDropshipPreFlightFueling(out TimeSpan remaining)
     {
         remaining = _dropshipInitialDelay - _gameTicker.RoundDuration();
         return remaining > TimeSpan.Zero;
-    // Stories-DropshipAutopilot-End
     }
+    // Stories-DropshipAutopilot-End
 
     protected bool TryDropshipHijackPopup(EntityUid computer, Entity<DropshipHijackerComponent?> user, bool predicted)
     {
@@ -973,38 +969,5 @@ public abstract class SharedDropshipSystem : EntitySystem
         return HasComp<DropshipComponent>(grid);
     }
 
-    public Entity<DropshipDestinationComponent, TransformComponent>? FindClosestLZ(TransformComponent userTransform)
-    {
-        Entity<DropshipDestinationComponent, TransformComponent>? closestDestination = null;
-        var destinations = EntityQueryEnumerator<DropshipDestinationComponent, TransformComponent>();
-        while (destinations.MoveNext(out var uid, out var destination, out var xform))
-        {
-            if (xform.MapID != userTransform.MapID)
-                continue;
-
-            if (closestDestination == null)
-            {
-                closestDestination = (uid, destination, xform);
-                continue;
-            }
-
-            if (userTransform.Coordinates.TryDistance(EntityManager, xform.Coordinates, out var distance) &&
-                userTransform.Coordinates.TryDistance(EntityManager,
-                    closestDestination.Value.Comp2.Coordinates,
-                    out var oldDistance) &&
-                distance < oldDistance)
-            {
-                closestDestination = (uid, destination, xform);
-            }
-        }
-        return closestDestination;
-    }
-
-    public Entity<DropshipDestinationComponent, TransformComponent>? FindClosestLZ(EntityUid entity)
-    {
-        if (TryComp(entity, out TransformComponent? transform))
-            return FindClosestLZ(transform);
-
-        return null;
-    }
+    // Stories-DropshipAutopilot
 }

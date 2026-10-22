@@ -102,3 +102,5 @@ stories-dropship-flight-refueling = Refueling: ready in {$seconds}s.
 stories-dropship-autopilot-status-detail-locked = The onboard flight computer is temporarily locked out.
 
 stories-dropship-remote-xeno-announce = The Queen has commanded the metal bird to the hive at {$location}.
+stories-dropship-autopilot-departure-warning = The {$ship} will automatically depart from {$location} in {$seconds} seconds.
+stories-dropship-autopilot-departing = Dropship '{$ship}' departing from {$location}.

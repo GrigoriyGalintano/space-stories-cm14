@@ -681,22 +681,12 @@ public sealed partial class DropshipSystem : SharedDropshipSystem // Stories-Dro
             EnsureComp<DropshipInFlyByComponent>(dropshipId.Value);
         }
         // Stories-DropshipAutopilot-Start
-        else if (!hijack &&
-                 newDestination != null &&
-                 newDestination.Ship != null &&
-                 newDestination.Ship != dropshipId.Value)
-        {
-            Log.Warning($"{ToPrettyString(user)} tried to launch to occupied dropship destination {ToPrettyString(destination)}");
-            return false;
-        }
-
         var autopilot = EnsureComp<DropshipAutopilotComponent>(dropshipId.Value);
         if (source == DropshipLaunchSource.RoundInit &&
             newDestination != null &&
             ResolveDestinationKind((destination, newDestination)) == DropshipDestinationKind.Hangar)
         {
             autopilot.RouteHangar ??= destination;
-            autopilot.Delay = ClampAutopilotDelay(autopilot.Delay == TimeSpan.Zero ? _autopilotDefaultDelay : autopilot.Delay);
             Dirty(dropshipId.Value, autopilot);
         }
         // Stories-DropshipAutopilot-End
@@ -1429,11 +1419,7 @@ public sealed partial class DropshipSystem : SharedDropshipSystem // Stories-Dro
         return HasComp<ShuttleComponent>(dropship);
     }
 
-    protected override bool IsInFTL(EntityUid dropship)
-    {
-        return HasComp<FTLComponent>(dropship);
-    }
-
+    // Stories-DropshipAutopilot
     protected override void RefreshUI()
     {
         var computers = EntityQueryEnumerator<DropshipNavigationComputerComponent>();
