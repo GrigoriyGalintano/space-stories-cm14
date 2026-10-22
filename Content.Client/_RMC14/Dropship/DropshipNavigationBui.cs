@@ -1,6 +1,4 @@
-// Stories-DropshipAutopilot-Start
 using System.Linq;
-using Content.Client._Stories.Dropship;
 using Content.Shared._RMC14.Dropship;
 using Content.Shared.Doors.Components;
 using Content.Shared.Shuttles.Systems;
@@ -65,7 +63,7 @@ public sealed class DropshipNavigationBui : BoundUserInterface
             return;
 
         var title = computer.NavigationWindowTitle == "Flight Computer"
-            ? Loc.GetString("stories-dropship-navigation-title")
+            ? Loc.GetString("rmc-dropship-navigation-title")
             : computer.NavigationWindowTitle;
         if (EntMan.TryGetComponent(Owner, out TransformComponent? xform) &&
             EntMan.TryGetComponent(xform.GridUid, out MetaDataComponent? metadata))
@@ -101,12 +99,12 @@ public sealed class DropshipNavigationBui : BoundUserInterface
             _lastFlyBy = flyBy;
             _showPrimary = computer.ShowPrimaryDestinationLabel;
             if (flyBy is { } id)
-                AddDestination(id, Loc.GetString("stories-dropship-flyby"), false);
+                AddDestination(id, Loc.GetString("rmc-dropship-flyby"), false);
             foreach (var destination in computer.Destinations)
             {
                 var name = destination.Name;
                 if (destination.Primary && computer.ShowPrimaryDestinationLabel)
-                    name += Loc.GetString("stories-dropship-remote-ui-primary");
+                    name += Loc.GetString("rmc-dropship-remote-ui-primary");
                 AddDestination(destination.Id, name, destination.Occupied);
             }
         }
@@ -145,12 +143,12 @@ public sealed class DropshipNavigationBui : BoundUserInterface
         var port = locks.GetValueOrDefault(DoorLocation.Port);
         var starboard = locks.GetValueOrDefault(DoorLocation.Starboard);
         _window.LockdownButton.Text = Loc.GetString(aft && port && starboard
-            ? "stories-dropship-unlock-all" : "stories-dropship-lock-all");
-        _window.LockdownButtonAft.Text = Loc.GetString(aft ? "stories-dropship-unlock-aft" : "stories-dropship-lock-aft");
-        _window.LockdownButtonPort.Text = Loc.GetString(port ? "stories-dropship-unlock-port" : "stories-dropship-lock-port");
-        _window.LockdownButtonStarboard.Text = Loc.GetString(starboard ? "stories-dropship-unlock-starboard" : "stories-dropship-lock-starboard");
+            ? "rmc-dropship-unlock-all" : "rmc-dropship-lock-all");
+        _window.LockdownButtonAft.Text = Loc.GetString(aft ? "rmc-dropship-unlock-aft" : "rmc-dropship-lock-aft");
+        _window.LockdownButtonPort.Text = Loc.GetString(port ? "rmc-dropship-unlock-port" : "rmc-dropship-lock-port");
+        _window.LockdownButtonStarboard.Text = Loc.GetString(starboard ? "rmc-dropship-unlock-starboard" : "rmc-dropship-lock-starboard");
         _window.LaunchAlarmButton.Text = Loc.GetString(computer.LaunchAlarmStatus
-            ? "stories-dropship-alarm-stop" : "stories-dropship-alarm-start");
+            ? "rmc-dropship-alarm-stop" : "rmc-dropship-alarm-start");
         var disabled = computer.TravelState is FTLState.Travelling or FTLState.Arriving;
         _window.LockdownButton.Disabled = disabled;
         _window.LockdownButtonAft.Disabled = disabled;
@@ -166,7 +164,7 @@ public sealed class DropshipNavigationBui : BoundUserInterface
         _window.AutopilotContainer.Visible = computer.ShowAutopilotControls && computer.Autopilot != null;
         if (computer.Autopilot is not { } status)
             return;
-        _window.AutopilotHeader.Text = Loc.GetString("stories-dropship-autopilot-mode",
+        _window.AutopilotHeader.Text = Loc.GetString("rmc-dropship-autopilot-mode",
             ("mode", DropshipAutopilotText.Mode(status.Mode)));
         _window.AutopilotStatus.Text = DropshipAutopilotText.Status(status.Status);
         _window.AutopilotStatus.Tone = DropshipAutopilotText.Tone(status.Status);
@@ -184,11 +182,11 @@ public sealed class DropshipNavigationBui : BoundUserInterface
         var seconds = Math.Max(0, (int)Math.Ceiling((computer.TravelTime.End - _timing.CurTime).TotalSeconds));
         var key = state switch
         {
-            FTLState.Starting => "stories-dropship-flight-starting",
-            FTLState.Travelling => "stories-dropship-flight-travelling",
-            FTLState.Arriving => "stories-dropship-flight-arriving",
-            FTLState.Cooldown => "stories-dropship-flight-refueling",
-            _ => "stories-dropship-flight-controls",
+            FTLState.Starting => "rmc-dropship-flight-starting",
+            FTLState.Travelling => "rmc-dropship-flight-travelling",
+            FTLState.Arriving => "rmc-dropship-flight-arriving",
+            FTLState.Cooldown => "rmc-dropship-flight-refueling",
+            _ => "rmc-dropship-flight-controls",
         };
         _window.ProgressBarHeader.Text = Loc.GetString(key,
             ("destination", computer.TravelDestination), ("seconds", seconds));
@@ -200,4 +198,3 @@ public sealed class DropshipNavigationBui : BoundUserInterface
         _window.ProgressBar.Value = (float)Math.Clamp(duration - seconds, 0, Math.Max(1, duration));
     }
 }
-// Stories-DropshipAutopilot-End

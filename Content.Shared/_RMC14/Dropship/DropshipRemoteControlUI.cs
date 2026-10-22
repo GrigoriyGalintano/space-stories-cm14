@@ -1,6 +1,5 @@
 using Robust.Shared.Serialization;
 
-// ReSharper disable CheckNamespace
 namespace Content.Shared._RMC14.Dropship;
 
 [Serializable, NetSerializable]

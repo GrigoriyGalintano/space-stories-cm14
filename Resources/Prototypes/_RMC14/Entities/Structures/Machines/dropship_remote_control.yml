@@ -1,6 +1,6 @@
 - type: entity
   parent: CMComputerDropship
-  id: STComputerDropshipRemoteControl
+  id: RMCComputerDropshipRemoteControl
   name: dropship navigation computer
   description: A remote flight computer that can be used to direct linked dropships and configure automated routes.
   components:

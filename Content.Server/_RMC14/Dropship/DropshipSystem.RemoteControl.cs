@@ -2,8 +2,6 @@ using Content.Shared._RMC14.Dropship;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Systems;
 
-// ReSharper disable CheckNamespace
-
 namespace Content.Server._RMC14.Dropship;
 
 public sealed partial class DropshipSystem
@@ -58,16 +56,16 @@ public sealed partial class DropshipSystem
 
             var location = dropship.Destination is { } destination && Exists(destination)
                 ? Name(destination)
-                : Loc.GetString("stories-dropship-remote-location-unknown");
+                : Loc.GetString("rmc-dropship-remote-location-unknown");
 
             if (TryComp(uid, out FTLComponent? ftl) &&
                 ftl.State is FTLState.Starting or FTLState.Travelling or FTLState.Arriving)
             {
-                location = Loc.GetString("stories-dropship-remote-location-in-flight", ("location", location));
+                location = Loc.GetString("rmc-dropship-remote-location-in-flight", ("location", location));
             }
             else if (ftl != null && ftl.State == FTLState.Cooldown)
             {
-                location = Loc.GetString("stories-dropship-remote-location-refueling", ("location", location));
+                location = Loc.GetString("rmc-dropship-remote-location-refueling", ("location", location));
             }
 
             NetEntity? routeHangar = null;
@@ -144,7 +142,7 @@ public sealed partial class DropshipSystem
                 landingZones.Add(entry);
         }
 
-        var linkedLandingZoneName = Loc.GetString("stories-dropship-remote-linked-lz-none");
+        var linkedLandingZoneName = Loc.GetString("rmc-dropship-remote-linked-lz-none");
         if (TryResolveRemoteLinkedLandingZone(console, out var linked))
         {
             linkedLandingZoneName = Name(linked.Owner);

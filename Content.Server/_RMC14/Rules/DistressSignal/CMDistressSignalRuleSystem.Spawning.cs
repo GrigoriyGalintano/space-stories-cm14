@@ -380,10 +380,8 @@ public sealed partial class CMDistressSignalRuleSystem
                     user: null,
                     startupTime: 1f,
                     hyperspaceTime: 1f,
-                    // Stories-DropshipAutopilot-Start
                     offset: true,
                     source: DropshipLaunchSource.RoundInit))
-                    // Stories-DropshipAutopilot-End
                 {
                     continue;
                 }

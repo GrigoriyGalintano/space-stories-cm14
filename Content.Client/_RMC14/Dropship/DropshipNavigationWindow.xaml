@@ -1,15 +1,14 @@
-<!-- Stories-DropshipAutopilot-Start -->
 <controls:DropshipNavigationWindow xmlns="https://spacestation14.io"
     xmlns:controls="clr-namespace:Content.Client._RMC14.Dropship"
     xmlns:crt="clr-namespace:Content.Client._RMC14.UserInterface.Crt"
-    Title="{Loc stories-dropship-navigation-title}" MinWidth="640" SetWidth="660">
+    Title="{Loc rmc-dropship-navigation-title}" MinWidth="640" SetWidth="660">
     <crt:RMCCrtThemeScope Palette="Custom" Effects="HorizontalScanlines" ScanlineOpacity="0.05"
         CustomForeground="#A3D9AF" CustomBackground="#0A1510" CustomBorder="#456C53"
         CustomFill="#28543B" CustomFillForeground="#E2F5E6" CustomMuted="#71947C"
         CustomGood="#8FCC9D" CustomWarning="#D4BB7A"
         CustomDisabledBackground="#0E1A13" CustomDisabledForeground="#55715F" BorderThickness="1">
         <BoxContainer Orientation="Vertical" Margin="9" SeparationOverride="4">
-            <crt:RMCCrtLabel Text="{Loc stories-dropship-flight-controls}" Heading="True" TextFontSize="11" />
+            <crt:RMCCrtLabel Text="{Loc rmc-dropship-flight-controls}" Heading="True" TextFontSize="11" />
             <BoxContainer Name="DestinationsContainer" Access="Public" Orientation="Vertical"
                 SeparationOverride="3" HorizontalExpand="True" />
             <BoxContainer Name="ProgressBarContainer" Access="Public" Orientation="Vertical"
@@ -19,16 +18,16 @@
             </BoxContainer>
             <BoxContainer Orientation="Horizontal" SeparationOverride="5">
                 <crt:RMCCrtActionButton Name="CancelButton" Access="Public" IconState="ban"
-                    Text="{Loc stories-dropship-cancel}" HorizontalExpand="True" Disabled="True"
+                    Text="{Loc rmc-dropship-cancel}" HorizontalExpand="True" Disabled="True"
                     MinHeight="28" IconSize="14" ContentMargin="7 3" TextFontSize="10" />
                 <crt:RMCCrtActionButton Name="LaunchButton" Access="Public" IconState="paper_plane"
-                    Text="{Loc stories-dropship-launch}" Variant="Filled" HorizontalExpand="True" Disabled="True"
+                    Text="{Loc rmc-dropship-launch}" Variant="Filled" HorizontalExpand="True" Disabled="True"
                     MinHeight="28" IconSize="14" ContentMargin="7 3" TextFontSize="10" />
             </BoxContainer>
 
             <crt:RMCCrtSeparator MinHeight="1" Margin="0 3" />
             <BoxContainer Orientation="Horizontal" SeparationOverride="5">
-                <crt:RMCCrtLabel Text="{Loc stories-dropship-door-controls}" Heading="True"
+                <crt:RMCCrtLabel Text="{Loc rmc-dropship-door-controls}" Heading="True"
                     TextFontSize="11" HorizontalExpand="True" VerticalAlignment="Center" />
                 <crt:RMCCrtActionButton Name="LockdownButton" Access="Public" IconState="door_open"
                     MinHeight="28" IconSize="14" ContentMargin="7 3" TextFontSize="10" />
@@ -43,7 +42,7 @@
                 </BoxContainer>
             </BoxContainer>
             <BoxContainer Name="LaunchAlarmContainer" Access="Public" Orientation="Horizontal" SeparationOverride="8">
-                <crt:RMCCrtLabel Text="{Loc stories-dropship-launch-alarm}" TextFontSize="10"
+                <crt:RMCCrtLabel Text="{Loc rmc-dropship-launch-alarm}" TextFontSize="10"
                     HorizontalExpand="True" VerticalAlignment="Center" />
                 <crt:RMCCrtActionButton Name="LaunchAlarmButton" Access="Public" IconState="bullhorn"
                     MinHeight="28" IconSize="14" ContentMargin="7 3" TextFontSize="10" />
@@ -58,7 +57,7 @@
                         <crt:RMCCrtLabel Name="AutopilotStatus" Access="Public" TextFontSize="10" />
                     </BoxContainer>
                     <crt:RMCCrtActionButton Name="AutopilotDisableButton" Access="Public"
-                        IconState="ban" Variant="Danger" Text="{Loc stories-dropship-remote-ui-disable}"
+                        IconState="ban" Variant="Danger" Text="{Loc rmc-dropship-remote-ui-disable}"
                         MinHeight="30" IconSize="14" ContentMargin="7 3" TextFontSize="10"
                         VerticalAlignment="Center" />
                 </BoxContainer>
@@ -67,4 +66,3 @@
         </BoxContainer>
     </crt:RMCCrtThemeScope>
 </controls:DropshipNavigationWindow>
-<!-- Stories-DropshipAutopilot-End -->

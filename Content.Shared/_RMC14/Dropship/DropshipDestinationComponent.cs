@@ -1,7 +1,7 @@
-﻿using Content.Shared._RMC14.Evacuation;
+using Content.Shared._RMC14.Evacuation;
 using Robust.Shared.GameStates;
-using Robust.Shared.Utility;
 using Robust.Shared.Maths;
+using Robust.Shared.Utility;
 
 namespace Content.Shared._RMC14.Dropship;
 
@@ -12,6 +12,9 @@ namespace Content.Shared._RMC14.Dropship;
 [Access(typeof(SharedDropshipSystem), typeof(SharedEvacuationSystem))]
 public sealed partial class DropshipDestinationComponent : Component
 {
+    [DataField, AutoNetworkedField]
+    public DropshipDestinationKind Kind;
+
     /// <summary>
     /// Optional map path spawned when this destination represents a shuttle template.
     /// </summary>
@@ -54,7 +57,6 @@ public sealed partial class DropshipDestinationComponent : Component
     [DataField, AutoNetworkedField]
     public EntityUid? Ship;
 
-    // Stories-DropshipAutopilot
     /// <summary>
     /// Tile radius used to find landing lights associated with this destination.
     /// </summary>
@@ -66,4 +68,11 @@ public sealed partial class DropshipDestinationComponent : Component
     /// </summary>
     [DataField, AutoNetworkedField]
     public EntityUid? ArrivalSoundEntity;
+}
+
+public enum DropshipDestinationKind
+{
+    Auto,
+    Hangar,
+    LandingZone,
 }

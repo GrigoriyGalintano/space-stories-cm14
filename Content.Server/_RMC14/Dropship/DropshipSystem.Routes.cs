@@ -4,7 +4,6 @@ using Content.Shared._RMC14.Rules;
 using Content.Shared._RMC14.Thunderdome;
 using Content.Shared.Shuttles.Components;
 
-// ReSharper disable CheckNamespace
 namespace Content.Server._RMC14.Dropship;
 
 public sealed partial class DropshipSystem
@@ -224,14 +223,14 @@ public sealed partial class DropshipSystem
     {
         if (!TryComp(target, out DropshipDestinationComponent? destination))
         {
-            reason = Loc.GetString("stories-dropship-autopilot-status-detail-target-invalid");
+            reason = Loc.GetString("rmc-dropship-autopilot-status-detail-target-invalid");
             return false;
         }
 
         var kind = ResolveDestinationKind((target, destination));
         if (kind is not (DropshipDestinationKind.Hangar or DropshipDestinationKind.LandingZone))
         {
-            reason = Loc.GetString("stories-dropship-autopilot-status-detail-target-invalid");
+            reason = Loc.GetString("rmc-dropship-autopilot-status-detail-target-invalid");
             return false;
         }
 
@@ -253,7 +252,7 @@ public sealed partial class DropshipSystem
         var kind = ResolveDestinationKind(target);
         if (kind is not (DropshipDestinationKind.Hangar or DropshipDestinationKind.LandingZone))
         {
-            reason = Loc.GetString("stories-dropship-remote-error-invalid-destination");
+            reason = Loc.GetString("rmc-dropship-remote-error-invalid-destination");
             return false;
         }
 
@@ -276,26 +275,26 @@ public sealed partial class DropshipSystem
     {
         if (TerminatingOrDeleted(destination) || Transform(destination).MapUid == null)
         {
-            reason = Loc.GetString("stories-dropship-remote-error-invalid-destination");
+            reason = Loc.GetString("rmc-dropship-remote-error-invalid-destination");
             return false;
         }
 
         var kind = ResolveDestinationKind(destination);
         if (requiredKind != DropshipDestinationKind.Auto && kind != requiredKind)
         {
-            reason = Loc.GetString("stories-dropship-remote-error-invalid-destination");
+            reason = Loc.GetString("rmc-dropship-remote-error-invalid-destination");
             return false;
         }
 
         if (kind is not (DropshipDestinationKind.Hangar or DropshipDestinationKind.LandingZone))
         {
-            reason = Loc.GetString("stories-dropship-remote-error-invalid-destination");
+            reason = Loc.GetString("rmc-dropship-remote-error-invalid-destination");
             return false;
         }
 
         if (Transform(computer.Owner).GridUid != dropship.Owner)
         {
-            reason = Loc.GetString("stories-dropship-remote-error-invalid-destination");
+            reason = Loc.GetString("rmc-dropship-remote-error-invalid-destination");
             return false;
         }
 
@@ -311,7 +310,7 @@ public sealed partial class DropshipSystem
 
         if (_timing.CurTime < computer.Comp.LockedOutUntil)
         {
-            reason = Loc.GetString("stories-dropship-autopilot-status-detail-locked");
+            reason = Loc.GetString("rmc-dropship-autopilot-status-detail-locked");
             return false;
         }
 
@@ -325,32 +324,32 @@ public sealed partial class DropshipSystem
     {
         if (dropship.Comp.Crashed)
         {
-            reason = Loc.GetString("stories-dropship-autopilot-status-detail-crashed");
+            reason = Loc.GetString("rmc-dropship-autopilot-status-detail-crashed");
             return false;
         }
 
         if (HasComp<FTLComponent>(dropship.Owner))
         {
-            reason = Loc.GetString("stories-dropship-autopilot-status-detail-ftl");
+            reason = Loc.GetString("rmc-dropship-autopilot-status-detail-ftl");
             return false;
         }
 
         if (IsDropshipPreFlightFueling(out var remaining))
         {
-            reason = Loc.GetString("stories-dropship-autopilot-status-detail-preflight",
+            reason = Loc.GetString("rmc-dropship-autopilot-status-detail-preflight",
                 ("minutes", Math.Max(1, (int)remaining.TotalMinutes)));
             return false;
         }
 
         if (dropship.Comp.Destination == destination.Owner)
         {
-            reason = Loc.GetString("stories-dropship-autopilot-status-detail-target-same");
+            reason = Loc.GetString("rmc-dropship-autopilot-status-detail-target-same");
             return false;
         }
 
         if (IsDestinationOccupiedByOther(dropship, destination.Comp))
         {
-            reason = Loc.GetString("stories-dropship-autopilot-status-detail-target-occupied");
+            reason = Loc.GetString("rmc-dropship-autopilot-status-detail-target-occupied");
             return false;
         }
 

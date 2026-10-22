@@ -1,6 +1,5 @@
 using Robust.Shared.GameStates;
 
-// ReSharper disable CheckNamespace
 namespace Content.Shared._RMC14.Dropship;
 
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true)]

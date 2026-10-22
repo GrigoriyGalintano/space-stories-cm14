@@ -1,5 +1,4 @@
-﻿using Content.Shared.Doors.Components;
-// Stories-DropshipAutopilot-Start
+using Content.Shared.Doors.Components;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._RMC14.Dropship;
@@ -32,4 +31,3 @@ public readonly record struct Destination(NetEntity Id, string Name, bool Occupi
 
 [Serializable, NetSerializable]
 public sealed class DropshipLaunchAlarmToggleMsg : BoundUserInterfaceMessage;
-// Stories-DropshipAutopilot-End

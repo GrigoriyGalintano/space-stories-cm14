@@ -1,8 +1,8 @@
 using Content.Server._RMC14.Announce;
 using Content.Shared._RMC14.Announce;
+using Content.Shared._RMC14.CCVar;
 using Content.Shared._RMC14.Dropship;
 using Content.Shared._RMC14.Weapons.Ranged.IFF;
-using Content.Shared._Stories.SCCVars;
 using Content.Shared.Access.Systems;
 using Content.Shared.Database;
 using Content.Shared.GameTicking;
@@ -11,8 +11,6 @@ using Content.Shared.Interaction.Events;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.UserInterface;
 using Robust.Shared.Prototypes;
-
-// ReSharper disable CheckNamespace
 
 namespace Content.Server._RMC14.Dropship;
 
@@ -34,10 +32,10 @@ public sealed partial class DropshipSystem
         SubscribeLocalEvent<DropshipRemoteControlConsoleComponent, ActivateInWorldEvent>(OnRemoteControlActivateInWorld, before: [typeof(ActivatableUISystem), typeof(ActivatableUIRequiresAccessSystem)]);
         SubscribeLocalEvent<DropshipRemoteControlConsoleComponent, ActivatableUIOpenAttemptEvent>(OnRemoteControlOpenAttempt);
         SubscribeLocalEvent<DropshipRemoteControlConsoleComponent, AfterActivatableUIOpenEvent>(OnRemoteControlConsoleOpen);
-        Subs.CVar(_config, SCCVars.DropshipAutopilotDefaultDelaySeconds, v => _autopilotDefaultDelay = TimeSpan.FromSeconds(v), true);
-        Subs.CVar(_config, SCCVars.DropshipAutopilotMinDelaySeconds, v => _autopilotMinDelay = TimeSpan.FromSeconds(Math.Max(1, v)), true);
-        Subs.CVar(_config, SCCVars.DropshipAutopilotMaxDelaySeconds, v => _autopilotMaxDelay = TimeSpan.FromSeconds(Math.Max(1, v)), true);
-        Subs.CVar(_config, SCCVars.DropshipAutopilotRetrySeconds, v => _autopilotRetryDelay = TimeSpan.FromSeconds(Math.Max(1, v)), true);
+        Subs.CVar(_config, RMCCVars.RMCDropshipAutopilotDefaultDelaySeconds, v => _autopilotDefaultDelay = TimeSpan.FromSeconds(v), true);
+        Subs.CVar(_config, RMCCVars.RMCDropshipAutopilotMinDelaySeconds, v => _autopilotMinDelay = TimeSpan.FromSeconds(Math.Max(1, v)), true);
+        Subs.CVar(_config, RMCCVars.RMCDropshipAutopilotMaxDelaySeconds, v => _autopilotMaxDelay = TimeSpan.FromSeconds(Math.Max(1, v)), true);
+        Subs.CVar(_config, RMCCVars.RMCDropshipAutopilotRetrySeconds, v => _autopilotRetryDelay = TimeSpan.FromSeconds(Math.Max(1, v)), true);
 
         Subs.BuiEvents<DropshipRemoteControlConsoleComponent>(DropshipRemoteControlUiKey.Key,
             subs =>
@@ -123,11 +121,11 @@ public sealed partial class DropshipSystem
     {
         return source switch
         {
-            DropshipLaunchSource.ManualNavigation => Loc.GetString("stories-dropship-autopilot-status-detail-override-manual"),
-            DropshipLaunchSource.RemoteNavigation => Loc.GetString("stories-dropship-autopilot-status-detail-override-remote"),
-            DropshipLaunchSource.PlanetsideTerminal => Loc.GetString("stories-dropship-autopilot-status-detail-override-planetside"),
-            DropshipLaunchSource.Hijack => Loc.GetString("stories-dropship-autopilot-status-detail-override-hijack"),
-            _ => Loc.GetString("stories-dropship-autopilot-status-detail-disabled"),
+            DropshipLaunchSource.ManualNavigation => Loc.GetString("rmc-dropship-autopilot-status-detail-override-manual"),
+            DropshipLaunchSource.RemoteNavigation => Loc.GetString("rmc-dropship-autopilot-status-detail-override-remote"),
+            DropshipLaunchSource.PlanetsideTerminal => Loc.GetString("rmc-dropship-autopilot-status-detail-override-planetside"),
+            DropshipLaunchSource.Hijack => Loc.GetString("rmc-dropship-autopilot-status-detail-override-hijack"),
+            _ => Loc.GetString("rmc-dropship-autopilot-status-detail-disabled"),
         };
     }
 
@@ -142,13 +140,13 @@ public sealed partial class DropshipSystem
 
         if (autopilot.Mode == DropshipAutopilotMode.Disabled)
         {
-            reason = Loc.GetString("stories-dropship-autopilot-status-detail-disabled");
+            reason = Loc.GetString("rmc-dropship-autopilot-status-detail-disabled");
             return false;
         }
 
         if (!TryResolveRouteHangar(dropship, autopilot, out var routeHangar))
         {
-            reason = Loc.GetString("stories-dropship-autopilot-status-detail-select-hangar");
+            reason = Loc.GetString("rmc-dropship-autopilot-status-detail-select-hangar");
             return false;
         }
 
@@ -156,7 +154,7 @@ public sealed partial class DropshipSystem
         {
             if (dropship.Comp.Destination == routeHangar)
             {
-                reason = Loc.GetString("stories-dropship-autopilot-status-detail-holding-hangar");
+                reason = Loc.GetString("rmc-dropship-autopilot-status-detail-holding-hangar");
                 return false;
             }
 
@@ -166,7 +164,7 @@ public sealed partial class DropshipSystem
 
         if (!TryResolveLandingZone(autopilot, out var landingZone))
         {
-            reason = Loc.GetString("stories-dropship-autopilot-status-detail-lz-invalid");
+            reason = Loc.GetString("rmc-dropship-autopilot-status-detail-lz-invalid");
             return false;
         }
 
@@ -196,11 +194,11 @@ public sealed partial class DropshipSystem
         {
             Dirty(dropship.Owner, autopilot);
             SetAutopilotStatus(dropship, autopilot, DropshipAutopilotStatus.InFlight,
-                Loc.GetString("stories-dropship-autopilot-status-detail-launching", ("destination", Name(target))));
+                Loc.GetString("rmc-dropship-autopilot-status-detail-launching", ("destination", Name(target))));
             if (departure is { } location && Exists(location))
             {
                 AnnounceAutopilot(computer, dropship,
-                    Loc.GetString("stories-dropship-autopilot-departing",
+                    Loc.GetString("rmc-dropship-autopilot-departing",
                         ("ship", Name(dropship)), ("location", Name(location))));
             }
             return;
@@ -209,7 +207,7 @@ public sealed partial class DropshipSystem
         autopilot.RetryAt = _timing.CurTime + _autopilotRetryDelay;
         Dirty(dropship.Owner, autopilot);
         SetAutopilotStatus(dropship, autopilot, DropshipAutopilotStatus.Blocked,
-            Loc.GetString("stories-dropship-autopilot-status-detail-busy"));
+            Loc.GetString("rmc-dropship-autopilot-status-detail-busy"));
     }
 
     private void UpdateAutopilot(EntityUid uid, DropshipComponent dropship, DropshipAutopilotComponent autopilot, TimeSpan time)
@@ -219,14 +217,14 @@ public sealed partial class DropshipSystem
 
         if (dropship.Crashed)
         {
-            SetAutopilotDisabled((uid, dropship), autopilot, null, Loc.GetString("stories-dropship-autopilot-status-detail-crashed-disabled"));
+            SetAutopilotDisabled((uid, dropship), autopilot, null, Loc.GetString("rmc-dropship-autopilot-status-detail-crashed-disabled"));
             return;
         }
 
         if (HasComp<FTLComponent>(uid))
         {
             SetAutopilotStatus(uid, autopilot, DropshipAutopilotStatus.InFlight,
-                Loc.GetString("stories-dropship-autopilot-status-detail-waiting-ftl"));
+                Loc.GetString("rmc-dropship-autopilot-status-detail-waiting-ftl"));
             return;
         }
 
@@ -236,7 +234,7 @@ public sealed partial class DropshipSystem
             autopilot.RetryAt = time + _autopilotRetryDelay;
             Dirty(uid, autopilot);
             SetAutopilotStatus(uid, autopilot, DropshipAutopilotStatus.Waiting,
-                Loc.GetString("stories-dropship-autopilot-status-detail-preflight",
+                Loc.GetString("rmc-dropship-autopilot-status-detail-preflight",
                     ("minutes", Math.Max(1, (int)remaining.TotalMinutes))));
             return;
         }
@@ -249,7 +247,7 @@ public sealed partial class DropshipSystem
             autopilot.NextDepartureAt = null;
             autopilot.RetryAt = time + _autopilotRetryDelay;
             Dirty(uid, autopilot);
-            var holdingAtRouteHangar = Loc.GetString("stories-dropship-autopilot-status-detail-holding-hangar");
+            var holdingAtRouteHangar = Loc.GetString("rmc-dropship-autopilot-status-detail-holding-hangar");
             SetAutopilotStatus(uid, autopilot,
                 reason == holdingAtRouteHangar ? DropshipAutopilotStatus.Ready : DropshipAutopilotStatus.Error,
                 reason);
@@ -262,7 +260,7 @@ public sealed partial class DropshipSystem
             autopilot.RetryAt = time + _autopilotRetryDelay;
             Dirty(uid, autopilot);
             SetAutopilotStatus(uid, autopilot, DropshipAutopilotStatus.Error,
-                Loc.GetString("stories-dropship-autopilot-status-detail-no-computer"));
+                Loc.GetString("rmc-dropship-autopilot-status-detail-no-computer"));
             return;
         }
 
@@ -282,11 +280,11 @@ public sealed partial class DropshipSystem
             autopilot.RetryAt = null;
             Dirty(uid, autopilot);
             SetAutopilotStatus(uid, autopilot, DropshipAutopilotStatus.Waiting,
-                Loc.GetString("stories-dropship-autopilot-status-detail-waiting-launch", ("destination", Name(target))));
+                Loc.GetString("rmc-dropship-autopilot-status-detail-waiting-launch", ("destination", Name(target))));
             if (dropship.Destination is { } location && Exists(location))
             {
                 AnnounceAutopilot(computer, uid,
-                    Loc.GetString("stories-dropship-autopilot-departure-warning",
+                    Loc.GetString("rmc-dropship-autopilot-departure-warning",
                         ("ship", Name(uid)), ("location", Name(location)),
                         ("seconds", (int)delay.TotalSeconds)));
             }

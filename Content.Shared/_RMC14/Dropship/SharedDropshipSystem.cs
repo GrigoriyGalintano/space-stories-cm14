@@ -3,7 +3,7 @@ using System.Linq;
 using Content.Shared._RMC14.AntiAir;
 using Content.Shared._RMC14.ARES;
 using Content.Shared._RMC14.ARES.Logs;
-using Content.Shared._RMC14.CCVar; // Stories-DropshipAutopilot
+using Content.Shared._RMC14.CCVar;
 using Content.Shared._RMC14.Dropship.AttachmentPoint;
 using Content.Shared._RMC14.Dropship.Utility.Components;
 using Content.Shared._RMC14.Dropship.Weapon;
@@ -11,10 +11,10 @@ using Content.Shared._RMC14.Evacuation;
 using Content.Shared._RMC14.Marines.Announce;
 using Content.Shared._RMC14.Marines.Skills;
 using Content.Shared._RMC14.Rules;
-using Content.Shared._RMC14.Tracker; // Stories-DropshipAutopilot
+using Content.Shared._RMC14.Tracker;
 using Content.Shared._RMC14.Xenonids;
-using Content.Shared._RMC14.Xenonids.Maturing; // Stories-DropshipAutopilot
-using Content.Shared.Administration.Logs; // Stories-DropshipAutopilot
+using Content.Shared._RMC14.Xenonids.Maturing;
+using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
 using Content.Shared.DoAfter;
 using Content.Shared.Examine;
@@ -41,7 +41,6 @@ public abstract class SharedDropshipSystem : EntitySystem
 {
     [Dependency] protected readonly SharedAudioSystem Audio = default!;
 
-    // Stories-DropshipAutopilot
     [Dependency] private readonly ISharedAdminLogManager _adminLog = default!;
     [Dependency] private readonly RMCShipAntiAirSystem _antiAir = default!;
     [Dependency] private readonly IConfigurationManager _config = default!;
@@ -56,7 +55,6 @@ public abstract class SharedDropshipSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SkillsSystem _skills = default!;
     [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
-    // Stories-DropshipAutopilot
 
     private TimeSpan _dropshipInitialDelay;
     private TimeSpan _hijackInitialDelay;
@@ -71,7 +69,7 @@ public abstract class SharedDropshipSystem : EntitySystem
         SubscribeLocalEvent<DropshipNavigationComputerComponent, ActivatableUIOpenAttemptEvent>(OnUIOpenAttempt);
         SubscribeLocalEvent<DropshipNavigationComputerComponent, AfterActivatableUIOpenEvent>(OnNavigationOpen);
         SubscribeLocalEvent<DropshipNavigationComputerComponent, DropshipLockoutOverrideDoAfterEvent>(OnNavigationLockoutOverride);
-        SubscribeLocalEvent<DropshipNavigationComputerComponent, GettingAttackedAttemptEvent>(OnGettingAttackedAttempt); // Stories-DropshipAutopilot
+        SubscribeLocalEvent<DropshipNavigationComputerComponent, GettingAttackedAttemptEvent>(OnGettingAttackedAttempt);
 
         SubscribeLocalEvent<DropshipWeaponPointComponent, MapInitEvent>(OnAttachmentPointMapInit);
         SubscribeLocalEvent<DropshipWeaponPointComponent, EntityTerminatingEvent>(OnAttachmentPointRemove);
@@ -102,7 +100,6 @@ public abstract class SharedDropshipSystem : EntitySystem
             {
                 subs.Event<DropshipHijackerDestinationChosenBuiMsg>(OnHijackerDestinationChosenMsg);
             });
-        // Stories-DropshipAutopilot
 
         Subs.CVar(_config, RMCCVars.RMCDropshipInitialDelayMinutes, v => _dropshipInitialDelay = TimeSpan.FromMinutes(v), true);
         Subs.CVar(_config, RMCCVars.RMCDropshipHijackInitialDelayMinutes, v => _hijackInitialDelay = TimeSpan.FromMinutes(v), true);
@@ -251,7 +248,6 @@ public abstract class SharedDropshipSystem : EntitySystem
         _popup.PopupEntity(Loc.GetString("rmc-dropship-launch-alarm-xeno-shutdown", ("console", ent)), args.Attacker);
     }
 
-    // Stories-DropshipAutopilot
     private void OnAttachmentPointMapInit<TComp, TEvent>(Entity<TComp> ent, ref TEvent args) where TComp : IComponent?
     {
         if (_net.IsClient)
@@ -348,10 +344,8 @@ public abstract class SharedDropshipSystem : EntitySystem
             return;
         }
 
-        // Stories-DropshipAutopilot-Start
         if (!FlyTo(ent, destination.Value, user, source: DropshipLaunchSource.ManualNavigation))
             return;
-        // Stories-DropshipAutopilot-End
 
         var grid = _transform.GetGrid((ent.Owner, Transform(ent.Owner)));
         if (grid != null)
@@ -408,7 +402,7 @@ public abstract class SharedDropshipSystem : EntitySystem
             return;
         }
 
-        if (FlyTo(ent, antiAirEv.Destination, args.Actor, true, source: DropshipLaunchSource.Hijack) && // Stories-DropshipAutopilot
+        if (FlyTo(ent, antiAirEv.Destination, args.Actor, true, source: DropshipLaunchSource.Hijack) &&
             xform.ParentUid.Valid)
         {
             var dropship = EnsureComp<DropshipComponent>(xform.ParentUid);
@@ -510,10 +504,8 @@ public abstract class SharedDropshipSystem : EntitySystem
         bool hijack = false,
         float? startupTime = null,
         float? hyperspaceTime = null,
-        // Stories-DropshipAutopilot-Start
         bool offset = false,
         DropshipLaunchSource source = DropshipLaunchSource.ManualNavigation)
-        // Stories-DropshipAutopilot-End
     {
         return false;
     }
@@ -531,7 +523,6 @@ public abstract class SharedDropshipSystem : EntitySystem
         return false;
     }
 
-    // Stories-DropshipAutopilot
     protected bool IsDestinationAllowed(
         Entity<DropshipNavigationComputerComponent> computer,
         EntityUid destination,
@@ -775,11 +766,11 @@ public abstract class SharedDropshipSystem : EntitySystem
         return rounded.ToString("0.##");
     }
 
-    protected bool TryDropshipLaunchPopup(EntityUid computer, EntityUid user, bool predicted) // Stories-DropshipAutopilot
+    protected bool TryDropshipLaunchPopup(EntityUid computer, EntityUid user, bool predicted)
     {
-        if (IsDropshipPreFlightFueling(out var remaining)) // Stories-DropshipAutopilot
+        if (IsDropshipPreFlightFueling(out var remaining))
         {
-            var minutesLeft = Math.Max(1, (int)remaining.TotalMinutes); // Stories-DropshipAutopilot
+            var minutesLeft = Math.Max(1, (int)remaining.TotalMinutes);
             var msg = Loc.GetString("rmc-dropship-pre-flight-fueling", ("minutes", minutesLeft));
 
             if (predicted)
@@ -793,13 +784,11 @@ public abstract class SharedDropshipSystem : EntitySystem
         return true;
     }
 
-    // Stories-DropshipAutopilot-Start
     protected bool IsDropshipPreFlightFueling(out TimeSpan remaining)
     {
         remaining = _dropshipInitialDelay - _gameTicker.RoundDuration();
         return remaining > TimeSpan.Zero;
     }
-    // Stories-DropshipAutopilot-End
 
     protected bool TryDropshipHijackPopup(EntityUid computer, Entity<DropshipHijackerComponent?> user, bool predicted)
     {
@@ -968,6 +957,4 @@ public abstract class SharedDropshipSystem : EntitySystem
         var grid = _transform.GetGrid(coordinates);
         return HasComp<DropshipComponent>(grid);
     }
-
-    // Stories-DropshipAutopilot
 }

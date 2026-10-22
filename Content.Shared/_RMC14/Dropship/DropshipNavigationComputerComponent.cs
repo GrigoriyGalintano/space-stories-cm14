@@ -1,7 +1,8 @@
-﻿using Content.Shared._RMC14.Marines.Skills;
+using Content.Shared._RMC14.Marines.Skills;
 using Content.Shared._RMC14.Weapons.Ranged.IFF;
-using Robust.Shared.Audio;
-using Content.Shared._RMC14.Weapons.Ranged.IFF;
+using Content.Shared.Doors.Components;
+using Content.Shared.Shuttles.Systems;
+using Content.Shared.Timing;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Maths;
@@ -12,7 +13,7 @@ namespace Content.Shared._RMC14.Dropship;
 /// <summary>
 /// Navigation settings for a dropship flight computer, including restricted destination routing flags.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true)] // Stories-DropshipAutopilot
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true)]
 [Access(typeof(SharedDropshipSystem))]
 public sealed partial class DropshipNavigationComputerComponent : Component
 {
@@ -58,13 +59,11 @@ public sealed partial class DropshipNavigationComputerComponent : Component
     [DataField, AutoNetworkedField]
     public bool Hijackable = true;
 
-    // Stories-DropshipAutopilot-Start
     /// <summary>
     /// Faction receiving this computer's flight logs.
     /// </summary>
     [DataField, AutoNetworkedField]
     public EntProtoId<IFFFactionComponent> Faction = "FactionMarine";
-    // Stories-DropshipAutopilot-End
 
     /// <summary>
     /// Duration after forced shutdown before this console can launch again.
@@ -171,5 +170,32 @@ public sealed partial class DropshipNavigationComputerComponent : Component
     /// Whether launch alarm controls should be shown.
     /// </summary>
     [DataField, AutoNetworkedField]
-    public bool ShowLaunchAlarmControls = true; // Stories-DropshipAutopilot
+    public bool ShowLaunchAlarmControls = true;
+
+    [DataField, AutoNetworkedField]
+    public bool ShowAutopilotControls = true;
+
+    [AutoNetworkedField]
+    public NetEntity? FlyBy;
+
+    [AutoNetworkedField]
+    public List<Destination> Destinations = new();
+
+    [AutoNetworkedField]
+    public Dictionary<DoorLocation, bool> DoorLockStatus = new();
+
+    [AutoNetworkedField]
+    public FTLState? TravelState;
+
+    [AutoNetworkedField]
+    public StartEndTime TravelTime;
+
+    [AutoNetworkedField]
+    public string TravelDestination = string.Empty;
+
+    [AutoNetworkedField]
+    public string TravelDeparture = string.Empty;
+
+    [AutoNetworkedField]
+    public DropshipNavigationAutopilotStatus? Autopilot;
 }

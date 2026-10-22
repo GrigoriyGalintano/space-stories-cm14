@@ -59,7 +59,7 @@
     showPrimaryDestinationLabel: false
     showIndividualDoorControls: false
     showLaunchAlarmControls: false
-    showAutopilotControls: false # Stories-DropshipAutopilot
+    showAutopilotControls: false
   - type: AccessReader
     access: [["CMAccessERT"]]
   - type: UserInterface
@@ -142,11 +142,9 @@
   - type: Transform
     anchored: false
 
-# Stories-DropshipAutopilot-Start
 - type: entity
-  parent: STComputerDropshipRemoteControl
+  parent: RMCComputerDropshipRemoteControl
   id: CMComputerDropshipNavigationPlanetside
-# Stories-DropshipAutopilot-End
 
 - type: entity
   parent: CMComputerDropship

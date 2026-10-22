@@ -1,7 +1,7 @@
 using Content.Client._RMC14.UserInterface.Crt;
 using Content.Shared._RMC14.Dropship;
 
-namespace Content.Client._Stories.Dropship;
+namespace Content.Client._RMC14.Dropship;
 
 internal static class DropshipAutopilotText
 {
@@ -9,9 +9,9 @@ internal static class DropshipAutopilotText
     {
         return Loc.GetString(mode switch
         {
-            DropshipAutopilotMode.Cycle => "stories-dropship-remote-ui-cycle",
-            DropshipAutopilotMode.RecallOnly => "stories-dropship-remote-ui-recall-only",
-            _ => "stories-dropship-mode-disabled",
+            DropshipAutopilotMode.Cycle => "rmc-dropship-remote-ui-cycle",
+            DropshipAutopilotMode.RecallOnly => "rmc-dropship-remote-ui-recall-only",
+            _ => "rmc-dropship-mode-disabled",
         });
     }
 
@@ -19,12 +19,12 @@ internal static class DropshipAutopilotText
     {
         return Loc.GetString(status switch
         {
-            DropshipAutopilotStatus.Ready => "stories-dropship-autopilot-status-ready",
-            DropshipAutopilotStatus.Waiting => "stories-dropship-autopilot-status-waiting",
-            DropshipAutopilotStatus.InFlight => "stories-dropship-autopilot-status-in-flight",
-            DropshipAutopilotStatus.Blocked => "stories-dropship-autopilot-status-blocked",
-            DropshipAutopilotStatus.Error => "stories-dropship-autopilot-status-error",
-            _ => "stories-dropship-autopilot-status-offline",
+            DropshipAutopilotStatus.Ready => "rmc-dropship-autopilot-status-ready",
+            DropshipAutopilotStatus.Waiting => "rmc-dropship-autopilot-status-waiting",
+            DropshipAutopilotStatus.InFlight => "rmc-dropship-autopilot-status-in-flight",
+            DropshipAutopilotStatus.Blocked => "rmc-dropship-autopilot-status-blocked",
+            DropshipAutopilotStatus.Error => "rmc-dropship-autopilot-status-error",
+            _ => "rmc-dropship-autopilot-status-offline",
         });
     }
 
@@ -43,7 +43,7 @@ internal static class DropshipAutopilotText
     public static string Details(string details, int? departInSeconds)
     {
         return departInSeconds is { } seconds
-            ? Loc.GetString("stories-dropship-departure-countdown", ("details", details), ("seconds", seconds))
+            ? Loc.GetString("rmc-dropship-departure-countdown", ("details", details), ("seconds", seconds))
             : details;
     }
 }

@@ -4,7 +4,7 @@ using Content.Shared._RMC14.Dropship;
 using JetBrains.Annotations;
 using Robust.Client.UserInterface;
 
-namespace Content.Client._Stories.Dropship;
+namespace Content.Client._RMC14.Dropship;
 
 [UsedImplicitly]
 public sealed class DropshipRemoteControlBui : BoundUserInterface
@@ -75,10 +75,10 @@ public sealed class DropshipRemoteControlBui : BoundUserInterface
             return;
 
         _window.Title = Loc.GetString(console.Planetside
-            ? "stories-dropship-remote-ui-title-planetside"
-            : "stories-dropship-remote-ui-title");
+            ? "rmc-dropship-remote-ui-title-planetside"
+            : "rmc-dropship-remote-ui-title");
         _window.LinkedLandingZone.Visible = console.Planetside;
-        _window.LinkedLandingZone.Text = Loc.GetString("stories-dropship-remote-ui-linked-lz",
+        _window.LinkedLandingZone.Text = Loc.GetString("rmc-dropship-remote-ui-linked-lz",
             ("lz", console.LinkedLandingZoneName));
 
         var selected = console.Dropships.FirstOrDefault(d => d.Computer == _selectedComputer);
@@ -97,13 +97,13 @@ public sealed class DropshipRemoteControlBui : BoundUserInterface
         FillOptions(_window.Dropships, console.Dropships.Select(d => (d.Computer, d.Name)).ToList(), _selectedComputer);
         _window.Dropships.Disabled = console.Dropships.Count == 0;
         _window.Location.Text = selected.Computer == default
-            ? Loc.GetString("stories-dropship-remote-ui-no-dropships")
-            : Loc.GetString("stories-dropship-remote-ui-location", ("location", selected.Location));
+            ? Loc.GetString("rmc-dropship-remote-ui-no-dropships")
+            : Loc.GetString("rmc-dropship-remote-ui-location", ("location", selected.Location));
         _window.Status.Visible = selected.Computer != default;
         _window.Status.Text = selected.Mode == DropshipAutopilotMode.Disabled
-            ? Loc.GetString("stories-dropship-autopilot-status",
+            ? Loc.GetString("rmc-dropship-autopilot-status",
                 ("status", DropshipAutopilotText.Status(selected.Status)))
-            : Loc.GetString("stories-dropship-flight-status",
+            : Loc.GetString("rmc-dropship-flight-status",
                 ("mode", DropshipAutopilotText.Mode(selected.Mode)),
                 ("status", DropshipAutopilotText.Status(selected.Status)));
         _window.Status.Tone = DropshipAutopilotText.Tone(selected.Status);
@@ -122,7 +122,7 @@ public sealed class DropshipRemoteControlBui : BoundUserInterface
         _window.CycleButton.Selected = _selectedMode == DropshipAutopilotMode.Cycle;
         _window.RecallOnlyButton.Selected = _selectedMode == DropshipAutopilotMode.RecallOnly;
         _window.LandingZones.Disabled |= _selectedMode == DropshipAutopilotMode.RecallOnly;
-        _window.DelayHint.Text = Loc.GetString("stories-dropship-delay-range",
+        _window.DelayHint.Text = Loc.GetString("rmc-dropship-delay-range",
             ("min", console.MinDelaySeconds), ("max", console.MaxDelaySeconds));
         RefreshActions(console, selected);
     }
@@ -175,11 +175,11 @@ public sealed class DropshipRemoteControlBui : BoundUserInterface
         {
             var label = destination.Name;
             if (destination.Primary)
-                label += Loc.GetString("stories-dropship-remote-ui-primary");
+                label += Loc.GetString("rmc-dropship-remote-ui-primary");
             if (destination.OccupiedBy is { } occupant)
                 label += Loc.GetString(occupant == dropship
-                    ? "stories-dropship-remote-ui-current"
-                    : "stories-dropship-remote-ui-occupied");
+                    ? "rmc-dropship-remote-ui-current"
+                    : "rmc-dropship-remote-ui-occupied");
             options.Add((destination.Id, label));
         }
 

@@ -6,7 +6,6 @@ using Content.Shared.Interaction.Events;
 using Content.Shared.Popups;
 using Content.Shared.UserInterface;
 
-// ReSharper disable CheckNamespace
 namespace Content.Server._RMC14.Dropship;
 
 public sealed partial class DropshipSystem
@@ -21,13 +20,13 @@ public sealed partial class DropshipSystem
 
         if (!IsRemoteControlConsolePlanetside(ent))
         {
-            _popup.PopupEntity(Loc.GetString("stories-dropship-remote-xeno-clueless", ("console", ent.Owner)), user, user);
+            _popup.PopupEntity(Loc.GetString("rmc-dropship-remote-xeno-clueless", ("console", ent.Owner)), user, user);
             return;
         }
 
         if (!HasComp<DropshipHijackerComponent>(user))
         {
-            _popup.PopupEntity(Loc.GetString("stories-dropship-remote-xeno-clueless", ("console", ent.Owner)), user, user);
+            _popup.PopupEntity(Loc.GetString("rmc-dropship-remote-xeno-clueless", ("console", ent.Owner)), user, user);
             return;
         }
 
@@ -39,36 +38,36 @@ public sealed partial class DropshipSystem
 
         if (!TryResolveRemoteLinkedLandingZone(ent, out var landingZone))
         {
-            _popup.PopupEntity(Loc.GetString("stories-dropship-remote-error-no-lz"), user, user, PopupType.MediumCaution);
+            _popup.PopupEntity(Loc.GetString("rmc-dropship-remote-error-no-lz"), user, user, PopupType.MediumCaution);
             return;
         }
 
         if (landingZone.Comp.Ship != null)
         {
-            _popup.PopupEntity(Loc.GetString("stories-dropship-remote-error-destination-occupied"), user, user, PopupType.MediumCaution);
+            _popup.PopupEntity(Loc.GetString("rmc-dropship-remote-error-destination-occupied"), user, user, PopupType.MediumCaution);
             return;
         }
 
         if (Count<PrimaryLandingZoneComponent>() > 0 &&
             !HasComp<PrimaryLandingZoneComponent>(landingZone))
         {
-            _popup.PopupEntity(Loc.GetString("stories-dropship-remote-error-not-primary"), user, user, PopupType.MediumCaution);
+            _popup.PopupEntity(Loc.GetString("rmc-dropship-remote-error-not-primary"), user, user, PopupType.MediumCaution);
             return;
         }
 
         if (TrySummonAnyAvailableDropship(user, landingZone))
         {
-            _popup.PopupEntity(Loc.GetString("stories-dropship-remote-xeno-called"), user, user, PopupType.LargeCaution);
+            _popup.PopupEntity(Loc.GetString("rmc-dropship-remote-xeno-called"), user, user, PopupType.LargeCaution);
 
-            var locationName = Loc.GetString("stories-dropship-remote-location-unknown");
+            var locationName = Loc.GetString("rmc-dropship-remote-location-unknown");
             if (_area.TryGetArea(landingZone, out _, out var areaProto))
                 locationName = areaProto.Name;
 
-            _xenoAnnounce.AnnounceSameHiveDefaultSound(user, Loc.GetString("stories-dropship-remote-xeno-announce", ("location", locationName)));
+            _xenoAnnounce.AnnounceSameHiveDefaultSound(user, Loc.GetString("rmc-dropship-remote-xeno-announce", ("location", locationName)));
             return;
         }
 
-        _popup.PopupEntity(Loc.GetString("stories-dropship-remote-error-no-dropships"), user, user, PopupType.LargeCaution);
+        _popup.PopupEntity(Loc.GetString("rmc-dropship-remote-error-no-dropships"), user, user, PopupType.LargeCaution);
     }
 
     private void OnRemoteControlOpenAttempt(Entity<DropshipRemoteControlConsoleComponent> ent, ref ActivatableUIOpenAttemptEvent args)
@@ -96,7 +95,7 @@ public sealed partial class DropshipSystem
             return;
         }
 
-        SetAutopilotDisabled(dropship, autopilot, args.Actor, Loc.GetString("stories-dropship-autopilot-status-detail-disabled-flight-computer"));
+        SetAutopilotDisabled(dropship, autopilot, args.Actor, Loc.GetString("rmc-dropship-autopilot-status-detail-disabled-flight-computer"));
         RefreshUI();
         RefreshRemoteControlConsoles();
     }
@@ -115,7 +114,7 @@ public sealed partial class DropshipSystem
         if (!TryGetEntity(args.Destination, out var destination) ||
             !TryComp(destination, out DropshipDestinationComponent? destinationComp))
         {
-            _popup.PopupEntity(Loc.GetString("stories-dropship-remote-error-invalid-destination"), console, args.Actor, PopupType.MediumCaution);
+            _popup.PopupEntity(Loc.GetString("rmc-dropship-remote-error-invalid-destination"), console, args.Actor, PopupType.MediumCaution);
             return;
         }
 
@@ -128,12 +127,12 @@ public sealed partial class DropshipSystem
 
         if (!FlyTo(computer, destination.Value, args.Actor, source: DropshipLaunchSource.RemoteNavigation))
         {
-            _popup.PopupEntity(Loc.GetString("stories-dropship-remote-error-busy"), console, args.Actor, PopupType.MediumCaution);
+            _popup.PopupEntity(Loc.GetString("rmc-dropship-remote-error-busy"), console, args.Actor, PopupType.MediumCaution);
             RefreshRemoteControlConsoles();
             return;
         }
 
-        _popup.PopupEntity(Loc.GetString("stories-dropship-remote-launched", ("destination", Name(destination.Value))), console, args.Actor, PopupType.Medium);
+        _popup.PopupEntity(Loc.GetString("rmc-dropship-remote-launched", ("destination", Name(destination.Value))), console, args.Actor, PopupType.Medium);
         RefreshUI(computer);
         RefreshRemoteControlConsoles();
     }
@@ -156,7 +155,7 @@ public sealed partial class DropshipSystem
 
         if (args.Mode == DropshipAutopilotMode.Disabled)
         {
-            SetAutopilotDisabled(dropship, autopilot, args.Actor, Loc.GetString("stories-dropship-autopilot-status-detail-disabled-remote"));
+            SetAutopilotDisabled(dropship, autopilot, args.Actor, Loc.GetString("rmc-dropship-autopilot-status-detail-disabled-remote"));
             RefreshUI(computer);
             RefreshRemoteControlConsoles();
             return;
@@ -173,7 +172,7 @@ public sealed partial class DropshipSystem
                 false,
                 out _))
         {
-            _popup.PopupEntity(Loc.GetString("stories-dropship-autopilot-error-no-home"), console, args.Actor, PopupType.MediumCaution);
+            _popup.PopupEntity(Loc.GetString("rmc-dropship-autopilot-error-no-home"), console, args.Actor, PopupType.MediumCaution);
             RefreshUI(computer);
             RefreshRemoteControlConsoles();
             return;
@@ -181,7 +180,7 @@ public sealed partial class DropshipSystem
 
         if (IsDestinationOccupiedByOther(dropship, routeHangarDestination))
         {
-            _popup.PopupEntity(Loc.GetString("stories-dropship-autopilot-error-hangar-occupied"), console, args.Actor, PopupType.MediumCaution);
+            _popup.PopupEntity(Loc.GetString("rmc-dropship-autopilot-error-hangar-occupied"), console, args.Actor, PopupType.MediumCaution);
             RefreshRemoteControlConsoles();
             return;
         }
@@ -196,7 +195,7 @@ public sealed partial class DropshipSystem
                     (lz.Value, lzDestination), DropshipDestinationKind.LandingZone, false, out _) ||
                 IsDestinationOccupiedByOther(dropship, lzDestination))
             {
-                _popup.PopupEntity(Loc.GetString("stories-dropship-autopilot-error-invalid-lz"),
+                _popup.PopupEntity(Loc.GetString("rmc-dropship-autopilot-error-invalid-lz"),
                     console, args.Actor, PopupType.MediumCaution);
                 return;
             }
@@ -208,7 +207,7 @@ public sealed partial class DropshipSystem
         autopilot.Mode = args.Mode;
         autopilot.NextDepartureAt = null;
         autopilot.RetryAt = null;
-        SetAutopilotStatus(dropship, autopilot, DropshipAutopilotStatus.Ready, Loc.GetString("stories-dropship-autopilot-status-detail-route-armed"));
+        SetAutopilotStatus(dropship, autopilot, DropshipAutopilotStatus.Ready, Loc.GetString("rmc-dropship-autopilot-status-detail-route-armed"));
         Dirty(dropship.Owner, autopilot);
 
         _adminLog.Add(LogType.RMCDropshipAutopilot,
@@ -227,7 +226,7 @@ public sealed partial class DropshipSystem
             return;
 
         if (TryComp(dropship, out DropshipAutopilotComponent? autopilot))
-            SetAutopilotDisabled(dropship, autopilot, args.Actor, Loc.GetString("stories-dropship-autopilot-status-detail-disabled-remote"));
+            SetAutopilotDisabled(dropship, autopilot, args.Actor, Loc.GetString("rmc-dropship-autopilot-status-detail-disabled-remote"));
 
         RefreshUI(computer);
         RefreshRemoteControlConsoles();
@@ -247,7 +246,7 @@ public sealed partial class DropshipSystem
 
         if (!TryGetNextAutopilotTarget(dropship, autopilot, out var target, out var reason))
         {
-            var holdingAtRouteHangar = Loc.GetString("stories-dropship-autopilot-status-detail-holding-hangar");
+            var holdingAtRouteHangar = Loc.GetString("rmc-dropship-autopilot-status-detail-holding-hangar");
             if (reason == holdingAtRouteHangar)
             {
                 autopilot.NextDepartureAt = null;
@@ -283,7 +282,7 @@ public sealed partial class DropshipSystem
 
         if (!TryResolveRouteHangar(dropship, autopilot, out var routeHangar))
         {
-            SetAutopilotStatus(dropship, autopilot, DropshipAutopilotStatus.Error, Loc.GetString("stories-dropship-autopilot-status-detail-select-hangar"));
+            SetAutopilotStatus(dropship, autopilot, DropshipAutopilotStatus.Error, Loc.GetString("rmc-dropship-autopilot-status-detail-select-hangar"));
             RefreshRemoteControlConsoles();
             return;
         }
@@ -292,7 +291,7 @@ public sealed partial class DropshipSystem
         {
             autopilot.NextDepartureAt = null;
             autopilot.RetryAt = null;
-            SetAutopilotStatus(dropship, autopilot, DropshipAutopilotStatus.Ready, Loc.GetString("stories-dropship-autopilot-status-detail-holding-hangar"));
+            SetAutopilotStatus(dropship, autopilot, DropshipAutopilotStatus.Ready, Loc.GetString("rmc-dropship-autopilot-status-detail-holding-hangar"));
             Dirty(dropship.Owner, autopilot);
         }
         else

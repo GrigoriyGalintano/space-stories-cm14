@@ -1,9 +1,8 @@
-using Content.Client._RMC14.Dropship;
 using Content.Shared._RMC14.Dropship;
 using Content.Shared.UserInterface;
 using Robust.Shared.GameStates;
 
-namespace Content.Client._Stories.Dropship;
+namespace Content.Client._RMC14.Dropship;
 
 public sealed class DropshipAutopilotUISystem : EntitySystem
 {
