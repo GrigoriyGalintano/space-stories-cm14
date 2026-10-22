@@ -134,9 +134,6 @@ public sealed partial class RMCApcComponent : Component
     public EntProtoId ElectronicsPrototype = "CMAPCElectronics";
 
     [DataField, AutoNetworkedField]
-    public EntProtoId FramePrototype = "CMAPCFrame";
-
-    [DataField, AutoNetworkedField]
     public TimeSpan InstallTerminalDelay = TimeSpan.FromSeconds(2);
 
     [DataField, AutoNetworkedField]
@@ -152,10 +149,7 @@ public sealed partial class RMCApcComponent : Component
     public TimeSpan SecureElectronicsDelay = TimeSpan.FromSeconds(2);
 
     [DataField, AutoNetworkedField]
-    public TimeSpan RepairFrameDelay = TimeSpan.FromSeconds(5);
-
-    [DataField, AutoNetworkedField]
-    public TimeSpan DeconstructDelay = TimeSpan.FromSeconds(5);
+    public TimeSpan RepairFrameDelay = TimeSpan.FromSeconds(4);
 
     [DataField]
     public SoundSpecifier CrowbarSound = new SoundPathSpecifier("/Audio/Items/crowbar.ogg");
@@ -323,6 +317,3 @@ public sealed partial class RMCApcUnsecureElectronicsDoAfterEvent : SimpleDoAfte
 
 [Serializable, NetSerializable]
 public sealed partial class RMCApcRepairFrameDoAfterEvent : SimpleDoAfterEvent;
-
-[Serializable, NetSerializable]
-public sealed partial class RMCApcDeconstructDoAfterEvent : SimpleDoAfterEvent;

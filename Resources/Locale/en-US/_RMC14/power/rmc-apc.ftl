@@ -14,7 +14,7 @@ rmc-apc-examine-cover-open-battery = Use an [color=cyan]empty hand[/color] to re
 rmc-apc-examine-cover-removed-battery = Use an [color=cyan]empty hand[/color] to remove the battery.
 rmc-apc-examine-broken = The APC is broken. Hit it with a sturdy tool to knock the cover loose.
 rmc-apc-examine-broken-cover-removed-battery = The APC is broken. Remove the [color=cyan]battery[/color], then strip the damaged electronics.
-rmc-apc-examine-broken-cover-removed-no-battery = The APC is broken. Strip the damaged electronics, then use an [color=cyan]APC frame[/color] to repair the front assembly.
+rmc-apc-examine-broken-cover-removed-no-battery = The APC is broken. Strip the damaged electronics, then repair the front assembly with a [color=cyan]lit welder[/color] (base time: 4 seconds). Reconnect the cable and reinstall the electronics and battery afterwards.
 rmc-apc-examine-maintenance = The APC is incomplete. It needs [color=cyan]cable[/color], a [color=cyan]power control module[/color], and a [color=cyan]screwdriver[/color].
 rmc-apc-examine-connect-terminal = Use [color=cyan]{$amount} cable[/color] to connect the terminal.
 rmc-apc-examine-install-electronics = Use a [color=cyan]power control module[/color] to install the electronics.
