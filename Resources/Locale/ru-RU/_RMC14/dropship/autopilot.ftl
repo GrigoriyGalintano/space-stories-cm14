@@ -30,6 +30,7 @@ rmc-dropship-autopilot-status-detail-override-manual = Управление пе
 rmc-dropship-autopilot-status-detail-override-remote = Выполнен ручной вылет с удалённой консоли.
 rmc-dropship-autopilot-status-detail-override-planetside = Корабль вызван с планеты.
 rmc-dropship-autopilot-status-detail-override-hijack = Управление перехвачено при захвате корабля.
+rmc-dropship-autopilot-status-detail-hijack-disabled = Автопилот отключён из-за захвата десантного корабля.
 rmc-dropship-autopilot-status-detail-locked = Бортовой компьютер временно заблокирован.
 rmc-dropship-remote-linked-lz-none = Не привязана
 rmc-dropship-remote-xeno-clueless = Вы непонимающе смотрите на {$console}.

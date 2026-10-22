@@ -25,6 +25,7 @@ public sealed partial class DropshipSystem
     private TimeSpan _autopilotMaxDelay;
     private TimeSpan _autopilotRetryDelay;
     private TimeSpan _nextAutopilotUiRefresh;
+    private bool _autopilotHijackStarted;
 
     private void InitializeAutopilot()
     {
@@ -48,6 +49,8 @@ public sealed partial class DropshipSystem
             });
 
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnAutopilotRoundRestart);
+        SubscribeLocalEvent<DropshipHijackStartEvent>(OnAutopilotHijack);
+        SubscribeLocalEvent<DropshipHijackLandedEvent>(OnAutopilotHijack);
     }
 
     private void OnAutopilotInit(Entity<DropshipAutopilotComponent> ent, ref ComponentInit args)
@@ -59,6 +62,25 @@ public sealed partial class DropshipSystem
     private void OnAutopilotRoundRestart(RoundRestartCleanupEvent ev)
     {
         _nextAutopilotUiRefresh = default;
+        _autopilotHijackStarted = false;
+    }
+
+    private void OnAutopilotHijack<T>(ref T args)
+    {
+        if (_autopilotHijackStarted)
+            return;
+
+        _autopilotHijackStarted = true;
+        var reason = Loc.GetString("rmc-dropship-autopilot-status-detail-hijack-disabled");
+        var query = EntityQueryEnumerator<DropshipComponent, DropshipAutopilotComponent>();
+        while (query.MoveNext(out var uid, out var dropship, out var autopilot))
+        {
+            if (!TerminatingOrDeleted(uid) && autopilot.Mode != DropshipAutopilotMode.Disabled)
+                SetAutopilotDisabled((uid, dropship), autopilot, null, reason);
+        }
+
+        RefreshUI();
+        RefreshRemoteControlConsoles();
     }
 
     private TimeSpan ClampAutopilotDelay(TimeSpan delay)
@@ -214,6 +236,13 @@ public sealed partial class DropshipSystem
     {
         if (autopilot.Mode == DropshipAutopilotMode.Disabled)
             return;
+
+        if (_autopilotHijackStarted)
+        {
+            SetAutopilotDisabled((uid, dropship), autopilot, null,
+                Loc.GetString("rmc-dropship-autopilot-status-detail-hijack-disabled"));
+            return;
+        }
 
         if (dropship.Crashed)
         {

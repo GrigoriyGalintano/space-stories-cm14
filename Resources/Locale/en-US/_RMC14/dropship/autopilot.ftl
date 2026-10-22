@@ -30,6 +30,7 @@ rmc-dropship-autopilot-status-detail-override-manual = manual flight computer ov
 rmc-dropship-autopilot-status-detail-override-remote = remote console override
 rmc-dropship-autopilot-status-detail-override-planetside = planetside summon override
 rmc-dropship-autopilot-status-detail-override-hijack = hijack override
+rmc-dropship-autopilot-status-detail-hijack-disabled = Autopilot disabled after a dropship hijack.
 
 rmc-dropship-remote-linked-lz-none = Not linked
 rmc-dropship-remote-xeno-clueless = You stare cluelessly at the {$console}.

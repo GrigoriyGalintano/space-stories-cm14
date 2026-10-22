@@ -161,6 +161,13 @@ public sealed partial class DropshipSystem
             return;
         }
 
+        if (_autopilotHijackStarted)
+        {
+            _popup.PopupEntity(Loc.GetString("rmc-dropship-autopilot-status-detail-hijack-disabled"),
+                console, args.Actor, PopupType.MediumCaution);
+            return;
+        }
+
         if (args.RouteHangar == null ||
             !TryGetEntity(args.RouteHangar.Value, out var routeHangar) ||
             !TryComp(routeHangar, out DropshipDestinationComponent? routeHangarDestination) ||
