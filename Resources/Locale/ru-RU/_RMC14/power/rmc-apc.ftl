@@ -4,6 +4,13 @@ rmc-apc-construction-area-occupied = [color=red]В этой зоне уже ес
 
 rmc-apc-skill-fail = Вы не знаете, как пользоваться интерфейсом { $apc }.
 
+rmc-apc-xeno-already-broken = Электроника ЛКП уже разбита.
+rmc-apc-xeno-too-small = Вы недостаточно крупный, чтобы разбить электронику ЛКП.
+rmc-apc-xeno-wires-exposed = Вы срываете панель ЛКП, обнажая провода.
+rmc-apc-xeno-wires-cut = Вы разрываете провода ЛКП.
+rmc-apc-xeno-electronics-destroyed = Вы разбиваете электронику ЛКП.
+rmc-apc-examine-wires-damaged = Провода ЛКП повреждены. Восстановите их [color=cyan]кусачками[/color] через панель проводов, затем закройте панель [color=cyan]отвёрткой[/color]. Плата и батарея целы.
+
 rmc-apc-examine-working =
     Используйте:
     - [color=cyan]Инженерную ID-карту[/color], чтобы заблокировать или разблокировать интерфейс.

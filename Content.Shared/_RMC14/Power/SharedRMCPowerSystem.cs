@@ -6,6 +6,7 @@ using Content.Shared._RMC14.Xenonids;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Destructible;
 using Content.Shared.DoAfter;
 using Content.Shared.Doors;
@@ -41,7 +42,7 @@ using static Content.Shared.Popups.PopupType;
 
 namespace Content.Shared._RMC14.Power;
 
-public abstract class SharedRMCPowerSystem : EntitySystem
+public abstract partial class SharedRMCPowerSystem : EntitySystem
 {
     private static readonly ProtoId<TagPrototype> WallTag = "Wall";
 
@@ -102,6 +103,8 @@ public abstract class SharedRMCPowerSystem : EntitySystem
         SubscribeLocalEvent<RMCApcComponent, ComponentRemove>(OnApcRemove);
         SubscribeLocalEvent<RMCApcComponent, EntityTerminatingEvent>(OnApcRemove);
         SubscribeLocalEvent<RMCApcComponent, BreakageEventArgs>(OnApcBreakage);
+        SubscribeLocalEvent<RMCApcComponent, BeforeDamageChangedEvent>(OnApcBeforeDamageChanged,
+            after: [typeof(SharedGodmodeSystem)]);
         SubscribeLocalEvent<RMCApcComponent, InteractUsingEvent>(OnApcInteractUsing);
         SubscribeLocalEvent<RMCApcComponent, InteractHandEvent>(OnApcInteractHand);
         SubscribeLocalEvent<RMCApcComponent, ActivatableUIOpenAttemptEvent>(OnApcActivatableUIOpenAttempt);
@@ -378,6 +381,11 @@ public abstract class SharedRMCPowerSystem : EntitySystem
 
     private void OnApcBreakage(Entity<RMCApcComponent> ent, ref BreakageEventArgs args)
     {
+        BreakApc(ent);
+    }
+
+    private void BreakApc(Entity<RMCApcComponent> ent)
+    {
         ent.Comp.Broken = true;
         CloseApcWiresPanel(ent);
         ent.Comp.WiresExposed = true;
@@ -478,6 +486,8 @@ public abstract class SharedRMCPowerSystem : EntitySystem
             var markup = ent.Comp.State switch
             {
                 RMCApcState.Working => Loc.GetString("rmc-apc-examine-working"),
+                RMCApcState.WiresExposed when ent.Comp.MainPowerWireCut =>
+                    Loc.GetString("rmc-apc-examine-wires-damaged"),
                 RMCApcState.WiresExposed => Loc.GetString("rmc-apc-examine-wires-exposed"),
                 RMCApcState.CoverOpenBattery => Loc.GetString("rmc-apc-examine-cover-open-battery"),
                 RMCApcState.CoverOpenNoBattery => GetApcOpenNoBatteryExamine(ent),
@@ -508,7 +518,7 @@ public abstract class SharedRMCPowerSystem : EntitySystem
             return;
         }
 
-        if (args.Open)
+        if (args.Open || args.User == null)
             return;
 
         if (ent.Comp.Cover != RMCApcCover.Closed ||
@@ -522,6 +532,8 @@ public abstract class SharedRMCPowerSystem : EntitySystem
     private void OnApcPanelChanged(Entity<RMCApcComponent> ent, ref PanelChangedEvent args)
     {
         ent.Comp.WiresExposed = args.Open;
+        if (!args.Open)
+            ResetApcXenoDamage(ent);
         Dirty(ent);
         UpdateApcAppearance(ent);
     }
@@ -687,6 +699,8 @@ public abstract class SharedRMCPowerSystem : EntitySystem
         ent.Comp.MainPowerWireCut = false;
         ent.Comp.MainPowerWirePulsed = false;
         ent.Comp.IdScannerWireCut = false;
+        SetApcWiresCut(ent, args.User, false);
+        ResetApcXenoDamage(ent);
 
         if (TryComp(ent, out DamageableComponent? damageable))
             _damageable.SetAllDamage(ent, damageable, FixedPoint2.Zero);
@@ -1199,6 +1213,8 @@ public abstract class SharedRMCPowerSystem : EntitySystem
             return;
 
         ent.Comp.MainPowerWireCut = cut;
+        if (!cut)
+            ResetApcXenoDamage((ent.Owner, ent.Comp));
         Dirty(ent);
         ToUpdate.Add(ent);
     }

@@ -4,6 +4,13 @@ rmc-apc-construction-area-occupied = [color=red]This area already has an APC. Co
 
 rmc-apc-skill-fail = You don't know how to use {$apc}'s interface.
 
+rmc-apc-xeno-already-broken = The APC's electronics are already destroyed.
+rmc-apc-xeno-too-small = You are not big enough to destroy the APC's electronics.
+rmc-apc-xeno-wires-exposed = You tear the APC's panel off, exposing the wires.
+rmc-apc-xeno-wires-cut = You tear the APC's wires apart.
+rmc-apc-xeno-electronics-destroyed = You smash the APC's electronics.
+rmc-apc-examine-wires-damaged = The APC's wires are damaged. Mend them with [color=cyan]wirecutters[/color] through the wiring panel, then close the panel with a [color=cyan]screwdriver[/color]. The electronics and battery are intact.
+
 rmc-apc-examine-working =
     Use:
     - An [color=cyan]engineering ID[/color] to lock or unlock the interface.
