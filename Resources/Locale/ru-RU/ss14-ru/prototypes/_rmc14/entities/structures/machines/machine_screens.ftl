@@ -30,4 +30,4 @@ ent-RMCTelescreenEntertainment = { ent-RMCMachineScreenBase }
     .desc = { ent-RMCMachineScreenBase.desc }
 ent-RMCRedAlarmProp = { ent-RMCMachineScreenBase }
     .desc = { ent-RMCMachineScreenBase.desc }
-    .suffix = Always Red, Prop
+    .suffix = Всегда красный, Декорация

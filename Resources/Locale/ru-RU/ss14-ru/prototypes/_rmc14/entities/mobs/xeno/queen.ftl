@@ -9,6 +9,6 @@ ent-RMCXenoQueenMaid = { ent-RMCXenoQueenBase }
     .suffix = Кошачья горничная Королева
 ent-RMCXenoQueenMagical = { ent-RMCXenoQueenBase }
     .desc = { ent-RMCXenoQueenBase.desc }
-    .suffix = Magical Girl Queen
+    .suffix = Королева-волшебница
 ent-RMCQueenEye = глаз королевы
     .desc = Кажется, что это визуальная проекция кого-то.

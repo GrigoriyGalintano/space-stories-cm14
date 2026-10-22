@@ -1,6 +1,6 @@
 ent-CMXenoParasiteBase = Лицехват
     .desc = { ent-CMXenoUndeveloped.desc }
-    .suffix = Parasite
+    .suffix = Лицехват
 ent-CMXenoParasite = { ent-CMXenoParasiteBase }
     .desc = { ent-CMXenoParasiteBase.desc }
     .suffix = Нормальный

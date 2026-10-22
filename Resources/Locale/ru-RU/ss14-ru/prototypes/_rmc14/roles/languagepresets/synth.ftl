@@ -1,4 +1,4 @@
-ent-RMCLanguagePresetSynthColonist = Survivor Synth Colonist Languages
+ent-RMCLanguagePresetSynthColonist = Языки выжившего синтетика-колониста
     .desc = { "" }
-ent-RMCLanguageLearningPresetSynthColonist = Survivor Synth Colonist Language Learning
+ent-RMCLanguageLearningPresetSynthColonist = Изучение языков выжившего синтетика-колониста
     .desc = { "" }

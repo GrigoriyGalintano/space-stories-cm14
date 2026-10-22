@@ -1,6 +1,6 @@
-ent-RMCWatchBaseL = watchL
+ent-RMCWatchBaseL = часы L
     .desc = Абстрактные часы.
-ent-RMCWatchBaseR = watchR
+ent-RMCWatchBaseR = часы R
     .desc = Абстрактные часы.
 ent-RMCWatchCheap = дешёвые электронные часы
     .desc = Дешёвые наручные электронные часы, умеющие показывать только 24-часовое время. Паршивый красный дисплей, зато отлично видно в темноте!
