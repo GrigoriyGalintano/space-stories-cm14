@@ -779,7 +779,7 @@ public abstract class SharedMortarSystem : EntitySystem
                 // Stories-Ordnance-Start
                 if (TryComp<OrdnanceCasingComponent>(uid, out var casing))
                 {
-                    var triggerEv = new OrdnanceDetonateEvent(null);
+                    var triggerEv = new OrdnanceDetonateEvent(user);
                     RaiseLocalEvent(uid, ref triggerEv);
                 }
                 else
