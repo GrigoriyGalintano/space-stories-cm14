@@ -63,7 +63,6 @@
     sprite: _RMC14/Objects/Clothing/Eyes/Glasses/m42_scoutsight.rsi
   - type: NightVisionItem
     defaultState: half
-    mesons: true # Stories-MesonFix
   - type: Appearance
   - type: GenericVisualizer
     visuals:
@@ -118,7 +117,6 @@
     sprite: _RMC14/Objects/Clothing/Eyes/Glasses/m42_scoutsight.rsi
   - type: NightVisionItem
     defaultState: half
-    mesons: true # Stories-MesonFix
   - type: Appearance
   - type: GenericVisualizer
     visuals:
@@ -152,7 +150,6 @@
     skills:
       RMCSkillSmartGun: 1
     defaultState: half
-    mesons: true # Stories-MesonFix
   - type: ClothingRequireEquipped
     handsValid: true
     whitelist:
@@ -196,10 +193,7 @@
         variation: 0.250
   - type: ComponentToggler
     components:
-    # Stories-MesonFix-Start
     - type: NightVisionItem
-      mesons: true
-    # Stories-MesonFix-End
   - type: Appearance
   - type: RMCItemToggleClothingVisuals
   - type: GenericVisualizer
