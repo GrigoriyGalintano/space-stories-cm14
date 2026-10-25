@@ -287,4 +287,7 @@ public sealed class SCCVars
     /// </summary>
     public static readonly CVarDef<string> BanwordsFile =
         CVarDef.Create("stories.banwords_file", "", CVar.SERVERONLY);
+
+    public static readonly CVarDef<int> FunFactsMaxPerSide =
+        CVarDef.Create("stories.fun_facts_max_per_side", 5, CVar.SERVERONLY);
 }
