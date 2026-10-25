@@ -1,4 +1,5 @@
 using Content.Client._RMC14.Input;
+using Content.Shared._Stories.Input; // Stories-CustomPhrases
 using Content.Shared.Input;
 using Robust.Shared.Input;
 
@@ -134,6 +135,7 @@ namespace Content.Client.Input
             common.AddFunction(ContentKeyFunctions.OpenDecalSpawnWindow);
             common.AddFunction(ContentKeyFunctions.OpenAdminMenu);
             common.AddFunction(ContentKeyFunctions.OpenGuidebook);
+            common.AddFunction(StoriesKeyFunctions.OpenCustomPhrases); // Stories-CustomPhrases
 
 
             // RMC14
