@@ -245,6 +245,7 @@ namespace Content.Client.Entry
                 && _resourceManager.ContentFileExists(
                     ReplayConstants.ReplayZipFolder.ToRootedPath() / ReplayConstants.FileMeta))
             {
+                _configManager.SetCVar(CVars.LaunchContentBundle, false);
                 _logManager.GetSawmill("entry").Info("Loading content bundle replay from VFS!");
 
                 var reader = new ReplayFileReaderResources(
